@@ -1,0 +1,34 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'core/css/home.css' %}">
+</head>
+<body>
+<header>
+    <div class="left-group">
+        <div class="logo">
+            <img src="{% static 'core/img/logo.png' %}" alt="Логотип компанії">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home:home' %}">Головна</a></li>
+                <li><a href="{% url 'employees:employees' %}">Працівники</a></li>
+                <li><a href="{% url 'projects:projects' %}">Проєкти</a></li>
+                <li><a href="">Клієнти</a></li>
+                <li><a href="">Про курсову роботу</a></li>
+            </ul>
+        </nav>
+
+    </div>
+    <div class="logout">
+        <a href="">Вийти</a>
+    </div>
+</header>
+<main>
+    {% block content %} {% endblock %}
+</main>
+</body>
+</html>
