@@ -81,8 +81,18 @@ WSGI_APPLICATION = 'Info_Building_System.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'infobuilding_db',
+        'USER': 'postgres',
+        'PASSWORD': '0000',
+        'HOST': 'localhost',
+        'PORT': '5432',
+        'OPTIONS': {
+            'options': '-c search_path=public,employees,projects',
+        },
+        'TEST': {
+            'NAME': 'test_db',
+        }
     }
 }
 
