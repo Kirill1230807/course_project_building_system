@@ -12,10 +12,10 @@
     justify-content: space-between;
     align-items: center;
     height: 60px;
-    flex-wrap: wrap;
-    /*border-bottom: 1px solid red;*/
+    flex-wrap: nowrap;
+    /*border: 1px solid red;*/
     box-sizing: border-box;
-    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 .left-group {
@@ -24,7 +24,7 @@
     gap: 5px;
     flex-grow: 0;
     flex-shrink: 0;
-    /*border-right: 1px solid lime;*/
+    /*border: 1px solid lime;*/
 }
 
 .logo img {
@@ -57,7 +57,7 @@ nav ul li a:hover {
 }
 
 .logout {
-    /*border-left: 1px solid blue;*/
+    /*border: 1px solid blue;*/
     flex-shrink: 0;
 }
 
