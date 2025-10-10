@@ -1,5 +1,4 @@
-﻿{% load static %}
-<!DOCTYPE html>
+﻿<!DOCTYPE html> {% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,30 +6,41 @@
     <link rel="stylesheet" href="{% static 'core/css/home.css' %}">
 </head>
 <body>
-<header>
-    <div class="left-group">
-        <div class="logo">
-            <a href="{% url 'home:home' %}">
-                <img src="{% static 'core/img/logo.png' %}" alt="Логотип компанії">
-            </a>
+<div class="layout">
+    <aside>
+        <div class="user-info">
+            <p>Привіт, світ</p>
+            <a href="" class="logout-btn">Вийти</a>
         </div>
-        <nav>
+        <nav class="nav-menu">
             <ul>
                 <li><a href="{% url 'home:home' %}">Головна</a></li>
+                {# core #}
+                <li><a href="{% url 'projects:projects' %}">Будівельні проєкти</a></li>
+                {# projects #}
+                <li><a href="{% url 'plots:plots' %}">Ділянки</a></li>
+                {# plots #}
+                <li><a href="{% url 'managers:managers' %}">Керівники</a></li>
+                {# managers #}
+                <li><a href="{% url 'teams:teams' %}">Бригади</a></li>
+                {# teams #}
                 <li><a href="{% url 'employees:employees' %}">Працівники</a></li>
-                <li><a href="{% url 'projects:projects' %}">Проєкти</a></li>
-                <li><a href="">Клієнти</a></li>
+                {# employees #}
+                <li><a href="{% url 'type_of_work:type_of_work' %}">Види робіт</a></li>
+                {# type_of_work #}
+                <li><a href="{% url 'materials:materials' %}">Матеріали</a></li>
+                {# materials #}
+                <li><a href="{% url 'graphs:graphs' %}">Графіки</a></li>
+                {# graphs #}
+                <li><a href="{% url 'reports:reports' %}">Звіти</a></li>
+                {# reports #}
                 <li><a href="">Про курсову роботу</a></li>
             </ul>
         </nav>
-
-    </div>
-    <div class="logout">
-        <a href="">Вийти</a>
-    </div>
-</header>
-<main>
-    {% block content %} {% endblock %}
-</main>
+    </aside>
+    <main>
+        {% block content %} {% endblock %}
+    </main>
+</div>
 </body>
 </html>

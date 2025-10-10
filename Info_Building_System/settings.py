@@ -41,8 +41,14 @@ INSTALLED_APPS = [
 
     'core',
     'employees',
+    'graphs',
+    'managers',
+    'materials',
+    'plots',
     'projects',
-
+    'reports',
+    'teams',
+    'type_of_work',
 ]
 
 MIDDLEWARE = [
