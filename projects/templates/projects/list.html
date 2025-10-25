@@ -1,0 +1,116 @@
+﻿
+{% extends "core/layout.html" %}
+
+{% block title %}Будівельні проєкти{% endblock %}
+
+{% block content %}
+<div class="features">
+    <h1>Будівельні проєкти</h1>
+
+    <!-- Фільтри -->
+    <div class="filters">
+        <div class="filter-group">
+            <label class="filter-label">Статус</label>
+            <select class="filter-select" id="statusFilter">
+                <option value="">Всі статуси</option>
+                <option value="planned">Запланований</option>
+                <option value="in_progress">В роботі</option>
+                <option value="suspended">Призупинений</option>
+                <option value="completed">Завершений</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">Пошук</label>
+            <input type="text" class="filter-input" id="searchInput" placeholder="Пошук за назвою...">
+        </div>
+
+        <div class="filter-group" style="justify-content: flex-end; flex: 1;">
+{#            {% url 'projects:create' %}#}
+            <a href="" class="btn btn-primary" style="margin-top: 22px;">➕ Додати проєкт</a>
+        </div>
+    </div>
+
+    {% if projects %}
+    <!-- Таблиця проєктів -->
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Назва</th>
+                <th>Тип</th>
+                <th>Клієнт</th>
+                <th>Менеджер</th>
+                <th>Статус</th>
+                <th>Сума контракту</th>
+                <th>Початок</th>
+                <th>Завершення</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+{#                {% url 'projects:detail' project.id %}#}
+            <tr onclick="window.location.href=''">
+                <td><strong>{{ project.name }}</strong></td>
+                <td>
+                    {% if project.object_type == 'residential' %}🏠 Житловий
+                    {% elif project.object_type == 'hospital' %}🏥 Лікарня
+                    {% elif project.object_type == 'school' %}🏫 Школа
+                    {% elif project.object_type == 'bridge' %}🌉 Міст
+                    {% elif project.object_type == 'road' %}🛣️ Дорога
+                    {% else %}🏢 Інше
+                    {% endif %}
+                </td>
+                <td>{{ project.client_name }}</td>
+                <td>{{ project.manager_name|default:"—" }}</td>
+                <td>
+                    <span class="badge badge-{{ project.status }}">
+                        {% if project.status == 'planned' %}Запланований
+                        {% elif project.status == 'in_progress' %}В роботі
+                        {% elif project.status == 'suspended' %}Призупинений
+                        {% elif project.status == 'completed' %}Завершений
+                        {% else %}{{ project.status }}
+                        {% endif %}
+                    </span>
+                </td>
+                <td>{{ project.contract_amount|floatformat:2|default:"—" }} грн</td>
+                <td>{{ project.planned_start_date|date:"d.m.Y"|default:"—" }}</td>
+                <td>{{ project.planned_end_date|date:"d.m.Y"|default:"—" }}</td>
+                <td>
+                    <a href="{% url 'projects:detail' project.id %}" class="btn btn-secondary" style="padding: 5px 10px;">👁️ Деталі</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <!-- Порожній стан -->
+    <div class="empty-state">
+        <div class="empty-state-icon">🏗️</div>
+        <h2 class="empty-state-title">Немає проєктів</h2>
+        <p class="empty-state-text">Додайте перший будівельний проєкт, щоб почати роботу</p>
+{#        {% url 'projects:create' %}#}
+        <a href="" class="btn btn-primary">➕ Додати проєкт</a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Фільтрація по статусу
+    document.getElementById('statusFilter').addEventListener('change', function() {
+        const status = this.value;
+        window.location.href = status ? `?status=${status}` : '?';
+    });
+
+    // Пошук
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const searchText = this.value.toLowerCase();
+        const rows = document.querySelectorAll('.data-table tbody tr');
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchText) ? '' : 'none';
+        });
+    });
+</script>
+{% endblock %}

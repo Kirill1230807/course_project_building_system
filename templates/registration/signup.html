@@ -1,0 +1,43 @@
+﻿{% load static %} <!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Реєстрація</title>
+    <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+</head>
+<body>
+
+<div class="form-wrapper">
+    <h2>Реєстрація</h2>
+
+    {% if form.non_field_errors %}
+        <div class="errorlist">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {{ form.errors }}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Зареєструватися</button>
+    </form>
+
+    <p class="auth-link">
+        Маєте аккаунт? <a href="{% url 'login' %}">Війти</a>
+    </p>
+    <p class="auth-link">
+    Або
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="/home/">
+        <button type="submit" class="link-button">увійти як гість</button>
+    </form>
+</div>
+
+</body>
+</html>

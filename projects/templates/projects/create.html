@@ -1,0 +1,256 @@
+﻿{% extends "core/layout.html" %}
+
+{% block title %}Додати новий проєкт{% endblock %}
+
+{% block content %}
+<div class="features">
+    <div class="form-container">
+        <div class="form-header">
+            <a href="{% url 'projects:list' %}" class="btn btn-secondary">← Назад</a>
+            <h1>🏗️ Додати новий будівельний проєкт</h1>
+        </div>
+
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" class="project-form" id="projectForm">
+            {% csrf_token %}
+
+            <!-- Основна інформація -->
+            <div class="form-section">
+                <h2 class="form-section-title">📋 Основна інформація</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name" class="form-label required">Назва проєкту</label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            class="form-input" 
+                            placeholder="Наприклад: Житловий комплекс 'Оазис'"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="object_type" class="form-label required">Тип об'єкта</label>
+                        <select id="object_type" name="object_type" class="form-select" required>
+                            <option value="">Оберіть тип об'єкта</option>
+                            <option value="residential">🏠 Житловий будинок</option>
+                            <option value="hospital">🏥 Лікарня</option>
+                            <option value="school">🏫 Школа</option>
+                            <option value="bridge">🌉 Міст</option>
+                            <option value="road">🛣️ Дорога</option>
+                            <option value="industrial">🏭 Промисловий об'єкт</option>
+                            <option value="commercial">🏢 Комерційний об'єкт</option>
+                            <option value="other">📦 Інше</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status" class="form-label">Статус</label>
+                        <select id="status" name="status" class="form-select">
+                            <option value="planned" selected>📅 Запланований</option>
+                            <option value="in_progress">⚙️ В роботі</option>
+                            <option value="suspended">⏸️ Призупинений</option>
+                            <option value="completed">✅ Завершений</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="address" class="form-label required">Адреса</label>
+                        <textarea 
+                            id="address" 
+                            name="address" 
+                            class="form-textarea" 
+                            rows="2"
+                            placeholder="Наприклад: м. Київ, вул. Хрещатик, 1"
+                            required
+                        ></textarea>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="area" class="form-label">Площа (м²)</label>
+                        <input 
+                            type="number" 
+                            id="area" 
+                            name="area" 
+                            class="form-input" 
+                            step="0.01"
+                            placeholder="1000.00"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="floors" class="form-label">Кількість поверхів</label>
+                        <input 
+                            type="number" 
+                            id="floors" 
+                            name="floors" 
+                            class="form-input" 
+                            min="1"
+                            placeholder="5"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="description" class="form-label">Опис проєкту</label>
+                        <textarea 
+                            id="description" 
+                            name="description" 
+                            class="form-textarea" 
+                            rows="3"
+                            placeholder="Додаткова інформація про проєкт..."
+                        ></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Клієнт та менеджер -->
+            <div class="form-section">
+                <h2 class="form-section-title">👥 Клієнт та відповідальні</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="client_id" class="form-label required">Клієнт</label>
+                        <select id="client_id" name="client_id" class="form-select" required>
+                            <option value="">Оберіть клієнта</option>
+                            {% for client in clients %}
+                            <option value="{{ client.id }}">
+                                {{ client.name }}
+                                {% if client.client_type == 'legal_entity' %}(Юр. особа)
+                                {% elif client.client_type == 'individual' %}(Фіз. особа)
+                                {% elif client.client_type == 'government' %}(Держ. орган)
+                                {% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-hint">Якщо клієнта немає у списку, спочатку додайте його в розділі "Клієнти"</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="manager_id" class="form-label">Менеджер проєкту</label>
+                        <select id="manager_id" name="manager_id" class="form-select">
+                            <option value="">Оберіть менеджера</option>
+                            {% for manager in managers %}
+                            <option value="{{ manager.id }}">{{ manager.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Контракт -->
+            <div class="form-section">
+                <h2 class="form-section-title">📄 Контракт</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contract_number" class="form-label">Номер контракту</label>
+                        <input 
+                            type="text" 
+                            id="contract_number" 
+                            name="contract_number" 
+                            class="form-input" 
+                            placeholder="CTR-2025-001"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contract_date" class="form-label">Дата контракту</label>
+                        <input 
+                            type="date" 
+                            id="contract_date" 
+                            name="contract_date" 
+                            class="form-input"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contract_amount" class="form-label">Сума контракту (грн)</label>
+                        <input 
+                            type="number" 
+                            id="contract_amount" 
+                            name="contract_amount" 
+                            class="form-input" 
+                            step="0.01"
+                            placeholder="1000000.00"
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <!-- Терміни -->
+            <div class="form-section">
+                <h2 class="form-section-title">📅 Терміни виконання</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="planned_start_date" class="form-label">Плановий початок</label>
+                        <input 
+                            type="date" 
+                            id="planned_start_date" 
+                            name="planned_start_date" 
+                            class="form-input"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="planned_end_date" class="form-label">Планове завершення</label>
+                        <input 
+                            type="date" 
+                            id="planned_end_date" 
+                            name="planned_end_date" 
+                            class="form-input"
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <!-- Кнопки -->
+            <div class="form-actions">
+                <a href="{% url 'projects:list' %}" class="btn btn-secondary">❌ Скасувати</a>
+                <button type="submit" class="btn btn-primary">✅ Створити проєкт</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Валідація форми
+    document.getElementById('projectForm').addEventListener('submit', function(e) {
+        const startDate = document.getElementById('planned_start_date').value;
+        const endDate = document.getElementById('planned_end_date').value;
+        
+        if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+            e.preventDefault();
+            alert('⚠️ Дата початку не може бути пізніше дати завершення!');
+            return false;
+        }
+    });
+    
+    // Встановлюємо сьогоднішню дату для дати контракту
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('contract_date').value = today;
+    });
+</script>
+{% endblock %}
