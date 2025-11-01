@@ -22,16 +22,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('users.urls')),
-    path('', RedirectView.as_view(pattern_name='signup', permanent=False)),
+    path('', RedirectView.as_view(pattern_name='login', permanent=False)),
     path('home/', include('core.urls')),
-    path('projects/', include('projects.urls')),
-    path('plots/', include('plots.urls')),
-    path('managers/', include('managers.urls')),
-    path('teams/', include('teams.urls')),
+    path('managers/', include('management.urls')),
+    path('brigades/', include('brigades.urls')),
     path('employees/', include('employees.urls')),
-    path('type_of_work/', include('type_of_work.urls')),
     path('materials/', include('materials.urls')),
-    path('graphs', include('graphs.urls')),
     path('reports', include('reports.urls')),
+    path('workplan/', include('workplan.urls')),
+
 
 ]

@@ -1,0 +1,84 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}Працівники{% endblock %}
+{% block content %}
+    <h1>Працівники</h1>
+
+    <!-- Форма додавання -->
+    <form id="employeeForm" method="post" action="{% url 'employees:add' %}">
+  {% csrf_token %}
+
+  <label>Ім’я:</label>
+  <input type="text" name="first_name" value="{{ form_data.first_name|default:'' }}" required><br>
+
+  <label>Прізвище:</label>
+  <input type="text" name="last_name" value="{{ form_data.last_name|default:'' }}" required><br>
+
+  <label>По-батькові:</label>
+  <input type="text" name="father_name" value="{{ form_data.father_name|default:'' }}"><br>
+
+  <label>Дата народження:</label>
+  <input type="date" name="birthday" value="{{ form_data.birthday|default:'' }}" required><br>
+
+  <label>Дата прийняття на роботу:</label>
+  <input type="date" name="start_date" value="{{ form_data.start_date|default:'' }}" required><br>
+
+  <label>Категорія:</label>
+  <select id="categorySelect" name="category" required>
+      <option value="">— Оберіть категорію —</option>
+  <option value="Робітники" {% if form_data.category == "Робітники" %}selected{% endif %}>Робітники</option>
+  <option value="Інженерно-технічний персонал" {% if form_data.category == "Інженерно-технічний персонал" %}selected{% endif %}>Інженерно-технічний персонал</option>
+  </select><br>
+
+  <label>Посада:</label>
+  <select id="positionSelect" name="position_id" required>
+       <option value="">— Оберіть посаду —</option>
+  {% for id, title, category in positions %}
+      <option value="{{ id }}" data-category="{{ category }}" {% if form_data.position_id == id|stringformat:"s" %}selected{% endif %}>
+          {{ title }}
+      </option>
+  {% endfor %}
+</select><br>
+
+  <label>Зарплата:</label>
+  <input type="number" name="salary" step="0.01" value="{{ form_data.salary|default:'' }}" required><br>
+
+  {% if error_msg %}
+      <p class="error" style="color:red;">{{ error_msg }}</p>
+  {% endif %}
+
+  <button type="submit">Зберегти</button>
+</form>
+
+
+    <hr>
+
+    <!-- Таблиця працівників -->
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>ID</th>
+            <th>Прізвище</th>
+            <th>Ім’я</th>
+            <th>Посада</th>
+            <th>Категорія</th>
+            <th>Оклад</th>
+            <th>Дії</th>
+        </tr>
+
+        {% for e in employees %}
+            <tr>
+                <td>{{ e.id }}</td>
+                <td>{{ e.last_name }}</td>
+                <td>{{ e.first_name }}</td>
+                <td>{{ e.position }}</td>
+                <td>{{ e.category }}</td>
+                <td>{{ e.salary }}</td>
+                <td>
+                    <a href="{% url 'employees:delete' e.id %}" onclick="return confirm('Видалити працівника?')">Видалити</a>
+                    <a href="{% url 'employees:detail' e.id %}">Детальніше</a>
+                    <a href="{% url 'employees:edit' e.id %}">Редагувати</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
