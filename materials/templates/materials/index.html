@@ -1,0 +1,123 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block title %}Матеріали{% endblock %}
+
+{% block content %}
+<h1>Матеріали</h1>
+
+<!-- 🟢 Форма додавання матеріалу -->
+<h3>Додати матеріал</h3>
+<form method="post" action="{% url 'materials:add' %}">
+    {% csrf_token %}
+    <label>Назва:</label>
+    <input type="text" name="name" required><br>
+
+    <label>Опис:</label>
+    <input type="text" name="description"><br>
+
+    <label>Постачальник:</label>
+    <select name="supplier_id" required>
+        <option value="">— Оберіть постачальника —</option>
+        {% for id, name in suppliers %}
+            <option value="{{ id }}">{{ name }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label>Одиниця вимірювання:</label>
+    <select name="unit_id" required>
+        <option value="">— Оберіть одиницю —</option>
+        {% for id, name, short in units %}
+            <option value="{{ id }}">{{ name }} ({{ short }})</option>
+        {% endfor %}
+    </select><br>
+
+    <label>Ціна:</label>
+    <input type="number" step="0.01" name="price" required><br>
+
+    <label>Кількість:</label>
+    <input type="number" step="0.01" name="count" required><br>
+
+    <button type="submit">Додати матеріал</button>
+</form>
+
+<hr>
+
+<!-- 🟡 Форма додавання постачальника -->
+<h3>Додати постачальника</h3>
+<form method="post" action="{% url 'materials:add_supplier' %}">
+    {% csrf_token %}
+    <label>Назва компанії:</label>
+    <input type="text" name="name" required><br>
+
+    <label>Контактна особа:</label>
+    <input type="text" name="contact_name"><br>
+
+    <label>Телефон:</label>
+    <input type="text" name="phone"><br>
+
+    <label>Email:</label>
+    <input type="email" name="email"><br>
+
+    <label>Адреса:</label>
+    <input type="text" name="address"><br>
+
+    <button type="submit">Додати постачальника</button>
+</form>
+
+<hr>
+
+<!-- 🧱 Таблиця всіх матеріалів -->
+<h3>Список матеріалів</h3>
+<table border="1" cellpadding="6">
+    <tr>
+        <th>ID</th>
+        <th>Назва</th>
+        <th>Опис</th>
+        <th>Постачальник</th>
+        <th>Одиниця</th>
+        <th>Ціна</th>
+        <th>Кількість</th>
+        <th>Дії</th>
+    </tr>
+    {% for m in materials %}
+    <tr>
+        <td>{{ m.id }}</td>
+        <td>{{ m.name }}</td>
+        <td>{{ m.description }}</td>
+        <td>{{ m.supplier }}</td>
+        <td>{{ m.unit }}</td>
+        <td>{{ m.price }}</td>
+        <td>{{ m.count }}</td>
+        <td><a href="{% url 'materials:delete' m.id %}">Видалити</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<hr>
+
+<!-- 🧾 Таблиця постачальників -->
+<h3>Список постачальників</h3>
+<table border="1" cellpadding="6">
+    <tr>
+        <th>ID</th>
+        <th>Назва компанії</th>
+        <th>Контактна особа</th>
+        <th>Телефон</th>
+        <th>Email</th>
+        <th>Адреса</th>
+    </tr>
+    {% for s in suppliers_list %}
+    <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ s.name }}</td>
+        <td>{{ s.contact_name }}</td>
+        <td>{{ s.phone }}</td>
+        <td>{{ s.email }}</td>
+        <td>{{ s.address }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">Постачальників поки немає</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

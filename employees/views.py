@@ -47,13 +47,19 @@ def add_employee(request):
                 if result:
                     position_title = result[0]
 
-        # 4️⃣ Логічна перевірка
+        # 4️⃣ Логічна перевірка — звіряємо категорію посади з обраною категорією працівника
         error_msg = None
-        if form_data["category"] == "Інженерно-технічний персонал" and position_title not in ["Головний інженер", "Начальник дільниці"]:
-            error_msg = "Інженерно-технічний персонал може мати лише посади 'Головний інженер' або 'Начальник дільниці'."
-        elif form_data["category"] == "Робітники" and position_title in ["Головний інженер", "Начальник дільниці"]:
-            error_msg = "Робітники не можуть мати посаду 'Головний інженер' або 'Начальник дільниці'."
-        elif not (form_data["first_name"] and form_data["last_name"] and form_data["salary"] and form_data["position_id"] and form_data["category"]):
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT category FROM positions WHERE id = %s;", [form_data["position_id"]])
+            result = cursor.fetchone()
+            position_category = result[0] if result else None
+
+        if position_category and position_category != form_data["category"]:
+            error_msg = f"Посада не відповідає вибраній категорії ({position_category})."
+        elif not position_category:
+            error_msg = "Обрана посада не знайдена або не має категорії."
+        elif not (form_data["first_name"] and form_data["last_name"] and form_data["salary"] and form_data[
+            "position_id"] and form_data["category"]):
             error_msg = "Не всі обов’язкові поля заповнені."
 
         # 5️⃣ Якщо є помилка — повертаємо форму з введеними даними
