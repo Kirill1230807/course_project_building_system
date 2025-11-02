@@ -1,0 +1,51 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+{% block content %}
+    <h2>Склад бригади №{{ brigade_id }}</h2>
+
+    <h3>Додати учасника</h3>
+    <form method="post" action="{% url 'brigades:add_member' brigade_id %}">
+        {% csrf_token %}
+        <label>Працівник:</label>
+        <select name="employee_id" required>
+            <option value="">— Оберіть працівника —</option>
+            {% for id, full_name, position_name in all_employees %}
+                <option value="{{ id }}">{{ full_name }} — {{ position_name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+
+        <label>Роль у бригаді:</label>
+        <input type="text" name="role" placeholder="Наприклад: арматурник"><br>
+
+        <button type="submit">Додати до бригади</button>
+    </form>
+
+    <hr>
+
+    <h3>Члени бригади</h3>
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>ID</th>
+            <th>Прізвище</th>
+            <th>Ім’я</th>
+            <th>Категорія</th>
+            <th>Роль</th>
+        </tr>
+        {% for m in members %}
+            <tr>
+                <td>{{ m.id }}</td>
+                <td>{{ m.last_name }}</td>
+                <td>{{ m.first_name }}</td>
+                <td>{{ m.category }}</td>
+                <td>{{ m.role|default:"—" }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">Немає учасників</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <a href="{% url 'brigades:index' %}">← Повернутися</a>
+{% endblock %}

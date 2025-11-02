@@ -8,13 +8,18 @@ class MaterialQueries:
     def get_all():
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT m.id, m.name, m.description, m.price, m.count,
-                       u.short_name AS unit, s.name AS supplier
-                FROM materials m
-                JOIN units u ON m.unit_id = u.id
-                JOIN suppliers s ON m.supplier_id = s.id
-                ORDER BY m.id;
-            """)
+                           SELECT m.id,
+                                  m.name,
+                                  m.description,
+                                  m.price,
+                                  m.count,
+                                  u.short_name AS unit,
+                                  s.name       AS supplier
+                           FROM materials m
+                                    JOIN units u ON m.unit_id = u.id
+                                    JOIN suppliers s ON m.supplier_id = s.id
+                           ORDER BY m.id;
+                           """)
             rows = cursor.fetchall()
         return [
             {
@@ -32,9 +37,9 @@ class MaterialQueries:
     def add(name, description, supplier_id, price, count, unit_id):
         with connection.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO materials (name, description, supplier_id, price, count, unit_id)
-                VALUES (%s, %s, %s, %s, %s, %s);
-            """, [name, description, supplier_id, price, count, unit_id])
+                           INSERT INTO materials (name, description, supplier_id, price, count, unit_id)
+                           VALUES (%s, %s, %s, %s, %s, %s);
+                           """, [name, description, supplier_id, price, count, unit_id])
 
     @staticmethod
     def delete(material_id):
@@ -44,7 +49,8 @@ class MaterialQueries:
 
 class SupplierQueries:
     """Прямі SQL-запити для таблиці suppliers"""
-# показ постачальників
+
+    # показ постачальників
     @staticmethod
     def get_all():
         with connection.cursor() as cursor:
@@ -60,11 +66,45 @@ class SupplierQueries:
                     "address": r[5]
                 } for r in rows
             ]
-# додавання постачальника
+
+    # додавання постачальника
     @staticmethod
     def add(name, contact_name, phone, email, address):
         with connection.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO suppliers (name, contact_name, phone, email, address)
-                VALUES (%s, %s, %s, %s, %s);
-            """, [name, contact_name, phone, email, address])
+                           INSERT INTO suppliers (name, contact_name, phone, email, address)
+                           VALUES (%s, %s, %s, %s, %s);
+                           """, [name, contact_name, phone, email, address])
+
+    @staticmethod
+    def get_by_id(supplier_id):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT id, name, contact_name, phone, email, address
+                           FROM suppliers
+                           WHERE id = %s;
+                           """, [supplier_id])
+            row = cursor.fetchone()
+        if not row:
+            return None
+        return {
+            "id": row[0],
+            "name": row[1],
+            "contact_name": row[2],
+            "phone": row[3],
+            "email": row[4],
+            "address": row[5]
+        }
+
+    @staticmethod
+    def update(supplier_id, name, contact_name, phone, email, address):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           UPDATE suppliers
+                           SET name         = %s,
+                               contact_name = %s,
+                               phone        = %s,
+                               email        = %s,
+                               address      = %s
+                           WHERE id = %s;
+                           """, [name, contact_name, phone, email, address, supplier_id])
