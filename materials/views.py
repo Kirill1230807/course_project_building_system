@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.db import connection
 from .db_queries import MaterialQueries, SupplierQueries
 
@@ -61,3 +61,26 @@ def add_supplier(request):
 def delete_material(request, material_id):
     MaterialQueries.delete(material_id)
     return redirect("materials:index")
+
+def edit_supplier(request, supplier_id):
+    supplier = SupplierQueries.get_by_id(supplier_id)
+    if not supplier:
+        return HttpResponseNotFound("Постачальника не знайдено")
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        contact_name = request.POST.get("contact_name")
+        phone = request.POST.get("phone")
+        email = request.POST.get("email")
+        address = request.POST.get("address")
+
+        if not name:
+            return render(request, "materials/edit_supplier.html", {
+                "supplier": supplier,
+                "error_msg": "Назва компанії є обов’язковою!"
+            })
+
+        SupplierQueries.update(supplier_id, name, contact_name, phone, email, address)
+        return redirect("materials:index")
+
+    return render(request, "materials/edit_supplier.html", {"supplier": supplier})

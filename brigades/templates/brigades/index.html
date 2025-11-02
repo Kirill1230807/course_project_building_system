@@ -1,0 +1,51 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+{% block content %}
+<h2>Бригади</h2>
+
+<h3>Додати нову бригаду</h3>
+<form method="post" action="{% url 'brigades:add' %}">
+  <label>Назва:</label>
+  <input type="text" name="name" required><br>
+
+  <label>Бригадир:</label>
+  <select name="leader_id">
+    <option value="">— Оберіть працівника —</option>
+    {% for id, name in employees %}
+      <option value="{{ id }}">{{ name }}</option>
+    {% endfor %}
+  </select><br>
+
+  <label>Примітки:</label>
+  <input type="text" name="notes"><br>
+
+  <label>Статус:</label>
+  <select name="status">
+    <option value="Активна">Активна</option>
+    <option value="Неактивна">Неактивна</option>
+  </select><br>
+
+  <button type="submit">Додати бригаду</button>
+</form>
+
+<hr>
+
+<h3>Список бригад</h3>
+<table border="1" cellpadding="6">
+  <tr>
+    <th>ID</th><th>Назва</th><th>Бригадир</th><th>Примітки</th><th>Статус</th><th>Дії</th>
+  </tr>
+  {% for b in brigades %}
+  <tr>
+    <td>{{ b.id }}</td>
+    <td>{{ b.name }}</td>
+    <td>{{ b.leader_name|default:"—" }}</td>
+    <td>{{ b.notes|default:"—" }}</td>
+    <td>{{ b.status }}</td>
+    <td><a href="{% url 'brigades:view' b.id %}">Переглянути склад</a></td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="6">Немає бригад</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

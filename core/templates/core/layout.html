@@ -11,7 +11,7 @@
         <div class="user-info">
             {% if user.is_authenticated %}
                 <p>Привіт, {{ user.first_name|default:user.username }}!</p>
-                {% else %}
+            {% else %}
                 <p>Привіт, Гість</p>
             {% endif %}
             <a href="{% url 'login' %}" class="logout-btn">Вийти</a>
@@ -22,7 +22,7 @@
                 {# core #}
                 <li><a href="{% url 'managers:managers' %}">Керівники</a></li>
                 {# managers #}
-                <li><a href="{% url 'brigades:brigades' %}">Бригади</a></li>
+                <li><a href="{% url 'brigades:index' %}">Бригади</a></li>
                 {# brigades #}
                 <li><a href="{% url 'employees:index' %}">Працівники</a></li>
                 {# employees #}

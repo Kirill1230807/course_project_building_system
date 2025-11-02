@@ -1,0 +1,31 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Редагування постачальника</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <label>Назва компанії:</label>
+  <input type="text" name="name" value="{{ supplier.name }}" required><br>
+
+  <label>Контактна особа:</label>
+  <input type="text" name="contact_name" value="{{ supplier.contact_name }}"><br>
+
+  <label>Телефон:</label>
+  <input type="text" name="phone" value="{{ supplier.phone }}"><br>
+
+  <label>Email:</label>
+  <input type="email" name="email" value="{{ supplier.email }}"><br>
+
+  <label>Адреса:</label>
+  <input type="text" name="address" value="{{ supplier.address }}"><br>
+
+  {% if error_msg %}
+    <p style="color:red;">{{ error_msg }}</p>
+  {% endif %}
+
+  <button type="submit">Зберегти зміни</button>
+  <a href="{% url 'materials:index' %}">Скасувати</a>
+</form>
+{% endblock %}
