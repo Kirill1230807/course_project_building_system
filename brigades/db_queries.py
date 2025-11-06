@@ -8,24 +8,25 @@ class BrigadeQueries:
     def get_all():
         with connection.cursor() as cursor:
             cursor.execute("""
-                           SELECT b.id, b.name, e.last_name || ' ' || e.first_name AS leader_name, b.notes, b.status
+                           SELECT b.id, b.name, e.last_name || ' ' || e.first_name AS leader, b.status, b.notes
                            FROM brigades b
                                     LEFT JOIN employees e ON b.leader_id = e.id
-                           ORDER BY b.id;
+                           ORDER BY b.name;
                            """)
-            rows = cursor.fetchall()
-        return [
-            {"id": r[0], "name": r[1], "leader_name": r[2], "notes": r[3], "status": r[4]}
-            for r in rows
-        ]
+            return cursor.fetchall()
 
     @staticmethod
-    def add(name, leader_id, notes, status="Неактивна"):
+    def add(name, leader_id, status, notes):
         with connection.cursor() as cursor:
             cursor.execute("""
-                           INSERT INTO brigades (name, leader_id, notes, status)
+                           INSERT INTO brigades (name, leader_id, status, notes)
                            VALUES (%s, %s, %s, %s);
-                           """, [name, leader_id, notes, status])
+                           """, [name, leader_id, status, notes])
+
+    @staticmethod
+    def delete(bid):
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM brigades WHERE id = %s;", [bid])
 
     @staticmethod
     def get_members(brigade_id):

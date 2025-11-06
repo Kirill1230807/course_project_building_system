@@ -1,44 +1,55 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
+
+{% block title %}Бригада {{ brigade.1 }}{% endblock %}
+
 {% block content %}
-    <h2>Склад бригади №{{ brigade_id }}</h2>
+    <h1>Бригада {{ brigade.1 }}</h1>
+
+    <p><strong>Бригадир:</strong> {{ brigade.2|default:"—" }}</p>
+    <p><strong>Статус:</strong> {{ brigade.3 }}</p>
+    <p><strong>Примітки:</strong> {{ brigade.4|default:"—" }}</p>
+
+    <hr>
 
     <h3>Додати учасника</h3>
-    <form method="post" action="{% url 'brigades:add_member' brigade_id %}">
+    <form method="post" action="{% url 'brigades:add_member' brigade.0 %}">
         {% csrf_token %}
         <label>Працівник:</label>
         <select name="employee_id" required>
             <option value="">— Оберіть працівника —</option>
-            {% for id, full_name, position_name in all_employees %}
-                <option value="{{ id }}">{{ full_name }} — {{ position_name }}</option>
+            {% for id, name in employees %}
+                <option value="{{ id }}">{{ name }}</option>
             {% endfor %}
         </select>
-        <br>
 
-        <label>Роль у бригаді:</label>
-        <input type="text" name="role" placeholder="Наприклад: арматурник"><br>
+        <label>Роль:</label>
+        <input type="text" name="role" placeholder="Напр., муляр, зварювальник" required>
 
-        <button type="submit">Додати до бригади</button>
+        <button type="submit">Додати</button>
     </form>
 
     <hr>
 
-    <h3>Члени бригади</h3>
+    <h3>Склад бригади</h3>
     <table border="1" cellpadding="6">
         <tr>
             <th>ID</th>
-            <th>Прізвище</th>
             <th>Ім’я</th>
             <th>Категорія</th>
             <th>Роль</th>
+            <th>Дії</th>
         </tr>
         {% for m in members %}
             <tr>
-                <td>{{ m.id }}</td>
-                <td>{{ m.last_name }}</td>
-                <td>{{ m.first_name }}</td>
-                <td>{{ m.category }}</td>
-                <td>{{ m.role|default:"—" }}</td>
+                <td>{{ m.0 }}</td>
+                <td>{{ m.1 }}</td>
+                <td>{{ m.2 }}</td>
+                <td>{{ m.3 }}</td>
+                <td>
+                    <a href="{% url 'brigades:remove_member' brigade.0 m.0 %}"
+                       onclick="return confirm('Видалити з бригади?')">❌</a>
+                </td>
             </tr>
         {% empty %}
             <tr>
@@ -47,5 +58,7 @@
         {% endfor %}
     </table>
 
-    <a href="{% url 'brigades:index' %}">← Повернутися</a>
+    <br>
+    <a href="{% url 'brigades:index' %}">← Повернутися до списку</a>
+
 {% endblock %}

@@ -3,14 +3,12 @@ from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from .db_queries import EmployeeQueries
 from django.db import connection
 
-
-
 def index(request):
     employees = EmployeeQueries.get_all()
 
-    # Отримуємо список посад для вибору
+    # Отримуємо лише посади, які належать до категорії "Робітники"
     with connection.cursor() as cursor:
-        cursor.execute("SELECT id, title, category FROM positions ORDER BY title;")
+        cursor.execute("SELECT id, title, category FROM positions WHERE category = 'Робітники' ORDER BY title;")
         positions = cursor.fetchall()
 
     return render(request, 'employees/index.html', {
@@ -21,7 +19,6 @@ def index(request):
 
 def add_employee(request):
     if request.method == "POST":
-        # 1️⃣ Отримуємо дані з форми
         form_data = {
             "first_name": request.POST.get("first_name", ""),
             "last_name": request.POST.get("last_name", ""),
@@ -29,41 +26,17 @@ def add_employee(request):
             "birthday": request.POST.get("birthday", ""),
             "start_date": request.POST.get("start_date", ""),
             "salary": request.POST.get("salary", ""),
-            "position_id": request.POST.get("position_id", ""),
-            "category": request.POST.get("category", "")
+            "position_id": request.POST.get("position_id", "")
         }
 
-        # 2️⃣ Отримуємо всі посади
+        # Отримуємо всі посади (лише робітники)
         with connection.cursor() as cursor:
-            cursor.execute("SELECT id, title, category FROM positions ORDER BY title;")
+            cursor.execute("SELECT id, title, category FROM positions WHERE category = 'Робітники' ORDER BY title;")
             positions = cursor.fetchall()
 
-        # 3️⃣ Отримуємо назву посади
-        position_title = ""
-        if form_data["position_id"]:
-            with connection.cursor() as cursor:
-                cursor.execute("SELECT title FROM positions WHERE id = %s;", [form_data["position_id"]])
-                result = cursor.fetchone()
-                if result:
-                    position_title = result[0]
-
-        # 4️⃣ Логічна перевірка — звіряємо категорію посади з обраною категорією працівника
-        error_msg = None
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT category FROM positions WHERE id = %s;", [form_data["position_id"]])
-            result = cursor.fetchone()
-            position_category = result[0] if result else None
-
-        if position_category and position_category != form_data["category"]:
-            error_msg = f"Посада не відповідає вибраній категорії ({position_category})."
-        elif not position_category:
-            error_msg = "Обрана посада не знайдена або не має категорії."
-        elif not (form_data["first_name"] and form_data["last_name"] and form_data["salary"] and form_data[
-            "position_id"] and form_data["category"]):
+        # Перевірка полів
+        if not (form_data["first_name"] and form_data["last_name"] and form_data["salary"] and form_data["position_id"]):
             error_msg = "Не всі обов’язкові поля заповнені."
-
-        # 5️⃣ Якщо є помилка — повертаємо форму з введеними даними
-        if error_msg:
             employees = EmployeeQueries.get_all()
             return render(request, "employees/index.html", {
                 "employees": employees,
@@ -72,7 +45,9 @@ def add_employee(request):
                 "form_data": form_data
             })
 
-        # 6️⃣ Якщо все гаразд — додаємо працівника
+        # Фіксована категорія
+        category = "Робітники"
+
         EmployeeQueries.add(
             form_data["first_name"],
             form_data["last_name"],
@@ -81,7 +56,7 @@ def add_employee(request):
             form_data["start_date"],
             form_data["salary"],
             form_data["position_id"],
-            form_data["category"]
+            category
         )
 
         return redirect("employees:index")

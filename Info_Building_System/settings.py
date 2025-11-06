@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'reports',
     'brigades',
     'workplan',
+    'sites',
+
 ]
 
 MIDDLEWARE = [
