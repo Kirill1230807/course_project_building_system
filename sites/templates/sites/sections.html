@@ -1,0 +1,76 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block title %}Дільниці об’єкта {{ site.1 }}{% endblock %}
+
+{% block content %}
+<h1>Дільниці — {{ site.1 }}</h1>
+
+<p><strong>Адреса:</strong> {{ site.2 }}</p>
+<p><strong>Статус:</strong> {{ site.5 }}</p>
+<p><a href="{% url 'sites:index' %}">← Повернутися до списку об’єктів</a></p>
+
+<hr>
+
+<!-- Кнопка відкриття модального вікна -->
+<button id="openModalBtn">Додати дільницю</button>
+
+<!-- Модальне вікно -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span id="closeModalBtn" class="close">&times;</span>
+    <h2>Нова дільниця</h2>
+
+    <form method="post" action="{% url 'sites:add_section' site.0 %}">
+      {% csrf_token %}
+
+      <label>Назва дільниці:</label>
+      <input type="text" name="name" required><br>
+
+      <label>Начальник дільниці:</label>
+      <select name="chief_employee_id">
+        <option value="">— Оберіть начальника —</option>
+        {% for id, name in engineers %}
+        <option value="{{ id }}">{{ name }}</option>
+        {% endfor %}
+      </select><br>
+
+      {% if error_msg %}
+      <p class="error" style="color:red;">{{ error_msg }}</p>
+      {% endif %}
+
+      <button type="submit">Зберегти</button>
+    </form>
+  </div>
+</div>
+
+<hr>
+
+<!-- Таблиця з дільницями -->
+<h3>Список дільниць</h3>
+<table border="1" cellpadding="6">
+  <tr>
+    <th>ID</th>
+    <th>Назва</th>
+    <th>Начальник</th>
+    <th>Дії</th>
+  </tr>
+
+  {% for s in sections %}
+  <tr>
+    <td>{{ s.0 }}</td>
+    <td>{{ s.1 }}</td>
+    <td>{{ s.2|default:"—" }}</td>
+    <td>
+      <a href="{% url 'sites:edit_section' s.0 %}">✏️</a> |
+      <a href="{% url 'sites:delete_section' s.0 site.0 %}" onclick="return confirm('Видалити дільницю?')">❌</a>
+    </td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="4" align="center">Немає дільниць для цього об’єкта</td></tr>
+  {% endfor %}
+</table>
+
+<link rel="stylesheet" href="{% static 'sites/css/sites.css' %}">
+<script src="{% static 'sites/js/sites.js' %}"></script>
+{% endblock %}

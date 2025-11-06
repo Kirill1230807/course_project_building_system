@@ -19,9 +19,12 @@
         <nav class="nav-menu">
             <ul>
                 <li><a href="{% url 'home:home' %}">Головна</a></li>
+                <li><a href="{% url 'sites:index' %}">Будівельні об'єкти</a></li>
                 {# core #}
-                <li><a href="{% url 'managers:managers' %}">Керівники</a></li>
-                {# managers #}
+                <li><a href="{% url 'management:index' %}">Керівники</a></li>
+                {# management #}
+                <li><a href="{% url 'management:engineers' %}">Інженерно-технічний персонал</a></li>
+                {# management #}
                 <li><a href="{% url 'brigades:index' %}">Бригади</a></li>
                 {# brigades #}
                 <li><a href="{% url 'employees:index' %}">Працівники</a></li>

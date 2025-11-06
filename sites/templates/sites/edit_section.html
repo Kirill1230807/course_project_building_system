@@ -1,0 +1,34 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block title %}Редагування дільниці — {{ section.name }}{% endblock %}
+
+{% block content %}
+<h1>Редагування дільниці</h1>
+
+<form method="post" action="{% url 'sites:edit_section' section.id %}">
+    {% csrf_token %}
+    
+    <label>Назва дільниці:</label>
+    <input type="text" name="name" value="{{ section.name }}" required><br>
+
+    <label>Начальник дільниці:</label>
+    <select name="chief_employee_id">
+        <option value="">— Оберіть начальника —</option>
+        {% for id, name in engineers %}
+            <option value="{{ id }}" {% if section.chief_employee_id == id %}selected{% endif %}>
+                {{ name }}
+            </option>
+        {% endfor %}
+    </select><br>
+
+    {% if error_msg %}
+        <p class="error" style="color:red;">{{ error_msg }}</p>
+    {% endif %}
+
+    <button type="submit">💾 Зберегти зміни</button>
+    <a href="{% url 'sites:sections' section.site_id %}" class="btn-back">↩ Повернутися до списку</a>
+</form>
+
+<link rel="stylesheet" href="{% static 'sites/css/sites.css' %}">
+{% endblock %}

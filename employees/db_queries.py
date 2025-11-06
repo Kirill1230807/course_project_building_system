@@ -11,6 +11,7 @@ class EmployeeQueries:
                            SELECT e.id, e.first_name, e.last_name, e.salary, p.title AS position, e.category
                            FROM employees e
                                     JOIN positions p ON e.position_id = p.id
+                               WHERE e.category = 'Робітники'
                            ORDER BY e.last_name;
                            """)
             columns = [col[0] for col in cursor.description]

@@ -1,0 +1,107 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block title %}Об’єкти будівництва{% endblock %}
+
+{% block content %}
+<h1>Об’єкти будівництва</h1>
+
+<!-- Кнопка відкриття модального вікна -->
+<button id="openModalBtn">Додати об’єкт</button>
+
+<!-- Модальне вікно -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span id="closeModalBtn" class="close">&times;</span>
+    <h2>Новий об’єкт</h2>
+
+    <form id="siteForm" method="post" action="{% url 'sites:add' %}">
+      {% csrf_token %}
+
+      <label>Назва:</label>
+      <input type="text" name="name" required><br>
+
+      <label>Адреса:</label>
+      <input type="text" name="address" required><br>
+
+      <label>Дата початку:</label>
+      <input type="date" name="start_date" required><br>
+
+      <label>Дата завершення:</label>
+      <input type="date" name="end_date"><br>
+
+      <label>Управління:</label>
+      <select name="management_id">
+        <option value="">— Оберіть управління —</option>
+        {% for id, name in managements %}
+        <option value="{{ id }}">{{ name }}</option>
+        {% endfor %}
+      </select><br>
+
+      <label>Відповідальний інженер:</label>
+      <select name="responsible_engineer_id">
+        <option value="">— Оберіть інженера —</option>
+        {% for id, name in engineers %}
+        <option value="{{ id }}">{{ name }}</option>
+        {% endfor %}
+      </select><br>
+
+      <label>Статус:</label>
+      <select name="status">
+        <option value="Планується">Планується</option>
+        <option value="В процесі" selected>В процесі</option>
+        <option value="Завершено">Завершено</option>
+      </select><br>
+
+      <label>Примітки:</label>
+      <textarea name="notes" rows="3"></textarea><br>
+
+      {% if error_msg %}
+      <p class="error" style="color:red;">{{ error_msg }}</p>
+      {% endif %}
+
+      <button type="submit">Зберегти</button>
+    </form>
+  </div>
+</div>
+
+<hr>
+
+<!-- Таблиця з об’єктами -->
+<table border="1" cellpadding="6">
+  <tr>
+    <th>ID</th>
+    <th>Назва</th>
+    <th>Адреса</th>
+    <th>Дата початку</th>
+    <th>Дата завершення</th>
+    <th>Статус</th>
+    <th>Інженер</th>
+    <th>Управління</th>
+    <th>Примітки</th>
+    <th>Дії</th>
+  </tr>
+
+  {% for s in sites %}
+  <tr>
+    <td>{{ s.0 }}</td>
+    <td>{{ s.1 }}</td>
+    <td>{{ s.2 }}</td>
+    <td>{{ s.3 }}</td>
+    <td>{{ s.4|default:"—" }}</td>
+    <td>{{ s.5 }}</td>
+    <td>{{ s.8|default:"—" }}</td>
+    <td>{{ s.7|default:"—" }}</td>
+    <td>{{ s.6|default:"" }}</td>
+    <td>
+      <a href="{% url 'sites:edit' s.0 %}">✏️</a> |
+      <a href="{% url 'sites:sections' s.0 %}">📋 Дільниці</a> |
+      <a href="{% url 'sites:delete' s.0 %}" onclick="return confirm('Видалити об’єкт?')">❌</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+
+<link rel="stylesheet" href="{% static 'sites/css/sites.css' %}">
+<script src="{% static 'sites/js/sites.js' %}"></script>
+{% endblock %}

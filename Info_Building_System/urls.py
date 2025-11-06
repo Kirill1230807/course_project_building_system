@@ -24,12 +24,12 @@ urlpatterns = [
     path('accounts/', include('users.urls')),
     path('', RedirectView.as_view(pattern_name='login', permanent=False)),
     path('home/', include('core.urls')),
-    path('managers/', include('management.urls')),
+    path('management/', include('management.urls')),
     path('brigades/', include('brigades.urls')),
     path('employees/', include('employees.urls')),
     path('materials/', include('materials.urls')),
     path('reports', include('reports.urls')),
     path('workplan/', include('workplan.urls')),
-
+    path('sites/', include('sites.urls')),
 
 ]

@@ -1,0 +1,48 @@
+﻿/* Контейнер для всього контенту */
+.dashboard {
+  display: flex;
+  justify-content: center;    /* Горизонтальне вирівнювання */
+  align-items: center;        /* Вертикальне вирівнювання */
+  flex-wrap: wrap;
+  gap: 40px;
+  min-height: 80vh;           /* Щоб блок займав більшу частину сторінки */
+}
+
+/* Картки */
+.card {
+  background-color: #2b2b2b;
+  color: #fff;
+  padding: 25px 35px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  text-align: center;
+  width: 260px;
+  transition: 0.2s;
+}
+
+.card:hover {
+  background-color: #3a3a3a;
+  transform: translateY(-5px);
+}
+
+/* Стиль чисел */
+.card h2 {
+  font-size: 3em;
+  margin-bottom: 10px;
+  color: #00e676;
+}
+
+/* Підпис під числом */
+.card p {
+  font-size: 1.1em;
+  color: #ccc;
+}
+
+/* Заголовок сторінки */
+h1 {
+  text-align: center;
+  color: #fff;
+  margin-top: 30px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}

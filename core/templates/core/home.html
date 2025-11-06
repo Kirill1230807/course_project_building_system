@@ -1,10 +1,27 @@
 ﻿{% extends "core/layout.html" %}
+{% load static %}
 
-{% block title %}Головна сторінка{% endblock %}
+{% block title %}Головна{% endblock %}
 
 {% block content %}
-    <div class="features">
-        <h1>Головна сторінка</h1>
-    <p>Головна сторінка</p>
-    </div>
+<h1>Інформаційна панель</h1>
+
+<div class="dashboard">
+  <div class="card">
+    <h2>{{ total_sites }}</h2>
+    <p>Усього об’єктів</p>
+  </div>
+
+  <div class="card">
+    <h2>{{ total_employees }}</h2>
+    <p>Працівників у системі</p>
+  </div>
+
+  <div class="card">
+    <h2>{{ completed_sites }}</h2>
+    <p>Завершених об’єктів</p>
+  </div>
+</div>
+
+<link rel="stylesheet" href="{% static 'core/css/main_page.css' %}">
 {% endblock %}
