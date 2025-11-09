@@ -1,0 +1,39 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}Редагування техніки{% endblock %}
+{% block content %}
+<h1>Редагування техніки</h1>
+
+<form method="post" action="{% url 'equipment:edit' equipment.id %}">
+  {% csrf_token %}
+  <label>Назва:</label>
+  <input type="text" name="name" value="{{ equipment.name }}" required>
+
+  <label>Тип:</label>
+  <input type="text" name="type" value="{{ equipment.type }}" required>
+
+  <label>Статус:</label>
+  <select name="status" required>
+    <option value="В роботі" {% if equipment.status == "В роботі" %}selected{% endif %}>В роботі</option>
+    <option value="На ремонті" {% if equipment.status == "На ремонті" %}selected{% endif %}>На ремонті</option>
+    <option value="Вільна" {% if equipment.status == "Вільна" %}selected{% endif %}>Вільна</option>
+  </select>
+
+  <label>Об’єкт будівництва:</label>
+  <select name="assigned_site_id">
+    <option value="">— Оберіть об’єкт —</option>
+    {% for id, name in sites %}
+      <option value="{{ id }}" {% if id == equipment.assigned_site_id %}selected{% endif %}>{{ name }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Примітки:</label>
+  <textarea name="notes" rows="3">{{ equipment.notes }}</textarea>
+
+  <button type="submit">Зберегти зміни</button>
+</form>
+
+<a href="{% url 'equipment:index' %}">⬅ Назад</a>
+
+<link rel="stylesheet" href="{% static 'equipment/css/edit_equipment.css' %}">
+{% endblock %}

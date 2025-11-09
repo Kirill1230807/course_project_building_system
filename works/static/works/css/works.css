@@ -1,0 +1,149 @@
+﻿/* Основна сторінка */
+.page-container {
+    padding: 20px;
+    color: #f5f5f5;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Кнопка додавання */
+.add-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.add-btn:hover {
+    background-color: #218838;
+}
+
+/* Таблиця */
+.table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #2b2b2b;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.styled-table th {
+    background-color: #007bff;
+    color: white;
+    text-align: left;
+    padding: 12px;
+}
+
+.styled-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #3a3a3a;
+    color: white;
+}
+
+.styled-table tr:hover {
+    background-color: #3c3c3c;
+}
+
+.actions a {
+    margin-right: 10px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.edit-link {
+    color: #ffc107;
+}
+
+.delete-link {
+    color: #dc3545;
+}
+
+.no-data {
+    text-align: center;
+    padding: 15px;
+    color: #aaa;
+}
+
+/* Модальне вікно */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+    background-color: #2e2e2e;
+    margin: 10% auto;
+    padding: 25px;
+    border-radius: 12px;
+    width: 400px;
+    color: white;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.close {
+    float: right;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #ff4d4d;
+}
+
+/* Форма */
+.form-container label {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.form-container input, .form-container select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 6px;
+    background-color: #3a3a3a;
+    color: white;
+}
+
+.save-btn {
+    margin-top: 20px;
+    background-color: #007bff;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.save-btn:hover {
+    background-color: #0056b3;
+}

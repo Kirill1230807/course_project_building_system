@@ -1,7 +1,7 @@
 ﻿from django.db import connection
 
 
-class ConstructionSiteQueries:
+class SiteQueries:
     """Робота з таблицею construction_sites"""
 
     @staticmethod
@@ -78,57 +78,86 @@ class ConstructionSiteQueries:
 # === 2. Робота з таблицею ДІЛЬНИЦЬ ====================================
 # ======================================================================
 
-class SiteSectionQueries:
-    """Робота з таблицею site_sections"""
-
+class SectionQueries:
     @staticmethod
-    def get_all_for_site(site_id):
-        """Отримати всі дільниці для конкретного об’єкта"""
+    def get_all(site_id):
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT ss.id, ss.name,
-                       e.last_name || ' ' || e.first_name AS chief_name
-                FROM site_sections ss
-                LEFT JOIN employees e ON ss.chief_employee_id = e.id
-                WHERE ss.site_id = %s
-                ORDER BY ss.id;
+                SELECT s.id, s.name, e.last_name || ' ' || e.first_name AS chief,
+                       b.name AS brigade, s.start_date, s.end_date, s.notes
+                FROM sections s
+                LEFT JOIN employees e ON s.chief_id = e.id
+                LEFT JOIN brigades b ON s.brigade_id = b.id
+                WHERE s.site_id = %s
+                ORDER BY s.id;
             """, [site_id])
             return cursor.fetchall()
 
     @staticmethod
     def get_by_id(section_id):
-        """Отримати дільницю за ID"""
         with connection.cursor() as cursor:
             cursor.execute("""
-                SELECT ss.id, ss.name, ss.site_id,
-                       e.last_name || ' ' || e.first_name AS chief_name
-                FROM site_sections ss
-                LEFT JOIN employees e ON ss.chief_employee_id = e.id
-                WHERE ss.id = %s;
-            """, [section_id])
+                           SELECT id,
+                                  name,
+                                  site_id,
+                                  chief_id,
+                                  brigade_id,
+                                  start_date,
+                                  end_date,
+                                  notes
+                           FROM sections
+                           WHERE id = %s;
+                           """, [section_id])
             return cursor.fetchone()
 
-    @staticmethod
-    def add(name, site_id, chief_employee_id):
-        """Додати дільницю"""
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                INSERT INTO site_sections (name, site_id, chief_employee_id)
-                VALUES (%s, %s, %s);
-            """, [name, site_id, chief_employee_id or None])
 
     @staticmethod
-    def update(section_id, name, chief_employee_id):
-        """Оновити дільницю"""
+    def add(name, site_id, chief_id, brigade_id, start_date, end_date, notes):
         with connection.cursor() as cursor:
             cursor.execute("""
-                UPDATE site_sections
-                SET name = %s, chief_employee_id = %s
-                WHERE id = %s;
-            """, [name, chief_employee_id or None, section_id])
+                INSERT INTO sections (name, site_id, chief_id, brigade_id, start_date, end_date, notes)
+                VALUES (%s, %s, %s, %s, %s, %s, %s);
+            """, [name, site_id, chief_id or None, brigade_id or None, start_date, end_date or None, notes or None])
+
+    @staticmethod
+    def update(section_id, name, chief_id, brigade_id, start_date, end_date, notes):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                UPDATE sections
+                SET name = %s, chief_id = %s, brigade_id = %s,
+                    start_date = %s, end_date = %s, notes = %s
+                WHERE id=%s;
+            """, [name, chief_id or None, brigade_id or None, start_date, end_date or None, notes or None, section_id])
 
     @staticmethod
     def delete(section_id):
-        """Видалити дільницю"""
         with connection.cursor() as cursor:
-            cursor.execute("DELETE FROM site_sections WHERE id = %s;", [section_id])
+            cursor.execute("DELETE FROM sections WHERE id=%s;", [section_id])
+
+class SectionWorkQueries:
+    """Запити для таблиці section_works"""
+
+    @staticmethod
+    def get_by_section(section_id):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT sw.id, wt.name, wt.cost_per_unit, sw.volume, sw.total_cost
+                FROM section_works sw
+                JOIN work_types wt ON sw.work_type_id = wt.id
+                WHERE sw.section_id = %s
+                ORDER BY sw.id;
+            """, [section_id])
+            return cursor.fetchall()
+
+    @staticmethod
+    def add(section_id, work_type_id, volume):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO section_works (section_id, work_type_id, volume)
+                VALUES (%s, %s, %s);
+            """, [section_id, work_type_id, volume])
+
+    @staticmethod
+    def delete(work_id):
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM section_works WHERE id = %s;", [work_id])

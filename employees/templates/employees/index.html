@@ -74,8 +74,8 @@
     <td>{{ e.position }}</td>
     <td>{{ e.salary }}</td>
     <td>
-      <a href="{% url 'employees:delete' e.id %}" onclick="return confirm('Видалити працівника?')">Видалити</a>
-      <a href="{% url 'employees:detail' e.id %}">Детальніше</a>
+      <a href="{% url 'employees:delete' e.id %}" onclick="return confirmDelete('{{ e.first_name }} {{ e.last_name }}')">Видалити</a> |
+      <a href="{% url 'employees:detail' e.id %}">Детальніше</a> |
       <a href="{% url 'employees:edit' e.id %}">Редагувати</a>
     </td>
   </tr>

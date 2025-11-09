@@ -2,20 +2,51 @@
 {% load static %}
 {% block title %}Працівник: {{ employee.last_name }} {{ employee.first_name }} {% endblock %}
 {% block content %}
-<h1>Детальна інформація про працівника</h1>
+    <h1>Детальна інформація про працівника</h1>
 
-<table border="1" cellpadding="6">
-  <tr><th>ID</th><td>{{ employee.id }}</td></tr>
-  <tr><th>Прізвище</th><td>{{ employee.last_name }}</td></tr>
-  <tr><th>Ім’я</th><td>{{ employee.first_name }}</td></tr>
-  <tr><th>По-батькові</th><td>{{ employee.father_name|default:"—" }}</td></tr>
-  <tr><th>Дата народження</th><td>{{ employee.birthday }}</td></tr>
-  <tr><th>День прийняття на роботу</th><td>{{ employee.start_date }}</td></tr>
-  <tr><th>День звільнення</th><td>{{ employee.end_date|default:"—" }}</td></tr>
-  <tr><th>Посада</th><td>{{ employee.position }}</td></tr>
-  <tr><th>Категорія</th><td>{{ employee.category }}</td></tr>
-  <tr><th>Оклад</th><td>{{ employee.salary }} грн</td></tr>
-</table>
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>ID</th>
+            <td>{{ employee.id }}</td>
+        </tr>
+        <tr>
+            <th>Прізвище</th>
+            <td>{{ employee.last_name }}</td>
+        </tr>
+        <tr>
+            <th>Ім’я</th>
+            <td>{{ employee.first_name }}</td>
+        </tr>
+        <tr>
+            <th>По-батькові</th>
+            <td>{{ employee.father_name|default:"—" }}</td>
+        </tr>
+        <tr>
+            <th>Дата народження</th>
+            <td>{{ employee.birthday }}</td>
+        </tr>
+        <tr>
+            <th>День прийняття на роботу</th>
+            <td>{{ employee.start_date }}</td>
+        </tr>
+        <tr>
+            <th>День звільнення</th>
+            <td>{{ employee.end_date|default:"—" }}</td>
+        </tr>
+        <tr>
+            <th>Посада</th>
+            <td>{{ employee.position }}</td>
+        </tr>
+        <tr>
+            <th>Категорія</th>
+            <td>{{ employee.category }}</td>
+        </tr>
+        <tr>
+            <th>Оклад</th>
+            <td>{{ employee.salary }} грн</td>
+        </tr>
+    </table>
 
-<a href="{% url 'employees:index' %}">Назад до списку</a>
+    <link rel="stylesheet" href="{% static 'employees/css/detail.css' %}">
+    <a class="back" href="{% url 'employees:index' %}">Назад до списку</a>
 {% endblock %}

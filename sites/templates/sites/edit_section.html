@@ -1,34 +1,48 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
 
-{% block title %}Редагування дільниці — {{ section.name }}{% endblock %}
+{% block title %}Редагування об’єкта{% endblock %}
 
 {% block content %}
-<h1>Редагування дільниці</h1>
+    <h1>Редагування дільниці</h1>
 
-<form method="post" action="{% url 'sites:edit_section' section.id %}">
-    {% csrf_token %}
-    
-    <label>Назва дільниці:</label>
-    <input type="text" name="name" value="{{ section.name }}" required><br>
+    <form method="post" action="{% url 'sites:edit_section' section.id %}">
+        {% csrf_token %}
 
-    <label>Начальник дільниці:</label>
-    <select name="chief_employee_id">
-        <option value="">— Оберіть начальника —</option>
-        {% for id, name in engineers %}
-            <option value="{{ id }}" {% if section.chief_employee_id == id %}selected{% endif %}>
-                {{ name }}
-            </option>
-        {% endfor %}
-    </select><br>
+        <label>Назва дільниці:</label>
+        <input type="text" name="name" value="{{ section.name }}" required><br>
 
-    {% if error_msg %}
-        <p class="error" style="color:red;">{{ error_msg }}</p>
-    {% endif %}
+        <label>Начальник дільниці:</label>
+        <select name="chief_id">
+            <option value="">— Оберіть начальника —</option>
+            {% for id, name in chiefs %}
+                <option value="{{ id }}" {% if section.chief_id == id %}selected{% endif %}>
+                    {{ name }}
+                </option>
+            {% endfor %}
+        </select><br>
 
-    <button type="submit">💾 Зберегти зміни</button>
-    <a href="{% url 'sites:sections' section.site_id %}" class="btn-back">↩ Повернутися до списку</a>
-</form>
+        <label>Бригада:</label>
+        <select name="brigade_id">
+            <option value="">— Оберіть бригаду —</option>
+            {% for id, name in brigades %}
+                <option value="{{ id }}" {% if section.brigade_id == id %}selected{% endif %}>
+                    {{ name }}
+                </option>
+            {% endfor %}
+        </select><br>
 
-<link rel="stylesheet" href="{% static 'sites/css/sites.css' %}">
+        <label>Дата початку:</label>
+        <input type="date" name="start_date" value="{{ section.start_date }}"><br>
+
+        <label>Дата завершення:</label>
+        <input type="date" name="end_date" value="{{ section.end_date }}"><br>
+
+        <label>Примітки:</label>
+        <textarea name="notes">{{ section.notes }}</textarea><br>
+
+        <button type="submit">Зберегти зміни</button>
+        <a href="{% url 'sites:sections' section.site_id %}" class="btn-back">Назад</a>
+    </form>
+    <link rel="stylesheet" href="{% static 'sites/css/edit_section.css' %}">
 {% endblock %}

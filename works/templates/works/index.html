@@ -1,0 +1,75 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}Види робіт{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">Види робіт</h1>
+
+    <!-- Кнопка відкриття модального вікна -->
+    <button id="openModalBtn" class="add-btn">Додати вид робіт</button>
+
+    <!-- Модальне вікно -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="closeModalBtn" class="close">&times;</span>
+            <h2>Новий вид робіт</h2>
+
+            <form method="post" action="{% url 'works:add' %}" class="form-container">
+                {% csrf_token %}
+                <label>Назва:</label>
+                <input type="text" name="name" placeholder="Наприклад, Заливка фундаменту" required>
+
+                <label>Одиниця вимірювання:</label>
+                <select name="unit_id" required>
+                    <option value="">— Оберіть одиницю —</option>
+                    {% for u in units %}
+                        <option value="{{ u.0 }}">{{ u.1 }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>Вартість (грн):</label>
+                <input type="number" step="0.01" name="cost" placeholder="0.00" required>
+
+                <button type="submit" class="save-btn">Зберегти</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Назва</th>
+                    <th>Одиниця</th>
+                    <th>Вартість за одиницю (грн)</th>
+                    <th>Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for w in work_types %}
+                    <tr>
+                        <td>{{ w.0 }}</td>
+                        <td>{{ w.1 }}</td>
+                        <td>{{ w.2 }}</td>
+                        <td>{{ w.3 }}</td>
+                        <td class="actions">
+                            <a href="{% url 'works:edit' w.0 %}" class="edit-link">Редагувати</a>
+                            <a href="{% url 'works:delete' w.0 %}" class="delete-link"
+                               onclick="return confirm('Видалити цей вид робіт?')">Видалити</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="no-data">Немає записів</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<link rel="stylesheet" href="{% static 'works/css/works.css' %}">
+<script src="{% static 'works/js/works.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,56 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}Роботи дільниці{% endblock %}
+
+{% block content %}
+<h1>Роботи для дільниці</h1>
+
+<!-- Додавання нової роботи -->
+<form method="post" action="{% url 'sites:section_works' section_id %}">
+    {% csrf_token %}
+    <label>Вид робіт:</label>
+    <select name="work_type_id" required>
+        <option value="">— Оберіть вид робіт —</option>
+        {% for id, name, cost in work_types %}
+            <option value="{{ id }}">{{ name }} ({{ cost }} грн/од.)</option>
+        {% endfor %}
+    </select>
+
+    <label>Обсяг роботи:</label>
+    <input type="number" step="0.01" name="volume" placeholder="Вкажіть обсяг" required>
+
+    <button type="submit">Додати</button>
+</form>
+
+<hr>
+
+<!-- Таблиця робіт -->
+<table border="1" cellpadding="6">
+    <tr>
+        <th>ID</th>
+        <th>Вид роботи</th>
+        <th>Ціна за одиницю (грн)</th>
+        <th>Обсяг</th>
+        <th>Загальна вартість (грн)</th>
+        <th>Дії</th>
+    </tr>
+    {% for w in works %}
+        <tr>
+            <td>{{ w.0 }}</td>
+            <td>{{ w.1 }}</td>
+            <td>{{ w.2 }}</td>
+            <td>{{ w.3 }}</td>
+            <td>{{ w.4 }}</td>
+            <td><a href="{% url 'sites:delete_section_work' w.0 section_id %}">Видалити</a></td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="6">Роботи ще не додано</td></tr>
+    {% endfor %}
+</table>
+
+<hr>
+<h3>Загальна вартість робіт: {{ total_sum }} грн</h3>
+
+<a href="{% url 'sites:sections' section_id %}">Назад до дільниці</a>
+
+{% endblock %}

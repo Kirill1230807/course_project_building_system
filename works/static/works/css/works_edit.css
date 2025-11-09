@@ -1,0 +1,88 @@
+﻿.page-container {
+    padding: 20px;
+    color: #f5f5f5;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.page-title {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Форма */
+.form-container {
+    background-color: #2e2e2e;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+.form-container label {
+    display: block;
+    margin-top: 12px;
+    font-size: 15px;
+    color: #ddd;
+}
+
+.form-container input,
+.form-container select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border: none;
+    border-radius: 6px;
+    background-color: #3b3b3b;
+    color: white;
+    font-size: 15px;
+}
+
+.form-container input:focus,
+.form-container select:focus {
+    outline: 2px solid #007bff;
+}
+
+.error-msg {
+    color: #ff4d4d;
+    font-weight: 500;
+    margin-top: 12px;
+}
+
+/* Кнопки */
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+}
+
+.save-btn {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.save-btn:hover {
+    background-color: #0056b3;
+}
+
+.cancel-btn {
+    background-color: #6c757d;
+    color: white;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.cancel-btn:hover {
+    background-color: #5a6268;
+}

@@ -37,6 +37,25 @@ class ManagementQueries:
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM managements WHERE id = %s;", [mid])
 
+    @staticmethod
+    def get_by_id(mid):
+        """Отримати управління за ID"""
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT id, name, head_employee_id, notes
+                           FROM managements
+                           WHERE id = %s;
+                           """, [mid])
+            row = cursor.fetchone()
+        if not row:
+            return None
+        return {
+            "id": row[0],
+            "name": row[1],
+            "head_employee_id": row[2],
+            "notes": row[3]
+        }
+
 
 class EngineerQueries:
     @staticmethod
@@ -64,3 +83,49 @@ class EngineerQueries:
     def delete(eid):
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM employees WHERE id = %s;", [eid])
+
+    @staticmethod
+    def get_by_id(eid):
+        """Отримати інженера за ID"""
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT id,
+                                  first_name,
+                                  last_name,
+                                  father_name,
+                                  birthday,
+                                  start_date,
+                                  salary,
+                                  position_id
+                           FROM employees
+                           WHERE id = %s;
+                           """, [eid])
+            row = cursor.fetchone()
+        if not row:
+            return None
+        return {
+            "id": row[0],
+            "first_name": row[1],
+            "last_name": row[2],
+            "father_name": row[3],
+            "birthday": row[4],
+            "start_date": row[5],
+            "salary": row[6],
+            "position_id": row[7]
+        }
+
+    @staticmethod
+    def update(eid, first_name, last_name, father_name, birthday, start_date, salary, position_id):
+        """Оновити дані інженера"""
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           UPDATE employees
+                           SET first_name  = %s,
+                               last_name   = %s,
+                               father_name = %s,
+                               birthday    = %s,
+                               start_date  = %s,
+                               salary      = %s,
+                               position_id = %s
+                           WHERE id = %s;
+                           """, [first_name, last_name, father_name, birthday, start_date, salary, position_id, eid])

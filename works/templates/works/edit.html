@@ -1,0 +1,37 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}Редагування виду робіт{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1 class="page-title">Редагування виду робіт</h1>
+
+    <form method="post" action="{% url 'works:edit' work_type.0 %}" class="form-container">
+        {% csrf_token %}
+
+        <label>Назва:</label>
+        <input type="text" name="name" value="{{ work_type.1 }}" required>
+
+        <label>Одиниця вимірювання:</label>
+        <select name="unit" required>
+            {% for u in units %}
+                <option value="{{ u.0 }}" {% if u.1 == work_type.2 %}selected{% endif %}>{{ u.1 }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Вартість (грн):</label>
+        <input type="number" step="0.01" name="cost" value="{{ work_type.3 }}" required>
+
+        {% if error_msg %}
+        <p class="error-msg">{{ error_msg }}</p>
+        {% endif %}
+
+        <div class="form-buttons">
+            <button type="submit" class="save-btn">💾 Зберегти зміни</button>
+            <a href="{% url 'works:index' %}" class="cancel-btn">⬅ Назад</a>
+        </div>
+    </form>
+</div>
+
+<link rel="stylesheet" href="{% static 'works/css/works_edit.css' %}">
+{% endblock %}

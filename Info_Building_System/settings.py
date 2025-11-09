@@ -47,8 +47,9 @@ INSTALLED_APPS = [
     'materials',
     'reports',
     'brigades',
-    'workplan',
+    'works',
     'sites',
+    'equipment',
 
 ]
 

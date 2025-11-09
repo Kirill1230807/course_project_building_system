@@ -76,7 +76,7 @@
     <th>Дата початку</th>
     <th>Дата завершення</th>
     <th>Статус</th>
-    <th>Інженер</th>
+    <th>Головний інженер</th>
     <th>Управління</th>
     <th>Примітки</th>
     <th>Дії</th>
@@ -94,9 +94,9 @@
     <td>{{ s.7|default:"—" }}</td>
     <td>{{ s.6|default:"" }}</td>
     <td>
-      <a href="{% url 'sites:edit' s.0 %}">✏️</a> |
-      <a href="{% url 'sites:sections' s.0 %}">📋 Дільниці</a> |
-      <a href="{% url 'sites:delete' s.0 %}" onclick="return confirm('Видалити об’єкт?')">❌</a>
+      <a href="{% url 'sites:edit' s.0 %}">Редагувати</a> |
+      <a href="{% url 'sites:sections' s.0 %}">Дільниці</a> |
+      <a href="{% url 'sites:delete' s.0 %}" onclick="return confirm('Видалити об’єкт?')">Видалити</a>
     </td>
   </tr>
   {% endfor %}
