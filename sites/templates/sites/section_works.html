@@ -1,0 +1,78 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}Роботи дільниці{% endblock %}
+
+{% block content %}
+    <h1 class="page-title">Роботи дільниці "{{ section.name }}"</h1>
+
+    <!-- Кнопка відкриття модального вікна -->
+    <button id="openModalBtn" class="btn-primary">Додати роботу</button>
+
+    <!-- Модальне вікно -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="closeModalBtn" class="close">&times;</span>
+            <h2>Нова робота</h2>
+
+            <form method="post" action="{% url 'sites:section_works' section.id %}?site_id={{ site_id }}">
+                {% csrf_token %}
+                <label>Вид робіт:</label>
+                <select name="work_type_id" required>
+                    <option value="">— Оберіть вид робіт —</option>
+                    {% for id, name, cost in work_types %}
+                        <option value="{{ id }}">{{ name }} ({{ cost }} грн/од.)</option>
+                    {% endfor %}
+                </select>
+
+                <label>Обсяг роботи (одиниць):</label>
+                <input type="number" step="0.01" name="volume" placeholder="Вкажіть обсяг" required>
+
+                <button type="submit" class="btn-save">Зберегти</button>
+            </form>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Таблиця робіт -->
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Вид роботи</th>
+            <th>Ціна за одиницю (грн)</th>
+            <th>Обсяг</th>
+            <th>Загальна вартість (грн)</th>
+            <th>Дії</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for w in works %}
+            <tr>
+                <td>{{ w.0 }}</td>
+                <td>{{ w.1 }}</td>
+                <td>{{ w.2 }}</td>
+                <td>{{ w.3 }}</td>
+                <td>{{ w.4 }}</td>
+                <td>
+                    <a href="{% url 'sites:delete_section_work' section.id w.0 %}?site_id={{ site_id }}"
+                       class="btn-delete"
+                       onclick="return confirm('Видалити цю роботу?')">Видалити</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6" class="empty-row">Роботи ще не додано</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+    <h3 class="total-sum">Загальна вартість робіт: <span>{{ total_sum }}</span> грн</h3>
+
+    <a href="{% url 'sites:sections' site_id %}" class="btn-back">Назад до дільниць</a>
+
+    <link rel="stylesheet" href="{% static 'sites/css/works.css' %}">
+    <script src="{% static 'sites/js/works.js' %}"></script>
+{% endblock %}

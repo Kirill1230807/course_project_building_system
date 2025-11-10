@@ -1,10 +1,34 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+﻿{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}Редагування управління{% endblock %}
 
-</body>
-</html>
+{% block content %}
+<h1>Редагування управління</h1>
+
+<form method="post" action="{% url 'management:edit_management' management.id %}">
+  {% csrf_token %}
+
+  <label>Назва управління:</label>
+  <input type="text" name="name" value="{{ management.name }}" required><br>
+
+  <label>Керівник управління:</label>
+  <select name="head_employee_id">
+    <option value="">— Оберіть керівника —</option>
+    {% for id, name in engineers %}
+      <option value="{{ id }}" {% if id == management.head_employee_id %}selected{% endif %}>{{ name }}</option>
+    {% endfor %}
+  </select><br>
+
+  <label>Примітки:</label>
+  <textarea name="notes" rows="3">{{ management.notes }}</textarea><br>
+
+  {% if error_msg %}
+  <p style="color:red;">{{ error_msg }}</p>
+  {% endif %}
+
+  <button type="submit">Зберегти зміни</button>
+</form>
+
+<a href="{% url 'management:index' %}">Назад</a>
+<link rel="stylesheet" href="{% static 'management/css/edit_management.css' %}">
+{% endblock %}

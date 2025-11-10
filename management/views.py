@@ -23,6 +23,41 @@ def delete_management(request, management_id):
     ManagementQueries.delete(management_id)
     return redirect("management:index")
 
+def edit_management(request, management_id):
+    """Редагування будівельного управління"""
+    management = ManagementQueries.get_by_id(management_id)
+    if not management:
+        return HttpResponseNotFound("Управління не знайдено")
+
+    # Отримуємо список інженерів для вибору керівника
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT id, last_name || ' ' || first_name
+            FROM employees
+            WHERE category = 'Інженерно-технічний персонал';
+        """)
+        engineers = cursor.fetchall()
+
+    if request.method == "POST":
+        name = request.POST.get("name")
+        head_employee_id = request.POST.get("head_employee_id") or None
+        notes = request.POST.get("notes") or ""
+
+        if not name:
+            return render(request, "management/edit_management.html", {
+                "management": management,
+                "engineers": engineers,
+                "error_msg": "Назва управління є обов’язковою!"
+            })
+
+        ManagementQueries.update(management_id, name, head_employee_id, notes)
+        return redirect("management:index")
+
+    return render(request, "management/edit_management.html", {
+        "management": management,
+        "engineers": engineers
+    })
+
 def engineers(request):
     """Відображення списку інженерно-технічного персоналу"""
     engineers = EngineerQueries.get_all()
@@ -79,3 +114,43 @@ def delete_engineer(request, engineer_id):
     """Видалення інженера"""
     EngineerQueries.delete(engineer_id)
     return redirect("management:engineers")
+
+def edit_engineer(request, engineer_id):
+    """Редагування інженерно-технічного працівника"""
+    engineer = EngineerQueries.get_by_id(engineer_id)
+    if not engineer:
+        return HttpResponseNotFound("Інженера не знайдено")
+
+    # Отримуємо посади, які належать до ІТП
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT id, title
+            FROM positions
+            WHERE category = 'Інженерно-технічний персонал'
+            ORDER BY title;
+        """)
+        positions = cursor.fetchall()
+
+    if request.method == "POST":
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        father_name = request.POST.get("father_name") or None
+        birthday = request.POST.get("birthday")
+        start_date = request.POST.get("start_date")
+        salary = request.POST.get("salary")
+        position_id = request.POST.get("position_id")
+
+        if not (first_name and last_name and salary and position_id):
+            return render(request, "management/edit_engineer.html", {
+                "engineer": engineer,
+                "positions": positions,
+                "error_msg": "Не всі поля заповнені!"
+            })
+
+        EngineerQueries.update(engineer_id, first_name, last_name, father_name, birthday, start_date, salary, position_id)
+        return redirect("management:engineers")
+
+    return render(request, "management/edit_engineer.html", {
+        "engineer": engineer,
+        "positions": positions
+    })

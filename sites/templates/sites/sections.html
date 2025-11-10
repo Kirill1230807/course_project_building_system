@@ -1,76 +1,86 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
-
-{% block title %}Дільниці об’єкта {{ site.1 }}{% endblock %}
-
+{% block title %}Дільниці об'єкта{% endblock %}
 {% block content %}
-<h1>Дільниці — {{ site.1 }}</h1>
+    <h1>Дільниці об'єкта</h1>
 
-<p><strong>Адреса:</strong> {{ site.2 }}</p>
-<p><strong>Статус:</strong> {{ site.5 }}</p>
-<p><a href="{% url 'sites:index' %}">← Повернутися до списку об’єктів</a></p>
+    <button id="openModalBtn">Додати дільницю</button>
 
-<hr>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="closeModalBtn" class="close">&times;</span>
+            <h2>Нова дільниця</h2>
+            <form method="post" action="{% url 'sites:add_section' site_id %}">
+                {% csrf_token %}
+                <label>Назва дільниці:</label>
+                <input type="text" name="name" required>
 
-<!-- Кнопка відкриття модального вікна -->
-<button id="openModalBtn">Додати дільницю</button>
+                <label>Начальник дільниці:</label>
+                <select name="chief_id">
+                    <option value="">— Оберіть начальника —</option>
+                    {% for id, name in chiefs %}
+                        <option value="{{ id }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
 
-<!-- Модальне вікно -->
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <span id="closeModalBtn" class="close">&times;</span>
-    <h2>Нова дільниця</h2>
 
-    <form method="post" action="{% url 'sites:add_section' site.0 %}">
-      {% csrf_token %}
+                <label>Бригада:</label>
+                <select name="brigade_id">
+                    <option value="">— Оберіть бригаду —</option>
+                    {% for id, name in brigades %}
+                        <option value="{{ id }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
 
-      <label>Назва дільниці:</label>
-      <input type="text" name="name" required><br>
+                <label>Дата початку робіт:</label>
+                <input type="date" name="start_date" required>
 
-      <label>Начальник дільниці:</label>
-      <select name="chief_employee_id">
-        <option value="">— Оберіть начальника —</option>
-        {% for id, name in engineers %}
-        <option value="{{ id }}">{{ name }}</option>
+                <label>Дата завершення робіт:</label>
+                <input type="date" name="end_date">
+
+                <label>Примітки:</label>
+                <textarea name="notes" rows="3"></textarea>
+
+                <button type="submit">Зберегти</button>
+            </form>
+        </div>
+    </div>
+
+    <hr>
+
+    <table border="1" cellpadding="6">
+        <tr>
+            <th>ID</th>
+            <th>Назва</th>
+            <th>Начальник</th>
+            <th>Бригада</th>
+            <th>Дата початку</th>
+            <th>Дата завершення</th>
+            <th>Примітки</th>
+            <th>Дії</th>
+        </tr>
+        {% for s in sections %}
+            <tr>
+                <td>{{ s.0 }}</td>
+                <td>{{ s.1 }}</td>
+                <td>{{ s.2|default:"—" }}</td>
+                <td>{{ s.3|default:"—" }}</td>
+                <td>{{ s.4 }}</td>
+                <td>{{ s.5|default:"—" }}</td>
+                <td>{{ s.6|default:"—" }}</td>
+                <td>
+                    <a href="{% url 'sites:edit_section' s.0 %}?site_id={{ site_id }}">Редагувати</a> |
+                    <a href="{% url 'sites:section_works' s.0 %}?site_id={{ site_id }}">Роботи</a> |
+                    <a href="{% url 'sites:delete_section' s.0 %}?site_id={{ site_id }}"
+                       onclick="return confirm('Видалити дільницю?')">Видалити</a>
+                </td>
+
+            </tr>
         {% endfor %}
-      </select><br>
+    </table>
 
-      {% if error_msg %}
-      <p class="error" style="color:red;">{{ error_msg }}</p>
-      {% endif %}
+    <a href="{% url 'sites:index' %}" class="back-link">Назад до об'єктів</a>
 
-      <button type="submit">Зберегти</button>
-    </form>
-  </div>
-</div>
-
-<hr>
-
-<!-- Таблиця з дільницями -->
-<h3>Список дільниць</h3>
-<table border="1" cellpadding="6">
-  <tr>
-    <th>ID</th>
-    <th>Назва</th>
-    <th>Начальник</th>
-    <th>Дії</th>
-  </tr>
-
-  {% for s in sections %}
-  <tr>
-    <td>{{ s.0 }}</td>
-    <td>{{ s.1 }}</td>
-    <td>{{ s.2|default:"—" }}</td>
-    <td>
-      <a href="{% url 'sites:edit_section' s.0 %}">✏️</a> |
-      <a href="{% url 'sites:delete_section' s.0 site.0 %}" onclick="return confirm('Видалити дільницю?')">❌</a>
-    </td>
-  </tr>
-  {% empty %}
-  <tr><td colspan="4" align="center">Немає дільниць для цього об’єкта</td></tr>
-  {% endfor %}
-</table>
-
-<link rel="stylesheet" href="{% static 'sites/css/sites.css' %}">
-<script src="{% static 'sites/js/sites.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'sites/css/sites.css' %}">
+    <script src="{% static 'sites/js/sites.js' %}"></script>
 {% endblock %}

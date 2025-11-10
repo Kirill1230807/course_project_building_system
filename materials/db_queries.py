@@ -46,6 +46,43 @@ class MaterialQueries:
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM materials WHERE id = %s;", [material_id])
 
+    @staticmethod
+    def get_by_id(material_id):
+        """Отримати один матеріал за ID"""
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT id, name, description, supplier_id, price, count, unit_id
+                           FROM materials
+                           WHERE id = %s;
+                           """, [material_id])
+            row = cursor.fetchone()
+        if not row:
+            return None
+        return {
+            "id": row[0],
+            "name": row[1],
+            "description": row[2],
+            "supplier_id": row[3],
+            "price": row[4],
+            "count": row[5],
+            "unit_id": row[6],
+        }
+
+    @staticmethod
+    def update(material_id, name, description, supplier_id, price, count, unit_id):
+        """Оновити дані матеріалу"""
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           UPDATE materials
+                           SET name        = %s,
+                               description = %s,
+                               supplier_id = %s,
+                               price       = %s,
+                               count       = %s,
+                               unit_id     = %s
+                           WHERE id = %s;
+                           """, [name, description, supplier_id, price, count, unit_id, material_id])
+
 
 class SupplierQueries:
     """Прямі SQL-запити для таблиці suppliers"""
@@ -108,3 +145,9 @@ class SupplierQueries:
                                address      = %s
                            WHERE id = %s;
                            """, [name, contact_name, phone, email, address, supplier_id])
+
+    @staticmethod
+    def delete(supplier_id):
+        """Видалити постачальника"""
+        with connection.cursor() as cursor:
+            cursor.execute("DELETE FROM suppliers WHERE id = %s;", [supplier_id])

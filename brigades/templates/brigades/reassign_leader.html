@@ -1,0 +1,24 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block title %}Перепризначення бригадира{% endblock %}
+
+{% block content %}
+<h1>Перепризначення бригадира</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <label>Новий бригадир:</label>
+    <select name="new_leader_id" required>
+        <option value="">— Оберіть нового бригадира —</option>
+        {% for id, name in candidates %}
+            <option value="{{ id }}">{{ name }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Призначити</button>
+</form>
+
+<br>
+<a href="{% url 'brigades:view' brigade_id %}" class="btn-back">← Назад до бригади</a>
+{% endblock %}

@@ -21,7 +21,7 @@
                 <li><a href="{% url 'home:home' %}">Головна</a></li>
                 <li><a href="{% url 'sites:index' %}">Будівельні об'єкти</a></li>
                 {# core #}
-                <li><a href="{% url 'management:index' %}">Керівники</a></li>
+                <li><a href="{% url 'management:index' %}">Будівельні управління</a></li>
                 {# management #}
                 <li><a href="{% url 'management:engineers' %}">Інженерно-технічний персонал</a></li>
                 {# management #}
@@ -29,8 +29,10 @@
                 {# brigades #}
                 <li><a href="{% url 'employees:index' %}">Працівники</a></li>
                 {# employees #}
-                <li><a href="{% url 'workplan:workplan' %}">План робіт</a></li>
-                {# workplan #}
+                <li><a href="{% url 'equipment:index' %}">Техніка</a></li>
+                {# equipment #}
+                <li><a href="{% url 'works:index' %}">Види робіт</a></li>
+                {# works #}
                 <li><a href="{% url 'materials:index' %}">Матеріали</a></li>
                 {# materials #}
                 <li><a href="{% url 'reports:reports' %}">Звіти</a></li>
