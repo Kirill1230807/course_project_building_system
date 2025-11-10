@@ -33,10 +33,10 @@
         </select><br>
 
         <label>Дата початку:</label>
-        <input type="date" name="start_date" value="{{ section.start_date }}"><br>
+        <input type="date" name="start_date" value="{{ section.start_date|date:'Y-m-d' }}"><br>
 
         <label>Дата завершення:</label>
-        <input type="date" name="end_date" value="{{ section.end_date }}"><br>
+        <input type="date" name="end_date" value="{{ section.end_date|date:'Y-m-d' }}"><br>
 
         <label>Примітки:</label>
         <textarea name="notes">{{ section.notes }}</textarea><br>

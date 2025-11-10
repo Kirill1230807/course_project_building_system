@@ -13,7 +13,7 @@ def _urls():
 def _schema():
     """
     На кожен тест створюємо мінімально необхідні таблиці
-    (positions, employees) і після — дропаємо.
+    (positions, employees) і після - дропаємо.
     """
     with connection.cursor() as c:
         # дропаєм на випадок попередніх запусків
@@ -57,7 +57,7 @@ def _schema():
 
 @pytest.fixture
 def positions_ids():
-    """Повертає словник {назва: id} — щоб зручно підставляти у форми."""
+    """Повертає словник {назва: id} - щоб зручно підставляти у форми."""
     with connection.cursor() as c:
         c.execute("SELECT id, title FROM positions;")
         rows = c.fetchall()

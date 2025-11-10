@@ -51,3 +51,44 @@ class BrigadeQueries:
                            INSERT INTO brigade_members (brigade_id, employee_id, role)
                            VALUES (%s, %s, %s);
                            """, [brigade_id, employee_id, role])
+
+    @staticmethod
+    def get_available_workers():
+        """
+        Повертає працівників, які ще не входять у жодну бригаду:
+        - не є бригадиром (leader_id)
+        - не є членом жодної бригади (brigade_members)
+        """
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT e.id,
+                                  e.last_name || ' ' || e.first_name ||
+                                  COALESCE(' ' || e.father_name, '') AS full_name
+                           FROM employees e
+                           WHERE e.id NOT IN (SELECT leader_id
+                                              FROM brigades
+                                              WHERE leader_id IS NOT NULL
+                                              UNION
+                                              SELECT employee_id
+                                              FROM brigade_members)
+                           ORDER BY e.last_name, e.first_name;
+                           """)
+            return cursor.fetchall()
+
+    @staticmethod
+    def is_employee_free(employee_id):
+        """Перевіряє, чи працівник не входить до жодної бригади і не звільнений"""
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT COUNT(*)
+                           FROM employees e
+                           WHERE e.id = %s
+                             AND e.end_date IS NULL
+                             AND e.id NOT IN (SELECT leader_id
+                                              FROM brigades
+                                              WHERE leader_id IS NOT NULL
+                                              UNION
+                                              SELECT employee_id
+                                              FROM brigade_members);
+                           """, [employee_id])
+            return cursor.fetchone()[0] > 0

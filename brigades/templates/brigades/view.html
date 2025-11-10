@@ -7,6 +7,17 @@
     <h1>{{ brigade.1 }}</h1>
 
     <p><strong>Бригадир:</strong> {{ brigade.2|default:"—" }}</p>
+
+    {% if not brigade.2 %}
+        <a href="{% url 'brigades:reassign_leader' brigade.0 %}" class="btn btn-warning">
+            Призначити нового бригадира
+        </a>
+    {% else %}
+        <a href="{% url 'brigades:reassign_leader' brigade.0 %}" class="btn btn-secondary">
+            Змінити бригадира
+        </a>
+    {% endif %}
+
     <p><strong>Статус:</strong> {{ brigade.3 }}</p>
     <p><strong>Примітки:</strong> {{ brigade.4|default:"—" }}</p>
 
@@ -21,6 +32,8 @@
             {% for id, name in employees %}
                 <option value="{{ id }}">{{ name }}</option>
             {% endfor %}
+
+
         </select>
 
         <label>Роль:</label>

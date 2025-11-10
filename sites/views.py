@@ -265,8 +265,8 @@ def edit_section(request, section_id):
         "notes": row[7],
     }
 
-    if not section:
-        return HttpResponseNotFound("Дільницю не знайдено")
+    # Отримуємо site_id або з таблиці, або з параметра GET
+    site_id = request.GET.get("site_id") or section["site_id"]
 
     if request.method == "POST":
         name = request.POST.get("name")
@@ -277,20 +277,20 @@ def edit_section(request, section_id):
         notes = request.POST.get("notes")
 
         SectionQueries.update(section_id, name, chief_id, brigade_id, start_date, end_date, notes)
-        return redirect("sites:sections", site_id=section[2])
+        return redirect("sites:sections", site_id=site_id)
 
     with connection.cursor() as cursor:
         cursor.execute("""
-                       SELECT e.id, e.last_name || ' ' || e.first_name AS full_name
-                       FROM employees e
-                                JOIN positions p ON e.position_id = p.id
-                       WHERE e.category = 'Інженерно-технічний персонал'
-                         AND LOWER(p.title) LIKE '%начальник дільниці%'
-                       ORDER BY e.last_name, e.first_name;
-                       """)
+            SELECT e.id, e.last_name || ' ' || e.first_name AS full_name
+            FROM employees e
+                     JOIN positions p ON e.position_id = p.id
+            WHERE e.category = 'Інженерно-технічний персонал'
+              AND LOWER(p.title) LIKE '%начальник дільниці%'
+            ORDER BY e.last_name, e.first_name;
+        """)
         chiefs = cursor.fetchall()
 
-        cursor.execute("SELECT id, name FROM brigades;")
+        cursor.execute("SELECT id, name FROM brigades ORDER BY name;")
         brigades = cursor.fetchall()
 
     return render(request, "sites/edit_section.html", {
@@ -299,42 +299,98 @@ def edit_section(request, section_id):
         "brigades": brigades
     })
 
-
 def delete_section(request, section_id):
+    section = SectionQueries.get_by_id(section_id)
+    if not section:
+        return HttpResponseNotFound("Дільницю не знайдено")
+
+    site_id = request.GET.get("site_id") or section[2]
+
     SectionQueries.delete(section_id)
-    return redirect(request.META.get('HTTP_REFERER', 'sites:index'))
+    return redirect("sites:sections", site_id=site_id)
+
 
 # ========================== РОБОТА ==============================
 def section_works(request, section_id):
-    """Роботи для певної дільниці"""
+    """Відображення або додавання робіт до конкретної дільниці"""
+    # Отримуємо дані про дільницю
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT s.id, s.name, s.site_id
+            FROM sections s
+            WHERE s.id = %s;
+        """, [section_id])
+        section = cursor.fetchone()
+
+    if not section:
+        return HttpResponseNotFound("Дільницю не знайдено")
+
+    section_data = {
+        "id": section[0],
+        "name": section[1],
+        "site_id": section[2]
+    }
+
+    # Отримуємо site_id (із GET або з таблиці)
+    site_id = request.GET.get("site_id") or section_data["site_id"]
+
+    # Отримуємо список робіт на дільниці
     works = SectionWorkQueries.get_by_section(section_id)
 
-    # Отримуємо список доступних видів робіт
+    # Отримуємо типи робіт
     with connection.cursor() as cursor:
-        cursor.execute("SELECT id, name, cost_per_unit FROM work_types ORDER BY name;")
+        cursor.execute("""
+            SELECT id, name, cost_per_unit 
+            FROM work_types
+            ORDER BY name;
+        """)
         work_types = cursor.fetchall()
 
+    # Обчислення загальної суми робіт
+    total_sum = sum(w[4] for w in works) if works else 0
+
+    # Додавання нової роботи
     if request.method == "POST":
         work_type_id = request.POST.get("work_type_id")
         volume = request.POST.get("volume")
 
-        if not (work_type_id and volume):
-            return HttpResponseBadRequest("Заповніть усі поля!")
+        if not work_type_id or not volume:
+            return HttpResponseBadRequest("Усі поля є обов’язковими!")
 
-        SectionWorkQueries.add(section_id, work_type_id, volume)
-        return redirect("sites:section_works", section_id=section_id)
+        # Отримуємо ціну за одиницю
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT cost_per_unit FROM work_types WHERE id = %s;", [work_type_id])
+            cost_row = cursor.fetchone()
 
-    # Підрахунок загальної вартості робіт
-    total_sum = sum([float(w[4]) for w in works])
+        if not cost_row:
+            return HttpResponseBadRequest("Обраний вид роботи не знайдено!")
 
-    return render(request, "sites/section_work.html", {
+        cost_per_unit = cost_row[0]
+        total_cost = float(cost_per_unit) * float(volume)
+
+        # Додаємо запис у таблицю section_works
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO section_works (section_id, work_type_id, volume, total_cost)
+                VALUES (%s, %s, %s, %s);
+            """, [section_id, work_type_id, volume, total_cost])
+
+        # Повертаємось до тієї ж сторінки
+        return redirect(f"/sites/sections/{section_id}/works/?site_id={site_id}")
+
+    return render(request, "sites/section_works.html", {
+        "section": section_data,
         "works": works,
         "work_types": work_types,
-        "section_id": section_id,
+        "site_id": site_id,
         "total_sum": total_sum
     })
 
+def delete_section_work(request, section_id, work_id):
+    """Видалення роботи з плану дільниці"""
+    site_id = request.GET.get("site_id")
 
-def delete_section_work(request, work_id, section_id):
-    SectionWorkQueries.delete(work_id)
-    return redirect("sites:section_works", section_id=section_id)
+    with connection.cursor() as cursor:
+        cursor.execute("DELETE FROM section_works WHERE id = %s;", [work_id])
+
+    return redirect(f"/sites/sections/{section_id}/works/?site_id={site_id}")
