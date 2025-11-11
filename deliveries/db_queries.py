@@ -54,6 +54,15 @@ class DeliveryQueries:
                            SET count = count - %s
                            WHERE id = %s;
                            """, [quantity, material_id])
+            # 6️⃣ Оновити фактичне використання матеріалів у material_usage
+            cursor.execute("""
+                           INSERT INTO material_usage (section_id, material_id, used_qty)
+                           VALUES ((SELECT section_id FROM deliveries WHERE id = %s),
+                                   %s,
+                                   %s)
+                           ON CONFLICT (section_id, material_id)
+                               DO UPDATE SET used_qty = material_usage.used_qty + EXCLUDED.used_qty;
+                           """, [delivery_id, material_id, quantity])
 
     @staticmethod
     def update_total(delivery_id):
