@@ -17,7 +17,7 @@ class DeliveryQueries:
     def add_delivery_item(delivery_id, material_id, quantity):
         """Додати позицію до доставки, з перевіркою залишку і оновленням складу"""
         with connection.cursor() as cursor:
-            # 1️⃣ Отримати поточну кількість і ціну матеріалу
+            # Отримати поточну кількість і ціну матеріалу
             cursor.execute("""
                            SELECT count, price, supplier_id
                            FROM materials
@@ -30,17 +30,17 @@ class DeliveryQueries:
 
             stock, price, supplier_id = result
 
-            # 2️⃣ Перевірити наявність
+            # Перевірити наявність
             if quantity > stock:
                 raise ValueError(f"Недостатньо матеріалу на складі. Максимум можна замовити {stock} одиниць.")
 
-            # 3️⃣ Додати позицію доставки
+            # Додати позицію доставки
             cursor.execute("""
                            INSERT INTO delivery_items (delivery_id, material_id, quantity, price_per_unit)
                            VALUES (%s, %s, %s, %s);
                            """, [delivery_id, material_id, quantity, price])
 
-            # 4️⃣ Прив’язати постачальника (якщо ще не заповнений)
+            # Прив’язати постачальника (якщо ще не заповнений)
             cursor.execute("""
                            UPDATE deliveries
                            SET supplier_id = %s
@@ -48,13 +48,13 @@ class DeliveryQueries:
                              AND supplier_id IS NULL;
                            """, [supplier_id, delivery_id])
 
-            # 5️⃣ Зменшити кількість на складі
+            # Зменшити кількість на складі
             cursor.execute("""
                            UPDATE materials
                            SET count = count - %s
                            WHERE id = %s;
                            """, [quantity, material_id])
-            # 6️⃣ Оновити фактичне використання матеріалів у material_usage
+            # Оновити фактичне використання матеріалів у material_usage
             cursor.execute("""
                            INSERT INTO material_usage (section_id, material_id, used_qty)
                            VALUES ((SELECT section_id FROM deliveries WHERE id = %s),
