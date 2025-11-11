@@ -1,0 +1,106 @@
+﻿{% extends "core/layout.html" %}
+{% block content %}
+    <div class="container mt-4">
+        <h2>📦 Історія доставок матеріалів</h2>
+
+        <form method="get" class="row g-3 mt-3 mb-4">
+            <div class="col-md-3">
+                <label>Об’єкт:</label>
+                <select name="site_id" id="siteSelect" class="form-select">
+                    <option value="">Усі</option>
+                    {% for site in sites %}
+                        <option value="{{ site.0 }}"
+                                {% if site.0|stringformat:"s" == selected_site %}selected{% endif %}>
+                            {{ site.1 }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label>Дільниця:</label>
+                <select name="section_id" id="sectionSelect" class="form-select" disabled>
+                    <option value="">Усі</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label>З дати:</label>
+                <input type="date" name="start_date" class="form-control" value="{{ start_date|default:'' }}">
+            </div>
+
+            <div class="col-md-2">
+                <label>До дати:</label>
+                <input type="date" name="end_date" class="form-control" value="{{ end_date|default:'' }}">
+            </div>
+
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">🔍 Фільтрувати</button>
+            </div>
+        </form>
+
+        <table class="table table-striped table-dark table-bordered align-middle">
+            <thead class="table-success text-center">
+            <tr>
+                <th>ID</th>
+                <th>Об’єкт</th>
+                <th>Дільниця</th>
+                <th>Постачальник</th>
+                <th>Дата доставки</th>
+                <th>Сума</th>
+                <th>Примітка</th>
+                <th>Деталі</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if deliveries %}
+                {% for d in deliveries %}
+                    <tr>
+                        <td>{{ d.0 }}</td>
+                        <td>{{ d.1 }}</td>
+                        <td>{{ d.2 }}</td>
+                        <td>{{ d.4 }}</td>
+                        <td>{{ d.3|date:"Y-m-d" }}</td>
+                        <td>{{ d.5 }} ₴</td>
+                        <td>{{ d.6|default:"—" }}</td>
+                        <td>
+                            <a href="{% url 'deliveries:delivery_detail' d.0 %}" class="text-info fw-bold">
+                                Деталі доставки
+                            </a>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted">Немає записів</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('siteSelect').addEventListener('change', function () {
+            const siteId = this.value;
+            const sectionSelect = document.getElementById('sectionSelect');
+            sectionSelect.innerHTML = '<option>Завантаження...</option>';
+            sectionSelect.disabled = true;
+
+            if (siteId) {
+                fetch(`/deliveries/get-sections/${siteId}/`)
+                    .then(res => res.json())
+                    .then(data => {
+                        sectionSelect.innerHTML = '<option value="">Усі</option>';
+                        data.sections.forEach(s => {
+                            sectionSelect.innerHTML += `<option value="${s[0]}">${s[1]}</option>`;
+                        });
+                        sectionSelect.disabled = false;
+                    });
+            } else {
+                sectionSelect.innerHTML = '<option value="">Усі</option>';
+                sectionSelect.disabled = true;
+            }
+        });
+    </script>
+{% endblock %}

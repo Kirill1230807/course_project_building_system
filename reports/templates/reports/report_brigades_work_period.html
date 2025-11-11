@@ -1,0 +1,56 @@
+﻿{% extends "core/layout.html" %}
+{% block title %}Бригади за видом робіт{% endblock %}
+
+{% block content %}
+    <h2>Звіт: Бригади, що виконували певний вид робіт</h2>
+
+    <form method="get" style="margin-bottom: 20px;">
+        <label>Вид робіт:</label>
+        <select name="work_id">
+            <option value="">— Всі —</option>
+            {% for w in works %}
+                <option value="{{ w.0 }}"
+                        {% if request.GET.work_id == w.0|stringformat:"s" %}selected{% endif %}>{{ w.1 }}</option>
+            {% endfor %}
+        </select>
+
+        <label style="margin-left:10px;">З дати:</label>
+        <input type="date" name="start_date" value="{{ request.GET.start_date }}">
+
+        <label style="margin-left:10px;">До дати:</label>
+        <input type="date" name="end_date" value="{{ request.GET.end_date }}">
+
+        <button type="submit" style="margin-left:10px;">Фільтрувати</button>
+    </form>
+
+    <table border="1" cellpadding="6">
+        <thead>
+        <tr>
+            <th>Вид робіт</th>
+            <th>Бригада</th>
+            <th>Об’єкт</th>
+            <th>Дільниця</th>
+            <th>Початок</th>
+            <th>Завершення</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if results %}
+            {% for r in results %}
+                <tr>
+                    <td>{{ r.0 }}</td> <!-- work_name -->
+                    <td>{{ r.1 }}</td> <!-- brigade_name -->
+                    <td>{{ r.2 }}</td> <!-- site_name -->
+                    <td>{{ r.3 }}</td> <!-- section_name -->
+                    <td>{{ r.4 }}</td> <!-- section_start -->
+                    <td>{{ r.5 }}</td> <!-- section_end -->
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center">Дані відсутні</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+{% endblock %}

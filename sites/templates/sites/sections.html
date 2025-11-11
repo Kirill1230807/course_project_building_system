@@ -72,7 +72,9 @@
                     <a href="{% url 'sites:edit_section' s.0 %}?site_id={{ site_id }}">Редагувати</a> |
                     <a href="{% url 'sites:section_works' s.0 %}?site_id={{ site_id }}">Роботи</a> |
                     <a href="{% url 'sites:delete_section' s.0 %}?site_id={{ site_id }}"
-                       onclick="return confirm('Видалити дільницю?')">Видалити</a>
+                       onclick="return confirm('Видалити дільницю?')">Видалити</a> |
+                    <a href="{% url 'materials:add_material_plan' s.0 %}"
+                       class="btn btn-sm btn-outline-primary"> Сформувати кошторис</a>
                 </td>
 
             </tr>

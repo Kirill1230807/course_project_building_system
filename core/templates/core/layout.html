@@ -35,8 +35,11 @@
                 {# works #}
                 <li><a href="{% url 'materials:index' %}">Матеріали</a></li>
                 {# materials #}
-                <li><a href="{% url 'reports:reports' %}">Звіти</a></li>
+                <li><a href="{% url 'reports:reports_menu' %}">Звіти</a></li>
                 {# reports #}
+                <li><a href="{% url 'deliveries:add_delivery' %}">Доставки</a></li>
+                {# deliveries #}
+                <li><a href="{% url 'deliveries:deliveries_list' %}">Історія доставок</a></li>
                 <li><a href="{% url 'home:about' %}">Про курсову роботу</a></li>
             </ul>
         </nav>

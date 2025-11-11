@@ -1,6 +1,5 @@
 ﻿from django.db import connection
 
-
 class MaterialQueries:
     """Прямі SQL-запити для таблиці materials"""
 
@@ -151,3 +150,47 @@ class SupplierQueries:
         """Видалити постачальника"""
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM suppliers WHERE id = %s;", [supplier_id])
+
+class MaterialPlanQueries:
+    @staticmethod
+    def get_section_name(section_id: int):
+        """Отримати назву дільниці"""
+        with connection.cursor() as c:
+            c.execute("SELECT name FROM sections WHERE id = %s;", [section_id])
+            r = c.fetchone()
+            return r[0] if r else None
+
+    @staticmethod
+    def get_all_materials():
+        """Отримати список усіх матеріалів"""
+        with connection.cursor() as c:
+            c.execute("SELECT id, name FROM materials ORDER BY name;")
+            return c.fetchall()
+
+    @staticmethod
+    def get_existing_plan(section_id: int):
+        """Отримати існуючий кошторис для дільниці (щоб показати у формі)"""
+        query = """
+            SELECT m.id, m.name, COALESCE(p.planned_qty, 0)
+            FROM materials m
+            LEFT JOIN material_plan p
+                ON m.id = p.material_id AND p.section_id = %s
+            ORDER BY m.name;
+        """
+        with connection.cursor() as c:
+            c.execute(query, [section_id])
+            return c.fetchall()
+
+    @staticmethod
+    def save_plan(section_id: int, plan_data: list[tuple[int, float]]):
+        """Зберегти кошторис для дільниці"""
+        with connection.cursor() as c:
+            # видаляємо старий план
+            c.execute("DELETE FROM material_plan WHERE section_id = %s;", [section_id])
+
+            # додаємо нові значення
+            for material_id, qty in plan_data:
+                c.execute("""
+                    INSERT INTO material_plan (section_id, material_id, planned_qty)
+                    VALUES (%s, %s, %s);
+                """, [section_id, material_id, qty])

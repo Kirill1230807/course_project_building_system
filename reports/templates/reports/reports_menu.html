@@ -1,0 +1,53 @@
+﻿{% extends "core/layout.html" %}
+{% block content %}
+    <div class="container mt-4">
+
+        <h2 class="mb-4">Звіти будівельної організації</h2>
+
+        <h4>Кошторис і графік будівництва по об’єктах</h4>
+        <p>Оберіть об’єкт, щоб переглянути графік робіт і загальний кошторис:</p>
+
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Назва об’єкта</th>
+                <th>Адреса</th>
+                <th>Статус</th>
+                <th>Звіт</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for site in sites %}
+                <tr>
+                    <td>{{ site.0 }}</td>
+                    <td>{{ site.1 }}</td>
+                    <td>{{ site.2 }}</td>
+                    <td>{{ site.3 }}</td>
+                    <td>
+                        <a href="{% url 'reports:site_schedule' site.0 %}" class="btn btn-sm btn-outline-primary">
+                            Переглянути кошторис
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">Немає зареєстрованих об’єктів.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <hr class="my-5">
+
+        <h4>Інші звіти</h4>
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a href="{% url 'reports:report_brigades_by_work' %}">Бригади за видом робіт і періодом</a>
+            </li>
+            <li class="list-group-item">
+                <a href="{% url 'reports:report_materials_overbudget' %}">Матеріали з перевищенням кошторису</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
