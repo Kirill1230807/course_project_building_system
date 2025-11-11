@@ -96,7 +96,8 @@
     <td>
       <a href="{% url 'sites:edit' s.0 %}">Редагувати</a> |
       <a href="{% url 'sites:sections' s.0 %}">Дільниці</a> |
-      <a href="{% url 'sites:delete' s.0 %}" onclick="return confirm('Видалити об’єкт?')">Видалити</a>
+      <a href="{% url 'sites:delete' s.0 %}" onclick="return confirm('Видалити об’єкт?')">Видалити</a> |
+        <a href="{% url 'reports:site_schedule' s.0 %}">Кошторис</a>
     </td>
   </tr>
   {% endfor %}

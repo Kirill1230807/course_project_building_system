@@ -1,0 +1,77 @@
+﻿{% extends "core/layout.html" %}
+
+{% block title %}Звіти{% endblock %}
+
+{% block content %}
+    <h2>Графік і кошторис будівництва об’єкта: {{ site.name }}</h2>
+    <p><strong>Адреса:</strong> {{ site.address }}</p>
+    <p><strong>Період:</strong> {{ site.start_date }} — {{ site.end_date }}</p>
+    <p><strong>Статус:</strong> {{ site.status }}</p>
+
+    <table border="1" cellpadding="6">
+        <thead>
+        <tr>
+            <th>Дільниця</th>
+            <th>Початок</th>
+            <th>Завершення</th>
+            <th>Робота</th>
+            <th>Ціна за одиницю</th>
+            <th>Обсяг</th>
+            <th>Вартість</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in data %}
+            <tr>
+                <td>{{ row.section_name }}</td>
+                <td>{{ row.section_start }}</td>
+                <td>{{ row.section_end }}</td>
+                <td>{{ row.work_name }}</td>
+                <td>{{ row.cost_per_unit }}</td>
+                <td>{{ row.volume }}</td>
+                <td>{{ row.work_cost }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <h4>Сума витрат на матеріали: {{ cost_work }}</h4>
+
+    <hr>
+
+    <h3>Матеріали, доставлені на об’єкт</h3>
+
+    <table border="1" cellpadding="6">
+        <thead>
+        <tr>
+            <th>Матеріал</th>
+            <th>Одиниця</th>
+            <th>Кількість</th>
+            <th>Ціна за одиницю</th>
+            <th>Вартість</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if materials %}
+            {% for m in materials %}
+                <tr>
+                    <td>{{ m.0 }}</td>
+                    <td>{{ m.1 }}</td>
+                    <td>{{ m.2 }}</td>
+                    <td>{{ m.3 }}</td>
+                    <td>{{ m.4 }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="5" align="center">Матеріали не знайдено</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+    <h4>Сума витрат на матеріали: {{ materials_total }}</h4>
+
+    <hr>
+    <h3>Загальна сума кошторису (роботи + матеріали): {{ total_cost }}</h3>
+
+{% endblock %}

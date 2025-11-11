@@ -1,7 +1,8 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.db import connection, IntegrityError
-from .db_queries import MaterialQueries, SupplierQueries
+from .db_queries import MaterialQueries, SupplierQueries, MaterialPlanQueries
 
 
 def index(request):
@@ -133,3 +134,34 @@ def delete_supplier(request, supplier_id):
     except IntegrityError:
         return render(request, "materials/error_supplier_delete.html", {
             "message": "Неможливо видалити постачальника, бо він використовується у матеріалах."})
+
+def add_material_plan(request, section_id):
+    """Формування кошторису дільниці (введення планових матеріалів)"""
+    section_name = MaterialPlanQueries.get_section_name(section_id)
+    materials = MaterialPlanQueries.get_existing_plan(section_id)
+
+    if request.method == "POST":
+        material_ids = request.POST.getlist("material_id")
+        planned_qtys = request.POST.getlist("planned_qty")
+
+        plan_data = []
+        for mid, qty in zip(material_ids, planned_qtys):
+            try:
+                qty_val = float(qty)
+                if qty_val > 0:
+                    plan_data.append((int(mid), qty_val))
+            except ValueError:
+                continue  # пропускаємо некоректні поля
+
+        if not plan_data:
+            messages.warning(request, "Не вказано жодного матеріалу з кількістю.")
+        else:
+            MaterialPlanQueries.save_plan(section_id, plan_data)
+            messages.success(request, f"Кошторис для дільниці «{section_name}» збережено!")
+            return redirect("reports:report_materials_overbudget")
+
+    return render(request, "materials/add_material_plan.html", {
+        "section_id": section_id,
+        "section_name": section_name,
+        "materials": materials,
+    })

@@ -1,0 +1,36 @@
+﻿{% extends "core/layout.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Формування кошторису для дільниці: {{ section_name }}</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    <table class="table table-bordered mt-3">
+      <thead>
+        <tr>
+          <th>Матеріал</th>
+          <th>Планова кількість (од.)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in materials %}
+        <tr>
+          <td>
+            <input type="hidden" name="material_id" value="{{ m.0 }}">
+            {{ m.1 }}
+          </td>
+          <td>
+            <input type="number" name="planned_qty" step="0.01" min="0"
+                   class="form-control"
+                   value="{{ m.2|default_if_none:'' }}"
+                   placeholder="Введіть кількість">
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Зберегти кошторис</button>
+  </form>
+</div>
+{% endblock %}
