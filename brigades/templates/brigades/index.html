@@ -22,21 +22,14 @@
 
                 <label>Бригадир:</label>
                 <select name="leader_id">
-                    <option value="">— Оберіть бригадира —</option>
+                    <option value="">-- Оберіть бригадира --</option>
                     {% for id, name in workers %}
                         <option value="{{ id }}">{{ name }}</option>
                     {% endfor %}
                 </select><br>
 
-                <label>Статус:</label>
-                <select name="status" required>
-                    <option value="Активна">Активна</option>
-                    <option value="Неактивна">Неактивна</option>
-                </select>
-
                 <label>Примітки:</label>
                 <input type="text" name="notes" placeholder="Напр., Займається електрикою">
-
 
                 {% if error_msg %}
                     <p style="color:red;">{{ error_msg }}</p>
@@ -52,7 +45,7 @@
     <!-- Таблиця бригад -->
     <table border="1" cellpadding="6">
         <tr>
-            <th>ID</th>
+            <th>№</th>
             <th>Назва</th>
             <th>Бригадир</th>
             <th>Статус</th>
@@ -62,15 +55,16 @@
 
         {% for b in brigades %}
             <tr>
-                <td>{{ b.0 }}</td>
+                <td>{{ forloop.counter }}</td>
                 <td>{{ b.1 }}</td>
-                <td>{{ b.2|default:"—" }}</td>
+                <td>{{ b.2|default:"--" }}</td>
                 <td>{{ b.3 }}</td>
-                <td>{{ b.4|default:"—" }}</td>
+                <td>{{ b.4|default:"--" }}</td>
                 <td>
                     <a href="{% url 'brigades:delete' b.0 %}" onclick="return confirm('Видалити бригаду?')">Видалити</a>
                     |
-                    <a href="{% url 'brigades:view' b.0 %}">Детальніше</a>
+                    <a href="{% url 'brigades:view' b.0 %}">Склад бригади</a> |
+                    <a href="{% url 'brigades:edit' b.0%}">Редагувати</a>
                 </td>
             </tr>
         {% endfor %}

@@ -4,56 +4,63 @@
 {% block title %}Редагування об’єкта{% endblock %}
 
 {% block content %}
-<h1>Редагування об’єкта будівництва</h1>
+    <h1>Редагування об’єкта будівництва</h1>
 
-<form method="post" action="{% url 'sites:edit' site.id %}">
-  {% csrf_token %}
+    <form method="post" action="{% url 'sites:edit' site.id %}">
+        {% csrf_token %}
 
-  <label>Назва:</label>
-  <input type="text" name="name" value="{{ site.name }}" required><br>
+        <label>Назва:</label>
+        <input type="text" name="name" value="{{ site.name }}" required><br>
 
-  <label>Адреса:</label>
-  <input type="text" name="address" value="{{ site.address }}" required><br>
+        <label>Адреса:</label>
+        <input type="text" name="address" value="{{ site.address }}" required><br>
 
-  <label>Дата початку:</label>
-  <input type="date" name="start_date" value="{{ site.start_date|date:'Y-m-d' }}" required><br>
+        <label>Дата початку:</label>
+        <input type="date" name="start_date" value="{{ site.start_date|date:'Y-m-d' }}" required><br>
 
-  <label>Дата завершення:</label>
-  <input type="date" name="end_date" value="{{ site.end_date|default_if_none:''|date:'Y-m-d' }}"><br>
+        <label>Дата завершення:</label>
+        <input type="date" name="end_date" value="{{ site.end_date|default_if_none:''|date:'Y-m-d' }}"><br>
 
-  <label>Управління:</label>
-  <select name="management_id">
-    <option value="">— Оберіть управління —</option>
-    {% for id, name in managements %}
-    <option value="{{ id }}" {% if site.management_id == id %}selected{% endif %}>{{ name }}</option>
-    {% endfor %}
-  </select><br>
+        <label>Дедлайн:</label><br>
+        <input type="date" name="deadline" value="{{ site.deadline|date:'Y-m-d' }}"><br>
 
-  <label>Відповідальний інженер:</label>
-  <select name="responsible_engineer_id">
-    <option value="">— Оберіть інженера —</option>
-    {% for id, name in engineers %}
-    <option value="{{ id }}" {% if site.responsible_engineer_id == id %}selected{% endif %}>{{ name }}</option>
-    {% endfor %}
-  </select><br>
+        <label>Управління:</label>
+        <select name="management_id">
+            <option value="">— Оберіть управління —</option>
+            {% for id, name in managements %}
+                <option value="{{ id }}" {% if site.management_id == id %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+        </select><br>
 
-  <label>Статус:</label>
-  <select name="status" required>
-    <option value="Планується" {% if site.status == "Планується" %}selected{% endif %}>Планується</option>
-    <option value="В процесі" {% if site.status == "В процесі" %}selected{% endif %}>В процесі</option>
-    <option value="Завершено" {% if site.status == "Завершено" %}selected{% endif %}>Завершено</option>
-  </select><br>
+        <label>Відповідальний інженер:</label>
+        <select name="responsible_engineer_id">
+            <option value="">— Оберіть інженера —</option>
+            {% for id, name in engineers %}
+                <option value="{{ id }}"
+                        {% if site.responsible_engineer_id == id %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+        </select><br>
 
-  <label>Примітки:</label>
-  <textarea name="notes" rows="3">{{ site.notes|default_if_none:'' }}</textarea><br>
+        <label>Статус:</label>
+        <select name="status" required>
+            <option value="Планується" {% if site.status == "Планується" %}selected{% endif %}>Планується</option>
+            <option value="В процесі" {% if site.status == "В процесі" %}selected{% endif %}>В процесі</option>
+            <option value="Завершено" {% if site.status == "Завершено" %}selected{% endif %}>Завершено</option>
+            <option value="Завершено із запізненням"
+                    {% if site.status == 'Завершено із запізненням' %}selected{% endif %}>Завершено із запізненням
+            </option>
+        </select><br>
 
-  {% if error_msg %}
-  <p class="error" style="color:red;">{{ error_msg }}</p>
-  {% endif %}
+        <label>Примітки:</label>
+        <textarea name="notes" rows="3">{{ site.notes|default_if_none:'' }}</textarea><br>
 
-  <button type="submit">Зберегти зміни</button>
-  <a href="{% url 'sites:index' %}" class="btn-back">↩ Назад</a>
-</form>
+        {% if error_msg %}
+            <p class="error" style="color:red;">{{ error_msg }}</p>
+        {% endif %}
 
-<link rel="stylesheet" href="{% static 'sites/css/edit_site.css' %}">
+        <button type="submit">Зберегти зміни</button>
+        <a href="{% url 'sites:index' %}" class="btn-back">Скасувати</a>
+    </form>
+
+    <link rel="stylesheet" href="{% static 'sites/css/edit_site.css' %}">
 {% endblock %}

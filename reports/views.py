@@ -1,6 +1,8 @@
+from django.contrib import messages
 from django.shortcuts import render
 from .db_queries import ReportQueries
 from django.db import connection
+from equipment.db_queries import EquipmentQueries
 
 
 def reports_menu(request):
@@ -51,13 +53,15 @@ def report_brigades_by_work(request):
         work_id = request.GET.get("work_id")
         start_date = request.GET.get("start_date")
         end_date = request.GET.get("end_date")
-        results = ReportQueries.get_brigades_by_work_and_period(work_id, start_date, end_date)
+        if start_date and end_date and start_date > end_date:
+            messages.warning(request, "Дата початку не може бути пізніше дати завершення.")
+        else:
+            results = ReportQueries.get_brigades_by_work_and_period(work_id, start_date, end_date)
 
     return render(request, "reports/report_brigades_work_period.html", {
         "works": works,
         "results": results
     })
-
 
 def report_materials_overbudget(request):
     """Звіт: перевищення фактичного використання матеріалів над планом."""
@@ -77,4 +81,67 @@ def report_materials_overbudget(request):
         "sections": sections,
         "data": data,
         "selected_section": selected_section,
+    })
+
+def report_sites_sections_managers(request):
+    """Звіт: Перелік об'єктів, дільниць і керівників"""
+    data = ReportQueries.get_sites_sections_managers()
+    return render(request, "reports/report_sites_sections_managers.html", {"data": data})
+
+def report_equipment_by_site(request):
+    """Звіт: перелік техніки за об’єктами"""
+    EquipmentQueries.update_status_based_on_site()
+    # Отримуємо список об’єктів для фільтра
+    with connection.cursor() as c:
+        c.execute("SELECT id, name FROM construction_sites ORDER BY name;")
+        sites = c.fetchall()
+
+    site_id = request.GET.get("site_id")
+    data = ReportQueries.get_equipment_by_site(site_id)
+
+    return render(request, "reports/report_equipment_site.html", {
+        "sites": sites,
+        "data": data,
+        "selected_site": site_id,
+    })
+
+def report_works_by_brigade(request):
+    """Звіт: Види робіт, виконані зазначеною бригадою у період"""
+    with connection.cursor() as c:
+        c.execute("SELECT id, name FROM brigades ORDER BY name;")
+        brigades = c.fetchall()
+
+    results = []
+    if request.method == "GET" and ("brigade_id" in request.GET or "start_date" in request.GET):
+        brigade_id = request.GET.get("brigade_id")
+        start_date = request.GET.get("start_date")
+        end_date = request.GET.get("end_date")
+
+        # перевірка коректності дат
+        if start_date and end_date and start_date > end_date:
+            messages.warning(request, "Дата початку не може бути пізніше дати завершення.")
+        else:
+            results = ReportQueries.get_works_by_brigade_and_period(brigade_id, start_date, end_date)
+
+    return render(request, "reports/report_works_by_brigade.html", {
+        "brigades": brigades,
+        "results": results,
+        "request": request,
+    })
+
+def report_sites_by_management(request):
+    """Звіт: Об’єкти, що зводяться певним управлінням або дільницею"""
+    with connection.cursor() as c:
+        c.execute("SELECT id, name FROM managements ORDER BY name;")
+        managements = c.fetchall()
+
+    results = []
+    if "management_id" in request.GET:
+        management_id = request.GET.get("management_id")
+        results = ReportQueries.get_sites_by_management_or_section(management_id)
+
+    return render(request, "reports/report_sites_by_management.html", {
+        "managements": managements,
+        "results": results,
+        "request": request
     })

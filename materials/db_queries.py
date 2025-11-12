@@ -1,5 +1,6 @@
 ﻿from django.db import connection
 
+
 class MaterialQueries:
     """Прямі SQL-запити для таблиці materials"""
 
@@ -151,6 +152,7 @@ class SupplierQueries:
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM suppliers WHERE id = %s;", [supplier_id])
 
+
 class MaterialPlanQueries:
     @staticmethod
     def get_section_name(section_id: int):
@@ -171,12 +173,12 @@ class MaterialPlanQueries:
     def get_existing_plan(section_id: int):
         """Отримати існуючий кошторис для дільниці (щоб показати у формі)"""
         query = """
-            SELECT m.id, m.name, COALESCE(p.planned_qty, 0)
-            FROM materials m
-            LEFT JOIN material_plan p
-                ON m.id = p.material_id AND p.section_id = %s
-            ORDER BY m.name;
-        """
+                SELECT m.id, m.name, COALESCE(p.planned_qty, 0)
+                FROM materials m
+                         LEFT JOIN material_plan p
+                                   ON m.id = p.material_id AND p.section_id = %s
+                ORDER BY m.name; \
+                """
         with connection.cursor() as c:
             c.execute(query, [section_id])
             return c.fetchall()
@@ -191,6 +193,14 @@ class MaterialPlanQueries:
             # додаємо нові значення
             for material_id, qty in plan_data:
                 c.execute("""
-                    INSERT INTO material_plan (section_id, material_id, planned_qty)
-                    VALUES (%s, %s, %s);
-                """, [section_id, material_id, qty])
+                          INSERT INTO material_plan (section_id, material_id, planned_qty)
+                          VALUES (%s, %s, %s);
+                          """, [section_id, material_id, qty])
+
+    @staticmethod
+    def get_site_id_by_section(section_id: int):
+        """Повертає ID об’єкта, до якого належить дільниця"""
+        with connection.cursor() as c:
+            c.execute("SELECT site_id FROM sections WHERE id = %s;", [section_id])
+            row = c.fetchone()
+        return row[0] if row else None

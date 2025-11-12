@@ -50,7 +50,7 @@
 
     <table border="1" cellpadding="6">
         <tr>
-            <th>ID</th>
+            <th>№</th>
             <th>Назва</th>
             <th>Начальник</th>
             <th>Бригада</th>
@@ -61,7 +61,7 @@
         </tr>
         {% for s in sections %}
             <tr>
-                <td>{{ s.0 }}</td>
+                <td>{{ forloop.counter }}</td>
                 <td>{{ s.1 }}</td>
                 <td>{{ s.2|default:"—" }}</td>
                 <td>{{ s.3|default:"—" }}</td>
@@ -76,7 +76,6 @@
                     <a href="{% url 'materials:add_material_plan' s.0 %}"
                        class="btn btn-sm btn-outline-primary"> Сформувати кошторис</a>
                 </td>
-
             </tr>
         {% endfor %}
     </table>

@@ -2,8 +2,8 @@
 
 
 class BrigadeQueries:
-    """Запити до таблиці бригад"""
 
+    """Запити до таблиці бригад"""
     @staticmethod
     def get_all():
         with connection.cursor() as cursor:
@@ -14,6 +14,31 @@ class BrigadeQueries:
                            ORDER BY b.name;
                            """)
             return cursor.fetchall()
+
+    @staticmethod
+    def get_by_id(brigade_id):
+        """Отримати бригаду за ID"""
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT id, name, notes
+                           FROM brigades
+                           WHERE id = %s;
+                           """, [brigade_id])
+            row = cursor.fetchone()
+        if not row:
+            return None
+        return {"id": row[0], "name": row[1], "notes": row[2]}
+
+    @staticmethod
+    def update(brigade_id, name, notes):
+        """Оновити назву і примітки"""
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           UPDATE brigades
+                           SET name  = %s,
+                               notes = %s
+                           WHERE id = %s;
+                           """, [name, notes, brigade_id])
 
     @staticmethod
     def add(name, leader_id, status, notes):
@@ -55,17 +80,20 @@ class BrigadeQueries:
     @staticmethod
     def get_available_workers():
         """
-        Повертає працівників, які ще не входять у жодну бригаду:
+        Повертає працівників категорії 'Робітники', які ще не входять у жодну бригаду:
         - не є бригадиром (leader_id)
         - не є членом жодної бригади (brigade_members)
+        Додає до ПІБ посаду (наприклад: Іванов Іван — Маляр)
         """
         with connection.cursor() as cursor:
             cursor.execute("""
                            SELECT e.id,
                                   e.last_name || ' ' || e.first_name ||
-                                  COALESCE(' ' || e.father_name, '') AS full_name
+                                  COALESCE(' ' || e.father_name, '') || ' -- ' || p.title AS full_name
                            FROM employees e
-                           WHERE e.id NOT IN (SELECT leader_id
+                                    JOIN positions p ON e.position_id = p.id
+                           WHERE e.category = 'Робітники'
+                             AND e.id NOT IN (SELECT leader_id
                                               FROM brigades
                                               WHERE leader_id IS NOT NULL
                                               UNION
@@ -92,3 +120,50 @@ class BrigadeQueries:
                                               FROM brigade_members);
                            """, [employee_id])
             return cursor.fetchone()[0] > 0
+
+    @staticmethod
+    def is_available(brigade_id: int, for_section_id: int | None = None) -> bool:
+        """
+        True, якщо бригада не зайнята на іншій активній дільниці.
+        Дозволяємо ту саму дільницю під час редагування.
+        """
+        with connection.cursor() as c:
+            if for_section_id:
+                c.execute("""
+                          SELECT 1
+                          FROM sections
+                          WHERE brigade_id = %s
+                            AND end_date IS NULL
+                            AND id <> %s
+                          LIMIT 1;
+                          """, [brigade_id, for_section_id])
+            else:
+                c.execute("""
+                          SELECT 1
+                          FROM sections
+                          WHERE brigade_id = %s
+                            AND end_date IS NULL
+                          LIMIT 1;
+                          """, [brigade_id])
+            return c.fetchone() is None
+
+    @staticmethod
+    def list_inactive_or_current(section_id: int | None = None):
+        """
+        Список бригад для селекта:
+        - усі 'Неактивна'
+        - + поточна бригада дільниці (щоб не зникала під час редагування)
+        """
+        params = []
+        base = """
+               SELECT b.id, b.name
+               FROM brigades b
+               WHERE b.status = 'Неактивна' \
+               """
+        if section_id:
+            base += " OR b.id = (SELECT brigade_id FROM sections WHERE id = %s)"
+            params.append(section_id)
+        base += " ORDER BY b.name;"
+        with connection.cursor() as c:
+            c.execute(base, params)
+            return c.fetchall()

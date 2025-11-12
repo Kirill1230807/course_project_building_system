@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.db import connection, IntegrityError
 from .db_queries import MaterialQueries, SupplierQueries, MaterialPlanQueries
+from sites.db_queries import SectionQueries
 
 
 def index(request):
@@ -151,14 +152,19 @@ def add_material_plan(request, section_id):
                 if qty_val > 0:
                     plan_data.append((int(mid), qty_val))
             except ValueError:
-                continue  # пропускаємо некоректні поля
+                pass
 
         if not plan_data:
             messages.warning(request, "Не вказано жодного матеріалу з кількістю.")
         else:
             MaterialPlanQueries.save_plan(section_id, plan_data)
             messages.success(request, f"Кошторис для дільниці «{section_name}» збережено!")
-            return redirect("reports:report_materials_overbudget")
+
+            # Отримуємо site_id для цієї дільниці
+            site_id = MaterialPlanQueries.get_site_id_by_section(section_id)
+
+            # Повертаємо користувача до списку дільниць конкретного об’єкта
+            return redirect("sites:sections", site_id=site_id)
 
     return render(request, "materials/add_material_plan.html", {
         "section_id": section_id,

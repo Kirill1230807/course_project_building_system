@@ -27,29 +27,32 @@ def index(request):
     })
 
 def add_brigade(request):
-    """Створення нової бригади"""
+    """Створення нової бригади (статус визначається автоматично)"""
+    leaders = BrigadeQueries.get_available_workers_for_leader()
 
     if request.method == "POST":
         name = request.POST.get("name")
         leader_id = request.POST.get("leader_id")
-        status = request.POST.get("status") or "Активна"
         notes = request.POST.get("notes") or None
 
-        # Перевіряємо, що всі обов'язкові поля заповнені
+        if not BrigadeQueries.get_available_workers_for_leader():
+            return HttpResponseBadRequest("Оберіть бригадира!")
+
+        # Перевірка заповнення обов’язкових полів
         if not name or not leader_id:
             return HttpResponseBadRequest("Вкажіть назву бригади та бригадира!")
 
-        # Перевіряємо, чи працівник вільний
+        # Перевірка, чи працівник уже не є бригадиром або членом іншої бригади
         if not BrigadeQueries.is_employee_free(leader_id):
             return HttpResponseBadRequest("Цей працівник уже входить до іншої бригади!")
 
-        # Додаємо нову бригаду та одразу отримуємо її ID
+        # Додаємо нову бригаду (статус за замовчуванням 'Неактивна')
         with connection.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO brigades (name, leader_id, status, notes)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO brigades (name, leader_id, notes)
+                VALUES (%s, %s, %s)
                 RETURNING id;
-            """, [name, leader_id, status, notes])
+            """, [name, leader_id, notes])
             brigade_id = cursor.fetchone()[0]
 
         # Автоматично додаємо бригадира у склад бригади
@@ -64,9 +67,25 @@ def add_brigade(request):
     # fallback, якщо GET-запит
     return redirect("brigades:index")
 
-    # fallback, якщо GET-запит
-    return redirect("brigades:index")
+def edit_brigade(request, brigade_id):
+    brigade = BrigadeQueries.get_by_id(brigade_id)
+    if not brigade:
+        return render(request, "brigades/error.html", {"message": "Бригаду не знайдено."})
 
+    if request.method == "POST":
+        name = request.POST.get("name")
+        notes = request.POST.get("notes")
+
+        if not name.strip():
+            return render(request, "brigades/edit.html", {
+                "brigade": brigade,
+                "error_msg": "Назва не може бути порожньою."
+            })
+
+        BrigadeQueries.update(brigade_id, name, notes)
+        return redirect("brigades:index")  # після редагування — повертаємось до списку
+
+    return render(request, "brigades/edit.html", {"brigade": brigade})
 
 def delete_brigade(request, brigade_id):
     BrigadeQueries.delete(brigade_id)

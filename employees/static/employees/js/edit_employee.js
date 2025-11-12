@@ -17,9 +17,8 @@
   filterPositions(categorySelect.value);
   categorySelect.addEventListener("change", () => filterPositions(categorySelect.value));
 
-  // ✅ ЛИШЕ ЗАПИС — БЕЗ ЧИТАННЯ тут!
   const form = document.querySelector("form");
   form.addEventListener("submit", () => {
-    localStorage.setItem("employeeUpdated", "✅ Дані працівника оновлено успішно!");
+    localStorage.setItem("employeeUpdated", "Дані працівника оновлено успішно!");
   });
 });

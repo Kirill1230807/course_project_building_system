@@ -58,7 +58,7 @@
 <!-- Таблиця працівників -->
 <table border="1" cellpadding="6">
   <tr>
-    <th>ID</th>
+    <th>№</th>
     <th>Прізвище</th>
     <th>Ім’я</th>
     <th>Посада</th>
@@ -68,7 +68,7 @@
 
   {% for e in employees %}
   <tr>
-    <td>{{ e.id }}</td>
+    <td>{{ forloop.counter }}</td>
     <td>{{ e.last_name }}</td>
     <td>{{ e.first_name }}</td>
     <td>{{ e.position }}</td>

@@ -129,3 +129,129 @@ class ReportQueries:
         with connection.cursor() as cursor:
             cursor.execute(query, [site_id])
             return cursor.fetchall()
+
+    @staticmethod
+    def get_sites_sections_managers():
+        """
+        Отримати перелік будівельних об'єктів, дільниць і керівників дільниць
+        (з відображенням посади без телефону)
+        """
+        query = """
+                SELECT cs.name                                                                   AS site_name, \
+                       s.name                                                                    AS section_name, \
+                       COALESCE(e.last_name || ' ' || e.first_name || ' ' || e.father_name, '—') AS manager_name, \
+                       COALESCE(p.title, '—')                                                    AS position_name
+                FROM sections s
+                         JOIN construction_sites cs ON s.site_id = cs.id
+                         LEFT JOIN employees e ON s.chief_id = e.id
+                         LEFT JOIN positions p ON e.position_id = p.id
+                ORDER BY cs.name, s.name; \
+                """
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            cols = [col[0] for col in cursor.description]
+            return [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    @staticmethod
+    def get_equipment_by_site(site_id=None):
+        """
+        Отримати перелік будівельної техніки, закріпленої за об’єктами.
+        Якщо задано site_id — фільтруємо по ньому.
+        """
+        query = """
+                SELECT cs.name                AS site_name, \
+                       e.name                 AS equipment_name, \
+                       e.type                 AS equipment_type, \
+                       e.status               AS equipment_status, \
+                       COALESCE(e.notes, '--') AS equipment_notes
+                FROM equipment e
+                         LEFT JOIN construction_sites cs ON e.assigned_site_id = cs.id
+                WHERE 1 = 1 \
+                """
+        params = []
+
+        if site_id:
+            query += " AND cs.id = %s"
+            params.append(site_id)
+
+        query += " ORDER BY cs.name, e.name;"
+
+        with connection.cursor() as c:
+            c.execute(query, params)
+            cols = [col[0] for col in c.description]
+            return [dict(zip(cols, row)) for row in c.fetchall()]
+
+    @staticmethod
+    def get_works_by_brigade_and_period(brigade_id=None, start_date=None, end_date=None):
+        """
+        Отримати перелік видів робіт, виконаних зазначеною бригадою у вказаний період
+        з вказанням об'єкта і дільниці.
+        """
+        query = """
+                SELECT b.name  AS brigade_name, \
+                       wt.name AS work_name, \
+                       cs.name AS site_name, \
+                       s.name  AS section_name, \
+                       s.start_date, \
+                       s.end_date
+                FROM section_works sw
+                         JOIN work_types wt ON sw.work_type_id = wt.id
+                         JOIN sections s ON sw.section_id = s.id
+                         JOIN brigades b ON s.brigade_id = b.id
+                         JOIN construction_sites cs ON s.site_id = cs.id
+                WHERE 1 = 1 \
+                """
+        params = []
+
+        if brigade_id:
+            query += " AND b.id = %s"
+            params.append(brigade_id)
+
+        # Фільтр по датах (перетин інтервалів)
+        if start_date and end_date:
+            query += " AND s.start_date <= %s AND (s.end_date IS NULL OR s.end_date >= %s)"
+            params.extend([end_date, start_date])
+        elif start_date:
+            query += " AND (s.end_date IS NULL OR s.end_date >= %s)"
+            params.append(start_date)
+        elif end_date:
+            query += " AND s.start_date <= %s"
+            params.append(end_date)
+
+        query += " ORDER BY s.start_date NULLS LAST, site_name, section_name;"
+
+        with connection.cursor() as c:
+            c.execute(query, params)
+            return c.fetchall()
+
+    @staticmethod
+    def get_sites_by_management_or_section(management_id=None):
+        """
+        Отримати перелік об’єктів і дільниць, які зводяться зазначеним управлінням
+        (і графіки зведення: дати початку / завершення).
+        """
+        query = """
+                SELECT m.name        AS management_name, \
+                       cs.name       AS site_name, \
+                       cs.address, \
+                       cs.start_date AS site_start, \
+                       cs.end_date   AS site_end, \
+                       s.name        AS section_name, \
+                       s.start_date  AS section_start, \
+                       s.end_date    AS section_end
+                FROM construction_sites cs
+                         JOIN managements m ON cs.management_id = m.id
+                         LEFT JOIN sections s ON s.site_id = cs.id
+                WHERE 1 = 1 \
+                """
+        params = []
+
+        if management_id:
+            query += " AND m.id = %s"
+            params.append(management_id)
+
+        query += " ORDER BY m.name, cs.name, s.start_date NULLS LAST;"
+
+        with connection.cursor() as c:
+            c.execute(query, params)
+            return c.fetchall()

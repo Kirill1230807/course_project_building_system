@@ -45,7 +45,7 @@
     <!-- Таблиця управлінь -->
     <table border="1" cellpadding="6">
         <tr>
-            <th>ID</th>
+            <th>№</th>
             <th>Назва</th>
             <th>Керівник</th>
             <th>Примітки</th>
@@ -54,7 +54,7 @@
 
         {% for m in managements %}
             <tr>
-                <td>{{ m.0 }}</td>
+                <td>{{ forloop.counter }}</td>
                 <td>{{ m.1 }}</td>
                 <td>{{ m.2|default:"—" }}</td>
                 <td>{{ m.3|default:"" }}</td>
