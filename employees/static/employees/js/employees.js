@@ -21,7 +21,7 @@
     // ===== Після сабміту форми — зберегти повідомлення в localStorage =====
     const form = modal.querySelector("form");
     form.addEventListener("submit", function () {
-        localStorage.setItem("employeeAdded", "✅ Працівника додано успішно!");
+        localStorage.setItem("employeeAdded", "Працівника додано успішно!");
     });
 
     // ===== При завантаженні сторінки — показати повідомлення (додавання або редагування) =====

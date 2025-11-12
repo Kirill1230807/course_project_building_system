@@ -66,3 +66,22 @@ class EquipmentQueries:
                                notes            = %s
                            WHERE id = %s;
                            """, [name, type_, status, assigned_site_id or None, notes, equipment_id])
+
+    @staticmethod
+    def update_status_based_on_site():
+        """Приводимо статуси до базових, але НЕ чіпаємо 'В ремонті'."""
+        with connection.cursor() as c:
+            # Без об'єкта → 'Вільна' (але не чіпаємо, якщо 'В ремонті')
+            c.execute("""
+                      UPDATE equipment
+                      SET status = 'Вільна'
+                      WHERE assigned_site_id IS NULL
+                        AND status <> 'В ремонті';
+                      """)
+            # Прив'язана до об'єкта → 'В роботі' (але не чіпаємо, якщо 'В ремонті')
+            c.execute("""
+                      UPDATE equipment
+                      SET status = 'В роботі'
+                      WHERE assigned_site_id IS NOT NULL
+                        AND status <> 'В ремонті';
+                      """)

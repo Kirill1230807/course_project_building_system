@@ -1,0 +1,50 @@
+﻿{% extends "core/layout.html" %}
+{% block title %}Звіт: Техніка на об’єктах{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Звіт: Будівельна техніка за об’єктами</h2>
+
+    <form method="get" class="mb-3">
+        <label>Об’єкт:</label>
+        <select name="site_id">
+            <option value="">-- Всі --</option>
+            {% for s in sites %}
+                <option value="{{ s.0 }}" {% if selected_site == s.0|stringformat:"s" %}selected{% endif %}>
+                    {{ s.1 }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit">Фільтрувати</button>
+    </form>
+
+    {% if data %}
+        <table class="table table-bordered table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Об’єкт</th>
+                    <th>Назва техніки</th>
+                    <th>Тип</th>
+                    <th>Статус</th>
+                    <th>Примітки</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ row.site_name }}</td>
+                    <td>{{ row.equipment_name }}</td>
+                    <td>{{ row.equipment_type }}</td>
+                    <td>{{ row.equipment_status }}</td>
+                    <td>{{ row.equipment_notes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Дані відсутні.</p>
+    {% endif %}
+</div>
+{% endblock %}

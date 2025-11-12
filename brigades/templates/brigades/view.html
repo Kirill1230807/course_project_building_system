@@ -6,7 +6,7 @@
 {% block content %}
     <h1>{{ brigade.1 }}</h1>
 
-    <p><strong>Бригадир:</strong> {{ brigade.2|default:"—" }}</p>
+    <p><strong>Бригадир:</strong> {{ brigade.2|default:"--" }}</p>
 
     {% if not brigade.2 %}
         <a href="{% url 'brigades:reassign_leader' brigade.0 %}" class="btn btn-warning">
@@ -19,7 +19,7 @@
     {% endif %}
 
     <p><strong>Статус:</strong> {{ brigade.3 }}</p>
-    <p><strong>Примітки:</strong> {{ brigade.4|default:"—" }}</p>
+    <p><strong>Примітки:</strong> {{ brigade.4|default:"--" }}</p>
 
     <hr>
 
@@ -28,7 +28,7 @@
         {% csrf_token %}
         <label>Працівник:</label>
         <select name="employee_id" required>
-            <option value="">— Оберіть працівника —</option>
+            <option value="">-- Оберіть працівника --</option>
             {% for id, name in employees %}
                 <option value="{{ id }}">{{ name }}</option>
             {% endfor %}
@@ -47,7 +47,7 @@
     <h3>Склад бригади</h3>
     <table border="1" cellpadding="6">
         <tr>
-            <th>ID</th>
+            <th>№</th>
             <th>Ім’я</th>
             <th>Категорія</th>
             <th>Роль</th>
@@ -55,7 +55,7 @@
         </tr>
         {% for m in members %}
             <tr>
-                <td>{{ m.0 }}</td>
+                <td>{{ forloop.counter }}</td>
                 <td>{{ m.1 }}</td>
                 <td>{{ m.2 }}</td>
                 <td>{{ m.3 }}</td>

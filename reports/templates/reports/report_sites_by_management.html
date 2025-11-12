@@ -1,0 +1,50 @@
+﻿{% extends "core/layout.html" %}
+{% block title %}Звіт: Об’єкти за управлінням{% endblock %}
+
+{% block content %}
+<h2>Звіт: Об’єкти, що зводяться зазначеним управлінням</h2>
+
+<form method="get" style="margin-bottom: 20px;">
+    <label>Будівельне управління:</label>
+    <select name="management_id">
+        <option value="">— Усі —</option>
+        {% for m in managements %}
+            <option value="{{ m.0 }}" {% if request.GET.management_id == m.0|stringformat:"s" %}selected{% endif %}>{{ m.1 }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" style="margin-left:10px;">Показати</button>
+</form>
+
+<table border="1" cellpadding="6">
+    <thead>
+    <tr>
+        <th>Управління</th>
+        <th>Об’єкт</th>
+        <th>Адреса</th>
+        <th>Початок об’єкта</th>
+        <th>Завершення об’єкта</th>
+        <th>Дільниця</th>
+        <th>Початок дільниці</th>
+        <th>Завершення дільниці</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if results %}
+        {% for r in results %}
+            <tr>
+                <td>{{ r.0 }}</td>
+                <td>{{ r.1 }}</td>
+                <td>{{ r.2 }}</td>
+                <td>{{ r.3 }}</td>
+                <td>{{ r.4 }}</td>
+                <td>{{ r.5 }}</td>
+                <td>{{ r.6 }}</td>
+                <td>{{ r.7 }}</td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr><td colspan="8" class="text-center">Дані відсутні</td></tr>
+    {% endif %}
+    </tbody>
+</table>
+{% endblock %}

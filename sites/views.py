@@ -37,6 +37,7 @@ def add_site(request):
         address = request.POST.get("address")
         start_date = request.POST.get("start_date")
         end_date = request.POST.get("end_date") or None
+        deadline = request.POST.get("deadline") or None
         management_id = request.POST.get("management_id") or None
         engineer_id = request.POST.get("responsible_engineer_id") or None
         status = request.POST.get("status") or "В процесі"
@@ -47,7 +48,7 @@ def add_site(request):
             sites = SiteQueries.get_all()
             return render(request, "sites/index.html", {"sites": sites, "error_msg": error_msg})
 
-        SiteQueries.add(name, address, start_date, end_date, management_id, engineer_id, status, notes)
+        SiteQueries.add(name, address, start_date, end_date, deadline, management_id, engineer_id, status, notes)
         return redirect("sites:index")
 
     return redirect("sites:index")
@@ -121,6 +122,7 @@ def edit_site(request, site_id):
                               address,
                               start_date,
                               end_date,
+                              deadline,
                               management_id,
                               responsible_engineer_id,
                               status,
@@ -139,10 +141,11 @@ def edit_site(request, site_id):
         "address": site_row[2],
         "start_date": site_row[3],
         "end_date": site_row[4],
-        "management_id": site_row[5],
-        "responsible_engineer_id": site_row[6],
-        "status": site_row[7],
-        "notes": site_row[8],
+        "deadline": site_row[5],
+        "management_id": site_row[6],
+        "responsible_engineer_id": site_row[7],
+        "status": site_row[8],
+        "notes": site_row[9],
     }
 
     # Отримуємо списки управлінь та інженерів
@@ -164,6 +167,7 @@ def edit_site(request, site_id):
         address = request.POST.get("address")
         start_date = request.POST.get("start_date")
         end_date = request.POST.get("end_date") or None
+        deadline = request.POST.get("deadline") or None
         management_id = request.POST.get("management_id") or None
         responsible_engineer_id = request.POST.get("responsible_engineer_id") or None
         status = request.POST.get("status")
@@ -176,7 +180,10 @@ def edit_site(request, site_id):
                 "engineers": engineers,
                 "error_msg": "Заповніть усі обов’язкові поля!"
             })
-
+        if end_date and deadline and end_date > deadline:
+            status = 'Завершено із запізненням'
+        if end_date and deadline and end_date < deadline:
+            status = 'Завершено'
         # Оновлення об’єкта
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -185,13 +192,14 @@ def edit_site(request, site_id):
                                address                 = %s,
                                start_date              = %s,
                                end_date                = %s,
+                               deadline                = %s,
                                management_id           = %s,
                                responsible_engineer_id = %s,
                                status                  = %s,
                                notes                   = %s
                            WHERE id = %s;
                            """,
-                           [name, address, start_date, end_date, management_id, responsible_engineer_id, status, notes,
+                           [name, address, start_date, end_date, deadline, management_id, responsible_engineer_id, status, notes,
                             site_id])
 
         return redirect("sites:index")
@@ -281,13 +289,13 @@ def edit_section(request, section_id):
 
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT e.id, e.last_name || ' ' || e.first_name AS full_name
-            FROM employees e
-                     JOIN positions p ON e.position_id = p.id
-            WHERE e.category = 'Інженерно-технічний персонал'
-              AND LOWER(p.title) LIKE '%начальник дільниці%'
-            ORDER BY e.last_name, e.first_name;
-        """)
+                       SELECT e.id, e.last_name || ' ' || e.first_name AS full_name
+                       FROM employees e
+                                JOIN positions p ON e.position_id = p.id
+                       WHERE e.category = 'Інженерно-технічний персонал'
+                         AND LOWER(p.title) LIKE '%начальник дільниці%'
+                       ORDER BY e.last_name, e.first_name;
+                       """)
         chiefs = cursor.fetchall()
 
         cursor.execute("SELECT id, name FROM brigades ORDER BY name;")
@@ -298,6 +306,7 @@ def edit_section(request, section_id):
         "chiefs": chiefs,
         "brigades": brigades
     })
+
 
 def delete_section(request, section_id):
     section = SectionQueries.get_by_id(section_id)
@@ -316,10 +325,10 @@ def section_works(request, section_id):
     # Отримуємо дані про дільницю
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT s.id, s.name, s.site_id
-            FROM sections s
-            WHERE s.id = %s;
-        """, [section_id])
+                       SELECT s.id, s.name, s.site_id
+                       FROM sections s
+                       WHERE s.id = %s;
+                       """, [section_id])
         section = cursor.fetchone()
 
     if not section:
@@ -340,10 +349,10 @@ def section_works(request, section_id):
     # Отримуємо типи робіт
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT id, name, cost_per_unit 
-            FROM work_types
-            ORDER BY name;
-        """)
+                       SELECT id, name, cost_per_unit
+                       FROM work_types
+                       ORDER BY name;
+                       """)
         work_types = cursor.fetchall()
 
     # Обчислення загальної суми робіт
@@ -371,9 +380,9 @@ def section_works(request, section_id):
         # Додаємо запис у таблицю section_works
         with connection.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO section_works (section_id, work_type_id, volume, total_cost)
-                VALUES (%s, %s, %s, %s);
-            """, [section_id, work_type_id, volume, total_cost])
+                           INSERT INTO section_works (section_id, work_type_id, volume, total_cost)
+                           VALUES (%s, %s, %s, %s);
+                           """, [section_id, work_type_id, volume, total_cost])
 
         # Повертаємось до тієї ж сторінки
         return redirect(f"/sites/sections/{section_id}/works/?site_id={site_id}")
@@ -385,6 +394,7 @@ def section_works(request, section_id):
         "site_id": site_id,
         "total_sum": total_sum
     })
+
 
 def delete_section_work(request, section_id, work_id):
     """Видалення роботи з плану дільниці"""
