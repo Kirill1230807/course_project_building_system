@@ -27,15 +27,12 @@
                 <label>Дата початку:</label>
                 <input type="date" name="start_date" required><br>
 
-                <label>Дата завершення (заповнити після завершення робіт):</label>
-                <input type="date" name="end_date"><br>
-
                 <label>Дедлайн:</label>
                 <input type="date" name="deadline"><br>
 
                 <label>Управління:</label>
                 <select name="management_id">
-                    <option value="">— Оберіть управління —</option>
+                    <option value="">-- Оберіть управління --</option>
                     {% for id, name in managements %}
                         <option value="{{ id }}">{{ name }}</option>
                     {% endfor %}
@@ -43,7 +40,7 @@
 
                 <label>Відповідальний інженер:</label>
                 <select name="responsible_engineer_id">
-                    <option value="">— Оберіть інженера —</option>
+                    <option value="">-- Оберіть інженера --</option>
                     {% for id, name in engineers %}
                         <option value="{{ id }}">{{ name }}</option>
                     {% endfor %}
@@ -68,7 +65,7 @@
     </div>
 
     <hr>
-
+<div class="table-wrapper">
     <!-- Таблиця з об’єктами -->
     <table border="1" cellpadding="9">
         <tr>
@@ -90,9 +87,9 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ s.1 }}</td>
                 <td>{{ s.2 }}</td>
-                <td>{{ s.3 }}</td>
-                <td>{{ s.4|default:"—" }}</td>
-                <td>{{ s.5 }}</td>
+                <td>{{ s.3|date:"Y-m-d" }}</td>
+                <td>{{ s.4|default:"--"|date:"Y-m-d" }}</td>
+                <td>{{ s.5|date:"Y-m-d" }}</td>
                 <td>{{ s.6|default:"" }}</td>
                 <td>{{ s.9|default:"" }}</td>
                 <td>{{ s.8|default:"" }}</td>
@@ -110,6 +107,7 @@
             </tr>
         {% endfor %}
     </table>
+</div>
 
     <link rel="stylesheet" href="{% static 'sites/css/sites.css' %}">
     <script src="{% static 'sites/js/sites.js' %}"></script>

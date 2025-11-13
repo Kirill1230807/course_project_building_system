@@ -145,3 +145,53 @@ def report_sites_by_management(request):
         "results": results,
         "request": request
     })
+
+# 7) Роботи з перевищенням термінів виконання
+def delayed_works_view(request):
+    """Звіт: роботи з перевищенням термінів виконання"""
+    data = ReportQueries.get_delayed_works()
+    return render(request, "reports/report_delayed_works.html", {"data": data})
+
+# 9) Склад бригад, що працювали на зазначеному об’єкті
+def brigade_staff_for_site_view(request):
+    site_id = request.GET.get("site_id")
+
+    # отримати всі об'єкти (для фільтра)
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT id, name FROM construction_sites ORDER BY name;")
+        sites = cursor.fetchall()
+
+    data = []
+    if site_id:
+        data = ReportQueries.get_brigade_staff_for_site(site_id)
+
+    return render(request, "reports/report_brigade_members_by_site.html", {
+        "sites": sites,
+        "selected_site": site_id,
+        "data": data
+    })
+
+# 10) Список ІТП фахівців по ділянці або управлінню
+def engineers_view(request):
+    management_id = request.GET.get("management_id")
+    section_id = request.GET.get("section_id")
+
+    # Управління
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT id, name FROM managements ORDER BY name;")
+        managements = cursor.fetchall()
+
+    # Дільниці
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT id, name FROM sections ORDER BY name;")
+        sections = cursor.fetchall()
+
+    data = ReportQueries.get_engineers_by_management_or_section(management_id, section_id)
+
+    return render(request, "reports/report_engineers.html", {
+        "managements": managements,
+        "sections": sections,
+        "selected_management": management_id,
+        "selected_section": section_id,
+        "data": data
+    })

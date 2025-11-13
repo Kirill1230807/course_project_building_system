@@ -1,0 +1,53 @@
+﻿{% extends "core/layout.html" %}
+{% block title %}Склад бригад на об’єкті{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2>Звіт: Склад бригад на об’єкті</h2>
+
+    <form method="get" class="mb-3">
+        <label>Об’єкт:</label>
+        <select name="site_id">
+            <option value="">-- Оберіть об’єкт --</option>
+            {% for s in sites %}
+                <option value="{{ s.0 }}" {% if selected_site == s.0|stringformat:"s" %}selected{% endif %}>
+                    {{ s.1 }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn-primary">Показати</button>
+    </form>
+
+    {% if data %}
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Бригада</th>
+                <th>ПІБ працівника</th>
+                <th>Посада</th>
+                <th>Роль у бригаді</th>
+                <th>Початок роботи</th>
+                <th>Закінчення роботи</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ row.brigade_name }}</td>
+                <td>{{ row.employee_full_name }}</td>
+                <td>{{ row.position_title }}</td>
+                <td>{{ row.brigade_role|default:"—" }}</td>
+                <td>{{ row.start_date }}</td>
+                <td>{{ row.end_date|default:"—" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>Даних немає.</p>
+    {% endif %}
+</div>
+{% endblock %}

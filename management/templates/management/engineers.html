@@ -5,10 +5,8 @@
 {% block content %}
     <h1>Інженерно-технічний персонал</h1>
 
-    <!-- Кнопка для відкриття модального вікна -->
     <button id="openModalBtn">Додати інженера</button>
 
-    <!-- Модальне вікно -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <span id="closeModalBtn" class="close">&times;</span>
@@ -53,33 +51,35 @@
     </div>
 
     <hr>
-
-    <table border="1" cellpadding="6">
-        <tr>
-            <th>№</th>
-            <th>Прізвище</th>
-            <th>Ім’я</th>
-            <th>Посада</th>
-            <th>Зарплата</th>
-            <th>Дії</th>
-        </tr>
-
-        {% for e in engineers %}
+    <div class="table-wrapper">
+        <table border="1" cellpadding="6">
             <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ e.1 }}</td>
-                <td>{{ e.2 }}</td>
-                <td>{{ e.3 }}</td>
-                <td>{{ e.4 }}</td>
-                <td>
-                    <a href="{% url 'management:delete_engineer' e.0 %}" onclick="return confirm('Видалити інженера?')">Видалити</a> |
-                    <a href="{% url 'management:edit_engineer' e.0 %}">Редагувати</a>
-                </td>
+                <th>№</th>
+                <th>Прізвище</th>
+                <th>Ім’я</th>
+                <th>Посада</th>
+                <th>Зарплата</th>
+                <th>Дії</th>
             </tr>
-        {% endfor %}
-    </table>
 
-    <link rel="stylesheet" href="{% static 'management/css/management.css' %}">
+            {% for e in engineers %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ e.1 }}</td>
+                    <td>{{ e.2 }}</td>
+                    <td>{{ e.3 }}</td>
+                    <td>{{ e.4 }}</td>
+                    <td>
+                        <a href="{% url 'management:delete_engineer' e.0 %}"
+                           onclick="return confirm('Видалити інженера?')">Видалити</a> |
+                        <a href="{% url 'management:edit_engineer' e.0 %}">Редагувати</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <link rel="stylesheet" href="{% static 'management/css/engineers.css' %}">
     <script src="{% static 'management/js/management.js' %}"></script>
 
 {% endblock %}

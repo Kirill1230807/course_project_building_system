@@ -1,14 +1,21 @@
 ﻿{% extends "core/layout.html" %}
+{% load static %}
 
 {% block title %}Звіти{% endblock %}
 
 {% block content %}
+
+<link rel="stylesheet" href="{% static 'reports/css/site_schedule.css' %}">
+
+<div class="page-container">
+
     <h2>Графік і кошторис будівництва об’єкта: {{ site.name }}</h2>
+
     <p><strong>Адреса:</strong> {{ site.address }}</p>
     <p><strong>Період:</strong> {{ site.start_date }} — {{ site.end_date }}</p>
     <p><strong>Статус:</strong> {{ site.status }}</p>
 
-    <table border="1" cellpadding="6">
+    <table>
         <thead>
         <tr>
             <th>Дільниця</th>
@@ -34,13 +41,14 @@
         {% endfor %}
         </tbody>
     </table>
-    <h4>Сума витрат на матеріали: {{ cost_work }}</h4>
+
+    <h4 class="summary">Сума вартості робіт: {{ cost_work }}</h4>
 
     <hr>
 
     <h3>Матеріали, доставлені на об’єкт</h3>
 
-    <table border="1" cellpadding="6">
+    <table>
         <thead>
         <tr>
             <th>Матеріал</th>
@@ -50,6 +58,7 @@
             <th>Вартість</th>
         </tr>
         </thead>
+
         <tbody>
         {% if materials %}
             {% for m in materials %}
@@ -63,15 +72,18 @@
             {% endfor %}
         {% else %}
             <tr>
-                <td colspan="5" align="center">Матеріали не знайдено</td>
+                <td colspan="5">Матеріали не знайдено</td>
             </tr>
         {% endif %}
         </tbody>
     </table>
 
-    <h4>Сума витрат на матеріали: {{ materials_total }}</h4>
+    <h4 class="summary">Сума витрат на матеріали: {{ materials_total }}</h4>
 
     <hr>
-    <h3>Загальна сума кошторису (роботи + матеріали): {{ total_cost }}</h3>
+
+    <h3 class="summary">Загальна сума кошторису (роботи + матеріали): {{ total_cost }}</h3>
+
+</div>
 
 {% endblock %}

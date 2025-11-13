@@ -2,6 +2,7 @@
 
 
 class ReportQueries:
+    # 1) Графік і кошторис на будівництво об’єкта
     @staticmethod
     def get_site_schedule_and_estimate(site_id: int):
         """Отримати графік і кошторис будівництва об’єкта."""
@@ -32,6 +33,7 @@ class ReportQueries:
             cols = [col[0] for col in cursor.description]
             return [dict(zip(cols, row)) for row in cursor.fetchall()]
 
+    # 2) Перелік бригад, що виконали певний вид робіт у період
     @staticmethod
     def get_brigades_by_work_and_period(work_id=None, start_date=None, end_date=None):
         """
@@ -77,6 +79,7 @@ class ReportQueries:
             c.execute(query, params)
             return c.fetchall()
 
+    # 4) Перелік матеріалів із перевищенням кошторису
     @staticmethod
     def get_materials_overbudget(section_id: int = None):
         """Отримати матеріали, де факт > план."""
@@ -130,6 +133,7 @@ class ReportQueries:
             cursor.execute(query, [site_id])
             return cursor.fetchall()
 
+    # 3) Перелік будівельних керувань / ділянок і керівників
     @staticmethod
     def get_sites_sections_managers():
         """
@@ -137,10 +141,10 @@ class ReportQueries:
         (з відображенням посади без телефону)
         """
         query = """
-                SELECT cs.name                                                                   AS site_name, \
-                       s.name                                                                    AS section_name, \
-                       COALESCE(e.last_name || ' ' || e.first_name || ' ' || e.father_name, '—') AS manager_name, \
-                       COALESCE(p.title, '—')                                                    AS position_name
+                SELECT cs.name                                                                    AS site_name, \
+                       s.name                                                                     AS section_name, \
+                       COALESCE(e.last_name || ' ' || e.first_name || ' ' || e.father_name, '--') AS manager_name, \
+                       COALESCE(p.title, '--')                                                    AS position_name
                 FROM sections s
                          JOIN construction_sites cs ON s.site_id = cs.id
                          LEFT JOIN employees e ON s.chief_id = e.id
@@ -152,6 +156,7 @@ class ReportQueries:
             cols = [col[0] for col in cursor.description]
             return [dict(zip(cols, row)) for row in cursor.fetchall()]
 
+    # 5) Перелік техніки, виділеної на об’єкт
     @staticmethod
     def get_equipment_by_site(site_id=None):
         """
@@ -159,10 +164,10 @@ class ReportQueries:
         Якщо задано site_id — фільтруємо по ньому.
         """
         query = """
-                SELECT cs.name                AS site_name, \
-                       e.name                 AS equipment_name, \
-                       e.type                 AS equipment_type, \
-                       e.status               AS equipment_status, \
+                SELECT cs.name                 AS site_name, \
+                       e.name                  AS equipment_name, \
+                       e.type                  AS equipment_type, \
+                       e.status                AS equipment_status, \
                        COALESCE(e.notes, '--') AS equipment_notes
                 FROM equipment e
                          LEFT JOIN construction_sites cs ON e.assigned_site_id = cs.id
@@ -181,6 +186,7 @@ class ReportQueries:
             cols = [col[0] for col in c.description]
             return [dict(zip(cols, row)) for row in c.fetchall()]
 
+    # 6) Види робіт, виконані бригадою у період
     @staticmethod
     def get_works_by_brigade_and_period(brigade_id=None, start_date=None, end_date=None):
         """
@@ -224,6 +230,7 @@ class ReportQueries:
             c.execute(query, params)
             return c.fetchall()
 
+    # 8) Об’єкти, що зводяться управлінням / ділянкою + графіки
     @staticmethod
     def get_sites_by_management_or_section(management_id=None):
         """
@@ -255,3 +262,143 @@ class ReportQueries:
         with connection.cursor() as c:
             c.execute(query, params)
             return c.fetchall()
+
+    # 7) Види робіт із перевищенням термінів виконання
+    @staticmethod
+    def get_delayed_works():
+        query = """
+                SELECT wt.name                                      AS work_name, \
+                       cs.name                                      AS site_name, \
+                       s.name                                       AS section_name, \
+                       sw.planned_start, \
+                       sw.planned_end, \
+                       sw.actual_start, \
+                       sw.actual_end, \
+                       (sw.actual_end::date - sw.planned_end::date) AS delay_days
+                FROM section_works sw
+                         JOIN work_types wt ON sw.work_type_id = wt.id
+                         JOIN sections s ON sw.section_id = s.id
+                         JOIN construction_sites cs ON s.site_id = cs.id
+                WHERE sw.actual_end IS NOT NULL
+                  AND sw.planned_end IS NOT NULL
+                  AND sw.actual_end > sw.planned_end
+                ORDER BY delay_days DESC; \
+                """
+        with connection.cursor() as cursor:
+            cursor.execute(query)
+            cols = [col[0] for col in cursor.description]
+            return [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    @staticmethod
+    def get_brigade_members_by_site(site_id):
+        """Отримати склад бригад, що працювали на об’єкті."""
+        query = """
+                SELECT b.name                                                                   AS brigade_name,
+                       e.last_name || ' ' || e.first_name || COALESCE(' ' || e.father_name, '') AS employee_name,
+                       bm.role,
+                       s.name                                                                   AS section_name
+                FROM brigade_members bm
+                         JOIN brigades b ON b.id = bm.brigade_id
+                         JOIN employees e ON e.id = bm.employee_id
+                         JOIN sections s ON s.id = b.section_id
+                         JOIN construction_sites cs ON s.site_id = cs.id
+                WHERE cs.id = %s
+                ORDER BY brigade_name, employee_name; \
+                """
+        with connection.cursor() as cursor:
+            cursor.execute(query, [site_id])
+            cols = [col[0] for col in cursor.description]
+            return [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    @staticmethod
+    def get_engineers_by_section_or_management(section_id=None, management_id=None):
+        """Отримати ІТП фахівців із зазначенням посад."""
+        query = """
+                SELECT e.last_name || ' ' || e.first_name || COALESCE(' ' || e.father_name, '') AS employee_name,
+                       p.title                                                                  AS position_title,
+                       s.name                                                                   AS section_name,
+                       m.name                                                                   AS management_name
+                FROM employees e
+                         JOIN positions p ON e.position_id = p.id
+                         LEFT JOIN sections s ON e.section_id = s.id
+                         LEFT JOIN managements m ON s.management_id = m.id
+                WHERE p.category = 'Інженерно-технічний персонал'
+                  AND (%s IS NULL OR s.id = %s)
+                  AND (%s IS NULL OR m.id = %s)
+                ORDER BY management_name, section_name, employee_name; \
+                """
+        with connection.cursor() as cursor:
+            cursor.execute(query, [section_id, section_id, management_id, management_id])
+            cols = [col[0] for col in cursor.description]
+            return [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    # 9) Склад бригад, що працювали на об’єкті
+    @staticmethod
+    def get_brigade_staff_for_site(site_id: int):
+        query = """
+                SELECT cs.name                                                                  AS site_name, \
+                       b.id                                                                     AS brigade_id, \
+                       b.name                                                                   AS brigade_name, \
+
+                       e.id                                                                     AS employee_id, \
+                       e.last_name || ' ' || e.first_name || COALESCE(' ' || e.father_name, '') AS employee_full_name, \
+
+                       p.title                                                                  AS position_title, \
+                       bm.role                                                                  AS brigade_role, \
+                       bm.start_date, \
+                       bm.end_date
+
+                FROM construction_sites cs
+                         JOIN sections s ON s.site_id = cs.id
+                         JOIN brigades b ON b.id = s.brigade_id
+                         JOIN brigade_members bm ON bm.brigade_id = b.id
+                         JOIN employees e ON e.id = bm.employee_id
+                         LEFT JOIN positions p ON p.id = e.position_id
+
+                WHERE cs.id = %s
+
+                ORDER BY b.name, employee_full_name; \
+                """
+        with connection.cursor() as cursor:
+            cursor.execute(query, [site_id])
+            cols = [col[0] for col in cursor.description]
+            return [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    # 10) ІТП фахівці по ділянці / управлінню
+    @staticmethod
+    def get_engineers_by_management_or_section(management_id=None, section_id=None):
+        """
+        Отримати список фахівців інженерно-технічного персоналу
+        для зазначеної дільниці або управління.
+        """
+        query = """
+                SELECT e.id                                                                     AS employee_id, \
+                       e.last_name || ' ' || e.first_name || COALESCE(' ' || e.father_name, '') AS full_name, \
+                       p.title                                                                  AS position_name, \
+                       cs.name                                                                  AS site_name, \
+                       s.name                                                                   AS section_name, \
+                       m.name                                                                   AS management_name
+                FROM employees e
+                         JOIN positions p ON p.id = e.position_id
+                         LEFT JOIN sections s ON s.chief_id = e.id
+                         LEFT JOIN construction_sites cs ON cs.id = s.site_id
+                         LEFT JOIN managements m ON m.id = cs.management_id
+                WHERE p.category = 'Інженерно-технічний персонал' \
+                """
+
+        params = []
+
+        if section_id:
+            query += " AND s.id = %s"
+            params.append(section_id)
+
+        if management_id:
+            query += " AND m.id = %s"
+            params.append(management_id)
+
+        query += " ORDER BY full_name;"
+
+        with connection.cursor() as cursor:
+            cursor.execute(query, params)
+            cols = [col[0] for col in cursor.description]
+            return [dict(zip(cols, row)) for row in cursor.fetchall()]

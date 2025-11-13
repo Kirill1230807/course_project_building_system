@@ -41,31 +41,31 @@
     </div>
 
     <hr>
-
-    <!-- Таблиця управлінь -->
-    <table border="1" cellpadding="6">
-        <tr>
-            <th>№</th>
-            <th>Назва</th>
-            <th>Керівник</th>
-            <th>Примітки</th>
-            <th>Дії</th>
-        </tr>
-
-        {% for m in managements %}
+    <div class="table-wrapper">
+        <table border="1" cellpadding="6">
             <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ m.1 }}</td>
-                <td>{{ m.2|default:"—" }}</td>
-                <td>{{ m.3|default:"" }}</td>
-                <td>
-                    <a href="{% url 'management:delete_management' m.0 %}"
-                       onclick="return confirm('Видалити управління?')">Видалити</a> |
-                    <a href="{% url 'management:edit_management' m.0 %}">Редагувати</a>
-                </td>
+                <th>№</th>
+                <th>Назва</th>
+                <th>Керівник</th>
+                <th>Примітки</th>
+                <th>Дії</th>
             </tr>
-        {% endfor %}
-    </table>
+
+            {% for m in managements %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ m.1 }}</td>
+                    <td>{{ m.2|default:"—" }}</td>
+                    <td>{{ m.3|default:"" }}</td>
+                    <td>
+                        <a href="{% url 'management:delete_management' m.0 %}"
+                           onclick="return confirm('Видалити управління?')">Видалити</a> |
+                        <a href="{% url 'management:edit_management' m.0 %}">Редагувати</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 
     <link rel="stylesheet" href="{% static 'management/css/management.css' %}">
     <script src="{% static 'management/js/management.js' %}"></script>

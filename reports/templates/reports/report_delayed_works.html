@@ -1,0 +1,50 @@
+﻿{% extends "core/layout.html" %}
+{% block title %}Звіт: Роботи з перевищенням термінів{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2>Звіт: Роботи з перевищенням термінів виконання</h2>
+    <p class="text-muted">
+        Відображаються роботи, у яких фактична дата завершення пізніше за планову.
+    </p>
+
+    {% if data %}
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Об’єкт</th>
+                <th>Дільниця</th>
+                <th>Вид робіт</th>
+                <th>План початку</th>
+                <th>План завершення</th>
+                <th>Факт початку</th>
+                <th>Факт завершення</th>
+                <th>Затримка (днів)</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ row.site_name }}</td>
+                <td>{{ row.section_name }}</td>
+                <td>{{ row.work_name }}</td>
+                <td>{{ row.planned_start|date:"Y-m-d" }}</td>
+                <td>{{ row.planned_end|date:"Y-m-d" }}</td>
+                <td>{{ row.actual_start|date:"Y-m-d" }}</td>
+                <td>{{ row.actual_end|date:"Y-m-d" }}</td>
+                <td>{{ row.delay_days }}</td>
+                <td class="fw-bold text-danger">{{ row.delay_days.days }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% else %}
+        <div class="alert alert-info mt-3">Дані про затримані роботи відсутні.</div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -10,7 +10,7 @@
 
 /* Картки */
 .card {
-  background-color: #2b2b2b;
+  background-color: #F5F5F5;
   color: #fff;
   padding: 25px 35px;
   border-radius: 12px;
@@ -29,19 +29,19 @@
 .card h2 {
   font-size: 3em;
   margin-bottom: 10px;
-  color: #00e676;
+  color: #FF9800;
 }
 
 /* Підпис під числом */
 .card p {
   font-size: 1.1em;
-  color: #ccc;
+  color: #FF9800;
 }
 
 /* Заголовок сторінки */
 h1 {
   text-align: center;
-  color: #fff;
+  color: #FF9800;
   margin-top: 30px;
   font-weight: 700;
   letter-spacing: 1px;
