@@ -19,5 +19,6 @@ urlpatterns = [
     path("sections/<int:section_id>/works/", views.section_works, name="section_works"),
     path("sections/<int:section_id>/works/<int:work_id>/delete/", views.delete_section_work,
          name="delete_section_work"),
-
+path("sections/<int:section_id>/works/", views.section_works, name="section_works"),
+    path("sections/work/<int:work_id>/edit/", views.edit_section_work, name="edit_section_work")
 ]

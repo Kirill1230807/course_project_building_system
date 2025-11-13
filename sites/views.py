@@ -404,3 +404,53 @@ def delete_section_work(request, section_id, work_id):
         cursor.execute("DELETE FROM section_works WHERE id = %s;", [work_id])
 
     return redirect(f"/sites/sections/{section_id}/works/?site_id={site_id}")
+
+def edit_section_work(request, work_id):
+    row = None
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT 
+                sw.id,
+                sw.section_id,
+                wt.name AS work_name,
+                sw.planned_start,
+                sw.planned_end,
+                sw.actual_start,
+                sw.actual_end
+            FROM section_works sw
+            JOIN work_types wt ON wt.id = sw.work_type_id
+            WHERE sw.id = %s;
+        """, [work_id])
+        row = cursor.fetchone()
+
+    if not row:
+        return HttpResponseNotFound("Роботу не знайдено")
+
+    work = {
+        "id": row[0],
+        "section_id": row[1],
+        "work_name": row[2],
+        "planned_start": row[3],
+        "planned_end": row[4],
+        "actual_start": row[5],
+        "actual_end": row[6]
+    }
+
+    site_id = request.GET.get("site_id")
+
+    if request.method == "POST":
+        planned_start = request.POST.get("planned_start")
+        planned_end = request.POST.get("planned_end")
+        actual_start = request.POST.get("actual_start")
+        actual_end = request.POST.get("actual_end")
+
+        SectionWorkQueries.update_dates(
+            work_id, planned_start, planned_end, actual_start, actual_end
+        )
+
+        return redirect(f"/sites/sections/{work['section_id']}/works/?site_id={site_id}")
+
+    return render(request, "sites/edit_section_work.html", {
+        "work": work,
+        "site_id": site_id
+    })

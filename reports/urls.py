@@ -11,5 +11,9 @@ urlpatterns = [
     path("equipment-by-site/", views.report_equipment_by_site, name="report_equipment_by_site"),
     path("works-by-brigade/", views.report_works_by_brigade, name="report_works_by_brigade"),
     path("sites-by-management/", views.report_sites_by_management, name="report_sites_by_management"),
+    path("delayed_works/", views.delayed_works_view, name="report_delayed_works"),
+    path("brigade_staff/", views.brigade_staff_for_site_view, name="report_brigade_staff"),
+    path("engineers/", views.engineers_view, name="report_engineers"),
+
 
 ]

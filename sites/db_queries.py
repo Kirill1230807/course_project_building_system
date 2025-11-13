@@ -174,7 +174,15 @@ class SectionWorkQueries:
     def get_by_section(section_id):
         with connection.cursor() as cursor:
             cursor.execute("""
-                           SELECT sw.id, wt.name, wt.cost_per_unit, sw.volume, sw.total_cost
+                           SELECT sw.id,
+                                  wt.name,
+                                  wt.cost_per_unit,
+                                  sw.volume,
+                                  sw.total_cost,
+                                  sw.planned_start,
+                                  sw.planned_end,
+                                  sw.actual_start,
+                                  sw.actual_end
                            FROM section_works sw
                                     JOIN work_types wt ON sw.work_type_id = wt.id
                            WHERE sw.section_id = %s
@@ -194,3 +202,21 @@ class SectionWorkQueries:
     def delete(work_id):
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM section_works WHERE id = %s;", [work_id])
+
+    @staticmethod
+    def update_dates(work_id, planned_start, planned_end, actual_start, actual_end):
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           UPDATE section_works
+                           SET planned_start = %s,
+                               planned_end   = %s,
+                               actual_start  = %s,
+                               actual_end    = %s
+                           WHERE id = %s;
+                           """, [
+                               planned_start or None,
+                               planned_end or None,
+                               actual_start or None,
+                               actual_end or None,
+                               work_id
+                           ])

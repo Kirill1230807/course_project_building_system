@@ -4,6 +4,7 @@
     box-sizing: border-box;
 }
 
+
 html, body {
     height: 100%;
     width: 100%;
@@ -29,7 +30,7 @@ body {
 }
 
 aside {
-    background: #181818;
+    background: #1E1E1E;
     width: 250px;
     padding: 20px;
     color: #fff;
@@ -45,6 +46,7 @@ aside {
 .user-info p {
     margin: 0 0 5px 0;
     font-weight: bold;
+    color: #F5F5F5;
 }
 
 .logout-btn {
@@ -65,19 +67,19 @@ aside {
 
 .nav-menu a {
     text-decoration: none;
-    color: #ffffff;
+    color: #FF9800;
     font-size: 16px;
     transition: 0.3s;
 }
 
 .nav-menu a:hover {
-    color: #a8dadc;
+    color: #E65100;
 }
 
 /* Main content area */
 main {
     flex: 1;
-    background-color: #656565;
+    background-color: #FFFFFF;
     color: white;
     display: flex;
     flex-direction: column;
@@ -101,9 +103,6 @@ main .features p {
     margin: 20px auto 0;
 }
 
-/* Додайте ці стилі до вашого існуючого файлу стилів */
-
-/* ========== Таблиці ========== */
 .data-table {
     width: 100%;
     border-collapse: collapse;
@@ -195,7 +194,6 @@ main .features p {
     color: #721c24;
 }
 
-/* ========== Картки ========== */
 .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -258,7 +256,6 @@ main .features p {
     color: #333;
 }
 
-/* ========== Статистичні картки ========== */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -327,7 +324,6 @@ main .features p {
     color: #333;
 }
 
-/* ========== Кнопки ========== */
 .btn {
     display: inline-block;
     padding: 10px 20px;
@@ -369,7 +365,6 @@ main .features p {
     color: white;
 }
 
-/* ========== Фільтри та пошук ========== */
 .filters {
     background: white;
     padding: 20px;
@@ -410,7 +405,6 @@ main .features p {
     border-color: #667eea;
 }
 
-/* ========== Деталі об'єкта ========== */
 .detail-container {
     background: white;
     border-radius: 12px;
@@ -472,7 +466,6 @@ main .features p {
     color: #333;
 }
 
-/* ========== Порожній стан ========== */
 .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -499,7 +492,6 @@ main .features p {
     margin-bottom: 20px;
 }
 
-/* ========== Responsive ========== */
 @media (max-width: 768px) {
     .stats-grid,
     .cards-grid {
@@ -527,9 +519,6 @@ main .features p {
     }
 }
 
-/* Додайте ці стилі до вашого існуючого CSS файлу */
-
-/* ========== ФОРМИ ========== */
 .form-container {
     max-width: 900px;
     margin: 0 auto;
@@ -646,7 +635,6 @@ main .features p {
     min-width: 150px;
 }
 
-/* ========== ПОВІДОМЛЕННЯ ========== */
 .messages-container {
     margin-bottom: 20px;
 }
@@ -705,7 +693,6 @@ main .features p {
     content: "ℹ️";
 }
 
-/* ========== Responsive форми ========== */
 @media (max-width: 768px) {
     .form-row {
         grid-template-columns: 1fr;

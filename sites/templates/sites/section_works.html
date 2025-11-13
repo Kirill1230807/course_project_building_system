@@ -36,37 +36,55 @@
 
     <!-- Таблиця робіт -->
     <table class="styled-table">
-        <thead>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Вид роботи</th>
+        <th>Ціна за одиницю (грн)</th>
+        <th>Обсяг</th>
+        <th>Загальна вартість (грн)</th>
+        <th>План. початок</th>
+        <th>План. кінець</th>
+        <th>Факт. початок</th>
+        <th>Факт. кінець</th>
+        <th>Дії</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for w in works %}
         <tr>
-            <th>ID</th>
-            <th>Вид роботи</th>
-            <th>Ціна за одиницю (грн)</th>
-            <th>Обсяг</th>
-            <th>Загальна вартість (грн)</th>
-            <th>Дії</th>
+            <td>{{ w.0 }}</td>
+            <td>{{ w.1 }}</td>
+            <td>{{ w.2 }}</td>
+            <td>{{ w.3 }}</td>
+            <td>{{ w.4 }}</td>
+
+            <td>{{ w.5|default:"--"|date:"Y-m-d" }}</td>
+            <td>{{ w.6|default:"--"|date:"Y-m-d" }}</td>
+            <td>{{ w.7|default:"--"|date:"Y-m-d" }}</td>
+            <td>{{ w.8|default:"--"|date:"Y-m-d" }}</td>
+
+            <td>
+                <a href="{% url 'sites:edit_section_work' w.0 %}?site_id={{ site_id }}"
+                   class="btn-primary btn-sm">
+                    Редагувати терміни
+                </a>
+
+                <a href="{% url 'sites:delete_section_work' section.id w.0 %}?site_id={{ site_id }}"
+                   class="btn-delete"
+                   onclick="return confirm('Видалити цю роботу?')">
+                    Видалити
+                </a>
+            </td>
         </tr>
-        </thead>
-        <tbody>
-        {% for w in works %}
-            <tr>
-                <td>{{ w.0 }}</td>
-                <td>{{ w.1 }}</td>
-                <td>{{ w.2 }}</td>
-                <td>{{ w.3 }}</td>
-                <td>{{ w.4 }}</td>
-                <td>
-                    <a href="{% url 'sites:delete_section_work' section.id w.0 %}?site_id={{ site_id }}"
-                       class="btn-delete"
-                       onclick="return confirm('Видалити цю роботу?')">Видалити</a>
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="6" class="empty-row">Роботи ще не додано</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {% empty %}
+        <tr>
+            <td colspan="10" class="empty-row">Роботи ще не додано</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
     <hr>
     <h3 class="total-sum">Загальна вартість робіт: <span>{{ total_sum }}</span> грн</h3>
