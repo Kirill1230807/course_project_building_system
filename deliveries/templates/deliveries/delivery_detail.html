@@ -1,45 +1,72 @@
 ﻿{% extends "core/layout.html" %}
+{% load static %}
 {% block content %}
-<div class="container mt-4">
-  <h3>📦 Деталі доставки №{{ delivery.0 }}</h3>
+<div class="delivery-detail-container">
 
-  <table class="table table-dark table-bordered mt-3">
-    <tr><th>Об’єкт:</th><td>{{ delivery.1 }}</td></tr>
-    <tr><th>Дільниця:</th><td>{{ delivery.2 }}</td></tr>
-    <tr><th>Постачальник:</th><td>{{ delivery.3 }}</td></tr>
-    <tr><th>Дата доставки:</th><td>{{ delivery.4|date:"Y-m-d" }}</td></tr>
-    <tr><th>Сума:</th><td>{{ delivery.5 }} ₴</td></tr>
-    <tr><th>Примітка:</th><td>{{ delivery.6|default:"—" }}</td></tr>
-  </table>
+    <h1>Деталі доставки №{{ delivery.0 }}</h1>
 
-  <h4 class="mt-4">Матеріали у доставці</h4>
-  <table class="table table-striped table-dark table-bordered">
-    <thead class="table-success text-center">
-      <tr>
-        <th>Матеріал</th>
-        <th>Одиниця</th>
-        <th>Кількість</th>
-        <th>Ціна за одиницю</th>
-        <th>Сума</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in items %}
-      <tr>
-        <td>{{ item.0 }}</td>
-        <td>{{ item.2 }}</td>
-        <td>{{ item.3 }}</td>
-        <td>{{ item.4 }} ₴</td>
-        <td>{{ item.5 }} ₴</td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="5" class="text-center text-muted">Матеріали не знайдено</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <table class="info-table">
+        <tr>
+            <th>Об’єкт:</th>
+            <td>{{ delivery.1 }}</td>
+        </tr>
+        <tr>
+            <th>Дільниця:</th>
+            <td>{{ delivery.2 }}</td>
+        </tr>
+        <tr>
+            <th>Постачальник:</th>
+            <td>{{ delivery.3 }}</td>
+        </tr>
+        <tr>
+            <th>Дата доставки:</th>
+            <td>{{ delivery.4|date:"Y-m-d" }}</td>
+        </tr>
+        <tr>
+            <th>Сума:</th>
+            <td>{{ delivery.5 }} ₴</td>
+        </tr>
+        <tr>
+            <th>Примітка:</th>
+            <td>{{ delivery.6|default:"—" }}</td>
+        </tr>
+    </table>
 
-  <a href="{% url 'deliveries:deliveries_list' %}" class="btn btn-outline-light mt-3">Повернутися до списку</a>
+    <h2 class="section-title">Матеріали у доставці</h2>
+
+    <div class="table-wrapper">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Матеріал</th>
+                    <th>Одиниця</th>
+                    <th>Кількість</th>
+                    <th>Ціна за одиницю</th>
+                    <th>Сума</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.0 }}</td>
+                    <td>{{ item.2 }}</td>
+                    <td>{{ item.3 }}</td>
+                    <td>{{ item.4 }} ₴</td>
+                    <td>{{ item.5 }} ₴</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="empty-row">Матеріали не знайдено</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="back-btn-wrapper">
+        <a href="{% url 'deliveries:deliveries_list' %}" class="btn-back">Повернутися до списку</a>
+    </div>
 </div>
+
+<link rel="stylesheet" href="{% static 'deliveries/css/delivery_detail.css' %}">
 {% endblock %}

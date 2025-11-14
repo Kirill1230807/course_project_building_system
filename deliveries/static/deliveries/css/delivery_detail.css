@@ -1,0 +1,121 @@
+﻿/* Контейнер */
+.delivery-detail-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px 30px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+}
+
+/* Заголовок */
+h1 {
+    text-align: center;
+    font-size: 30px;
+    color: #E67E22;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+/* Підзаголовок */
+.section-title {
+    margin-top: 35px;
+    margin-bottom: 15px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #2C3E50;
+}
+
+/* Таблиця інформації */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #DDDDDD;
+}
+
+.info-table th, .info-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #EEEEEE;
+    font-size: 15px;
+}
+
+.info-table th {
+    background: #F7F7F7;
+    width: 35%;
+    text-align: left;
+    color: #2C3E50;
+    font-weight: 600;
+}
+
+.info-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Таблиця матеріалів */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #DDDDDD;
+    background: #FFFFFF;
+}
+
+.styled-table th {
+    background: #F7F7F7;
+    padding: 12px;
+    font-size: 15px;
+    color: #2C3E50;
+    font-weight: 700;
+    border: 1px solid #DDDDDD;
+}
+
+.styled-table td {
+    padding: 12px;
+    font-size: 15px;
+    text-align: center;
+    border: 1px solid #DDDDDD;
+}
+
+.styled-table tr:nth-child(even) {
+    background: #FAFAFA;
+}
+
+.styled-table tr:hover {
+    background: #FFF3E0;
+}
+
+/* Коли немає даних */
+.empty-row {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: #7F8C8D;
+}
+
+/* Кнопка назад */
+.back-btn-wrapper {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.btn-back {
+    background-color: #E67E22;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: #D35400;
+}

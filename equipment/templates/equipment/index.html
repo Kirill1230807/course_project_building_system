@@ -51,37 +51,37 @@
     </div>
 
     <hr>
-
-    <table border="1" cellpadding="6">
-        <tr>
-            <th>ID</th>
-            <th>Назва</th>
-            <th>Тип</th>
-            <th>Статус</th>
-            <th>Об'єкт</th>
-            <th>Примітки</th>
-            <th>Дії</th>
-        </tr>
-        {% for e in equipment %}
+    <div class="table-wrapper">
+        <table border="1" cellpadding="6">
             <tr>
-                <td>{{ e.0 }}</td>
-                <td>{{ e.1 }}</td>
-                <td>{{ e.2 }}</td>
-                <td>{{ e.3 }}</td>
-                <td>{{ e.4|default:"--" }}</td>
-                <td>{{ e.5|default:"--" }}</td>
-                <td><a class="delete-equipment" href="{% url 'equipment:delete' e.0 %}"
-                       onclick="return confirm('Видалити техніку?')">Видалити</a> |
-                    <a class="delete-equipment" href="{% url 'equipment:edit' e.0 %}">Редагувати</a>
-                </td>
+                <th>ID</th>
+                <th>Назва</th>
+                <th>Тип</th>
+                <th>Статус</th>
+                <th>Об'єкт</th>
+                <th>Примітки</th>
+                <th>Дії</th>
             </tr>
-        {% empty %}
-            <tr>
-                <td colspan="7">Немає записів</td>
-            </tr>
-        {% endfor %}
-    </table>
-
+            {% for e in equipment %}
+                <tr>
+                    <td>{{ e.0 }}</td>
+                    <td>{{ e.1 }}</td>
+                    <td>{{ e.2 }}</td>
+                    <td>{{ e.3 }}</td>
+                    <td>{{ e.4|default:"--" }}</td>
+                    <td>{{ e.5|default:"--" }}</td>
+                    <td><a class="delete-equipment" href="{% url 'equipment:delete' e.0 %}"
+                           onclick="return confirm('Видалити техніку?')">Видалити</a> |
+                        <a class="delete-equipment" href="{% url 'equipment:edit' e.0 %}">Редагувати</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7">Немає записів</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
     <link rel="stylesheet" href="{% static 'equipment/css/equipment.css' %}">
     <script src="{% static 'equipment/js/equipment.js' %}"></script>
 

@@ -1,5 +1,4 @@
-﻿/* === Базовий стиль сторінки === */
-body {
+﻿main {
     background: #ffffff;
     font-family: 'Segoe UI', sans-serif;
     color: #333333;
@@ -16,7 +15,6 @@ p {
     margin: 6px 0;
 }
 
-/* === Контейнер сторінки === */
 .page-container {
     background: #ffffff;
     padding: 20px 35px;
@@ -24,7 +22,6 @@ p {
     margin: 20px;
 }
 
-/* === Загальні таблиці === */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -36,7 +33,6 @@ table {
     font-size: 15px;
 }
 
-/* Заголовки */
 table th {
     background: #ff9800;
     color: white;
@@ -45,39 +41,33 @@ table th {
     font-weight: 600;
 }
 
-/* Комірки */
 table td {
     padding: 10px;
     border: 1px solid #e0e0e0;
     text-align: center;
 }
 
-/* Чередування рядків */
 table tr:nth-child(even) {
     background: #fafafa;
 }
 
-/* Hover */
 table tr:hover {
     background: #f5f5f5;
 }
 
-/* === Підсумкові значення === */
 .summary {
     font-size: 18px;
     font-weight: 600;
     margin-top: 20px;
-    color: #e65100; /* глибокий оранжевий */
+    color: #e65100;
 }
 
-/* === Розділювач === */
 hr {
     margin: 30px 0;
     border: none;
     border-top: 2px solid #eeeeee;
 }
 
-/* === Мобільність === */
 @media (max-width: 768px) {
     .page-container {
         margin: 10px;

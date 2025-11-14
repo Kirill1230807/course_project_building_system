@@ -1,10 +1,12 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
-{% block title %}Працівник: {{ employee.last_name }} {{ employee.first_name }} {% endblock %}
-{% block content %}
-    <h1>Детальна інформація про працівника</h1>
+{% block title %}Працівник: {{ employee.last_name }} {{ employee.first_name }}{% endblock %}
 
-    <table border="1" cellpadding="6">
+{% block content %}
+<div class="detail-container">
+    <h1 class="page-title">Детальна інформація про працівника</h1>
+
+    <table class="detail-table">
         <tr>
             <th>ID</th>
             <td>{{ employee.id }}</td>
@@ -19,7 +21,7 @@
         </tr>
         <tr>
             <th>По-батькові</th>
-            <td>{{ employee.father_name|default:"--" }}</td>
+            <td>{{ employee.father_name|default:"—" }}</td>
         </tr>
         <tr>
             <th>Дата народження</th>
@@ -31,7 +33,7 @@
         </tr>
         <tr>
             <th>День звільнення</th>
-            <td>{{ employee.end_date|default:"--" }}</td>
+            <td>{{ employee.end_date|default:"—" }}</td>
         </tr>
         <tr>
             <th>Посада</th>
@@ -47,6 +49,8 @@
         </tr>
     </table>
 
-    <link rel="stylesheet" href="{% static 'employees/css/detail.css' %}">
-    <a class="back" href="{% url 'employees:index' %}">Назад до списку</a>
+    <a class="btn-back" href="{% url 'employees:index' %}">Назад до списку</a>
+</div>
+
+<link rel="stylesheet" href="{% static 'employees/css/detail.css' %}">
 {% endblock %}

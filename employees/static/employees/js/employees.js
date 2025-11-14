@@ -5,7 +5,7 @@
 
     // ===== Відкрити / закрити модальне вікно =====
     openBtn.addEventListener("click", () => {
-        modal.style.display = "block";
+        modal.style.display = "flex";
     });
 
     closeBtn.addEventListener("click", () => {

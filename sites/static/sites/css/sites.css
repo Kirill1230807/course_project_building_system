@@ -1,4 +1,4 @@
-﻿body {
+﻿main {
     background-color: #FFFFFF;
     color: #2C3E50;
     font-family: 'Segoe UI', sans-serif;
@@ -31,6 +31,30 @@ h1 {
 #openModalBtn:hover {
     background-color: #D35400;
 }
+
+.back-btn-wrapper {
+    text-align: center;
+}
+
+.btn-back {
+    background-color: #E67E22;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.3s ease;
+    display: inline-block;   /* важливо: inline, щоб не тягнулась на всю ширину */
+    text-decoration: none;
+    margin: 20px auto;
+}
+
+.btn-back:hover {
+    background-color: #cf6d1b;
+}
+
 
 .modal {
     display: none;
@@ -131,7 +155,6 @@ form button:hover {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 25px;
     background-color: #FFFFFF;
     border-radius: 10px;
     overflow: hidden;

@@ -1,61 +1,84 @@
 ﻿{% extends "core/layout.html" %}
+{% load static %}
 {% block title %}Бригади за видом робіт{% endblock %}
 
 {% block content %}
-    <h2>Звіт: Бригади, що виконували певний вид робіт</h2>
 
-    <form method="get" style="margin-bottom: 20px;">
-        <label>Вид робіт:</label>
-        <select name="work_id">
-            <option value="">— Всі —</option>
-            {% for w in works %}
-                <option value="{{ w.0 }}"
-                        {% if request.GET.work_id == w.0|stringformat:"s" %}selected{% endif %}>{{ w.1 }}</option>
-            {% endfor %}
-        </select>
+<div class="report-container">
 
-        <label style="margin-left:10px;">З дати:</label>
-        <input type="date" name="start_date" value="{{ request.GET.start_date }}">
+    <h1 class="page-title">Звіт: Бригади за видом робіт</h1>
 
-        <label style="margin-left:10px;">До дати:</label>
-        <input type="date" name="end_date" value="{{ request.GET.end_date }}">
+    <form method="get" class="filter-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Вид робіт:</label>
+                <select name="work_id">
+                    <option value="">— Всі —</option>
+                    {% for w in works %}
+                        <option value="{{ w.0 }}"
+                            {% if request.GET.work_id == w.0|stringformat:"s" %}selected{% endif %}>
+                            {{ w.1 }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <button type="submit" style="margin-left:10px;">Фільтрувати</button>
+            <div class="form-group">
+                <label>З дати:</label>
+                <input type="date" name="start_date" value="{{ request.GET.start_date }}">
+            </div>
+
+            <div class="form-group">
+                <label>До дати:</label>
+                <input type="date" name="end_date" value="{{ request.GET.end_date }}">
+            </div>
+
+            <div class="form-group form-submit">
+                <button type="submit" class="filter-btn">Фільтрувати</button>
+            </div>
+        </div>
     </form>
 
-    <table border="1" cellpadding="6">
-        <thead>
-        <tr>
-            <th>Вид робіт</th>
-            <th>Бригада</th>
-            <th>Об’єкт</th>
-            <th>Дільниця</th>
-            <th>Початок</th>
-            <th>Завершення</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% if results %}
-            {% for r in results %}
-                <tr>
-                    <td>{{ r.0 }}</td> <!-- work_name -->
-                    <td>{{ r.1 }}</td> <!-- brigade_name -->
-                    <td>{{ r.2 }}</td> <!-- site_name -->
-                    <td>{{ r.3 }}</td> <!-- section_name -->
-                    <td>{{ r.4|date:"d.m.Y" }}</td> <!-- section_start -->
-                    <td>{{ r.5|date:"d.m.Y" }}</td> <!-- section_end -->
-                </tr>
-            {% endfor %}
-        {% else %}
+    <div class="table-wrapper">
+        <table>
+            <thead>
             <tr>
-                <td colspan="6" class="text-center">Дані відсутні</td>
+                <th>Вид робіт</th>
+                <th>Бригада</th>
+                <th>Об’єкт</th>
+                <th>Дільниця</th>
+                <th>Початок</th>
+                <th>Завершення</th>
             </tr>
-        {% endif %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            {% if results %}
+                {% for r in results %}
+                <tr>
+                    <td>{{ r.0 }}</td>
+                    <td>{{ r.1 }}</td>
+                    <td>{{ r.2 }}</td>
+                    <td>{{ r.3 }}</td>
+                    <td>{{ r.4|date:"d.m.Y" }}</td>
+                    <td>{{ r.5|date:"d.m.Y" }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6" class="no-data">Дані відсутні</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            <div class="alert">{{ message }}</div>
         {% endfor %}
     {% endif %}
+
+</div>
+
+<link rel="stylesheet" href="{% static 'reports/css/brigades_by_work.css' %}">
 {% endblock %}

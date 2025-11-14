@@ -1,46 +1,61 @@
 ﻿{% extends "core/layout.html" %}
+{% load static %}
 {% block content %}
-    <div class="container mt-4">
-        <h2>Звіт: Перевищення матеріалів по кошторису</h2>
-        <form method="post" class="mb-3">
-            {% csrf_token %}
-            <label>Дільниця:</label>
-            <select name="section_id">
-                <option value="all">Всі дільниці</option>
-                {% for s in sections %}
-                    <option value="{{ s.0 }}" {% if s.0 == selected_section %}selected{% endif %}>{{ s.1 }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-primary">Показати</button>
-        </form>
 
-        {% if data %}
-            <table class="table table-bordered table-striped mt-3">
-                <thead class="table-light">
-                <tr>
-                    <th>Матеріал</th>
-                    <th>План (од.)</th>
-                    <th>Факт (од.)</th>
-                    <th>Перевищення</th>
-                    <th>Дільниця</th>
-                    <th>Об'єкт</th>
+<div class="report-container">
+
+    <h1 class="page-title">Звіт: Перевищення матеріалів по кошторису</h1>
+
+    <form method="post" class="filter-form">
+        {% csrf_token %}
+
+        <label>Дільниця:</label>
+        <select name="section_id">
+            <option value="all">Всі дільниці</option>
+            {% for s in sections %}
+                <option value="{{ s.0 }}"
+                        {% if s.0 == selected_section %}selected{% endif %}>
+                    {{ s.1 }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="filter-btn">Показати</button>
+    </form>
+
+    {% if data %}
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th>Матеріал</th>
+                <th>План (од.)</th>
+                <th>Факт (од.)</th>
+                <th>Перевищення</th>
+                <th>Дільниця</th>
+                <th>Об'єкт</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in data %}
+                <tr class="{% if row.overused_qty > 0 %}overused-row{% endif %}">
+                    <td>{{ row.material_name }}</td>
+                    <td>{{ row.planned_qty }}</td>
+                    <td>{{ row.used_qty }}</td>
+                    <td>{{ row.overused_qty }}</td>
+                    <td>{{ row.section_name }}</td>
+                    <td>{{ row.site_name }}</td>
                 </tr>
-                </thead>
-                <tbody>
-                {% for row in data %}
-                    <tr {% if row.overused_qty > 0 %}style="background-color:#ffe0e0;"{% endif %}>
-                        <td>{{ row.material_name }}</td>
-                        <td>{{ row.planned_qty }}</td>
-                        <td>{{ row.used_qty }}</td>
-                        <td>{{ row.overused_qty }}</td>
-                        <td>{{ row.section_name }}</td>
-                        <td>{{ row.site_name }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% elif selected_section is not none %}
-            <p>Перевищень не виявлено.</p>
-        {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
+    {% elif selected_section is not none %}
+        <p class="no-data">Перевищень не виявлено.</p>
+    {% endif %}
+
+</div>
+
+<link rel="stylesheet" href="{% static 'reports/css/overused_materials.css' %}">
+
 {% endblock %}

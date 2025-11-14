@@ -79,7 +79,7 @@ aside {
 /* Main content area */
 main {
     flex: 1;
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     color: white;
     display: flex;
     flex-direction: column;

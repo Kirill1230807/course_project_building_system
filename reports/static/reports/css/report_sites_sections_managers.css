@@ -1,0 +1,81 @@
+﻿/* ===== БАЗА ===== */
+main {
+    background-color: #FFFFFF;
+    color: #2C3E50;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===== ЗАГОЛОВОК ===== */
+h2 {
+    color: #E67E22;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+/* ===== КОНТЕЙНЕР ===== */
+.container {
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+/* ===== ТАБЛИЦЯ ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+    border: 1px solid #DDDDDD;
+}
+
+table th,
+table td {
+    padding: 12px 14px;
+    border: 1px solid #DDDDDD;
+    text-align: center;
+    font-size: 15px;
+}
+
+table th {
+    background-color: #F7F7F7;
+    color: #2C3E50;
+    font-weight: 700;
+}
+
+table tr:nth-child(even) {
+    background-color: #FAFAFA;
+}
+
+table tr:hover {
+    background-color: #FFF3E0;
+}
+
+/* ===== ТЕКСТ "Дані відсутні" ===== */
+p {
+    text-align: center;
+    color: #7F8C8D;
+    font-style: italic;
+}
+
+/* ===== АДАПТИВ ===== */
+@media (max-width: 768px) {
+
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    table th, table td {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+}

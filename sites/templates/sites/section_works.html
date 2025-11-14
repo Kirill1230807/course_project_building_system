@@ -5,10 +5,8 @@
 {% block content %}
     <h1 class="page-title">Роботи дільниці "{{ section.name }}"</h1>
 
-    <!-- Кнопка відкриття модального вікна -->
-    <button id="openModalBtn" class="btn-primary">Додати роботу</button>
+    <button id="openModalBtn">Додати роботу</button>
 
-    <!-- Модальне вікно -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <span id="closeModalBtn" class="close">&times;</span>
@@ -18,7 +16,7 @@
                 {% csrf_token %}
                 <label>Вид робіт:</label>
                 <select name="work_type_id" required>
-                    <option value="">— Оберіть вид робіт —</option>
+                    <option value="">-- Оберіть вид робіт --</option>
                     {% for id, name, cost in work_types %}
                         <option value="{{ id }}">{{ name }} ({{ cost }} грн/од.)</option>
                     {% endfor %}
@@ -67,7 +65,7 @@
 
             <td>
                 <a href="{% url 'sites:edit_section_work' w.0 %}?site_id={{ site_id }}"
-                   class="btn-primary btn-sm">
+                   class="btn-edit">
                     Редагувати терміни
                 </a>
 
@@ -91,6 +89,6 @@
 
     <a href="{% url 'sites:sections' site_id %}" class="btn-back">Назад до дільниць</a>
 
-    <link rel="stylesheet" href="{% static 'sites/css/works.css' %}">
+    <link rel="stylesheet" href="{% static 'sites/css/section_works.css' %}">
     <script src="{% static 'sites/js/works.js' %}"></script>
 {% endblock %}
