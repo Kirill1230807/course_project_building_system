@@ -6,17 +6,14 @@
 {% block content %}
     <h1>Матеріали та постачальники</h1>
 
-    <!-- Вкладки -->
     <div class="tabs">
         <button class="tab-button active" data-tab="materials">Матеріали</button>
         <button class="tab-button" data-tab="suppliers">Постачальники</button>
     </div>
 
-    <!-- ======= Блок з матеріалами ======= -->
     <div id="materials" class="tab-content active">
         <button id="openMaterialModal" class="add-btn">Додати матеріал</button>
 
-        <!-- Модальне вікно для матеріалів -->
         <div id="materialModal" class="modal">
             <div class="modal-content">
                 <span class="close" id="closeMaterialModal">&times;</span>
@@ -31,7 +28,7 @@
 
                     <label>Постачальник:</label>
                     <select name="supplier_id" required>
-                        <option value="">— Оберіть постачальника —</option>
+                        <option value="">-- Оберіть постачальника --</option>
                         {% for id, name in suppliers %}
                             <option value="{{ id }}">{{ name }}</option>
                         {% endfor %}
@@ -39,7 +36,7 @@
 
                     <label>Одиниця вимірювання:</label>
                     <select name="unit_id" required>
-                        <option value="">— Оберіть одиницю —</option>
+                        <option value="">-- Оберіть одиницю --</option>
                         {% for id, name, short in units %}
                             <option value="{{ id }}">{{ name }} ({{ short }})</option>
                         {% endfor %}
@@ -57,46 +54,44 @@
         </div>
 
         <hr>
-
-        <!-- Таблиця матеріалів -->
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Назва</th>
-                <th>Опис</th>
-                <th>Постачальник</th>
-                <th>Одиниця</th>
-                <th>Ціна</th>
-                <th>Кількість</th>
-                <th>Дії</th>
-            </tr>
-            {% for m in materials %}
+        <div class="table-wrapper">
+            <table>
                 <tr>
-                    <td>{{ m.id }}</td>
-                    <td>{{ m.name }}</td>
-                    <td>{{ m.description|default:"—" }}</td>
-                    <td>{{ m.supplier }}</td>
-                    <td>{{ m.unit }}</td>
-                    <td>{{ m.price }}</td>
-                    <td>{{ m.count }}</td>
-                    <td><a href="{% url 'materials:delete' m.id %}" onclick="return confirm('Видалити матеріал?')">Видалити</a>
-                        |
-                        <a href="{% url 'materials:edit' m.id %}">Редагувати</a>
-                    </td>
+                    <th>ID</th>
+                    <th>Назва</th>
+                    <th>Опис</th>
+                    <th>Постачальник</th>
+                    <th>Одиниця</th>
+                    <th>Ціна</th>
+                    <th>Кількість</th>
+                    <th>Дії</th>
                 </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="8">Немає матеріалів</td>
-                </tr>
-            {% endfor %}
-        </table>
+                {% for m in materials %}
+                    <tr>
+                        <td>{{ m.id }}</td>
+                        <td>{{ m.name }}</td>
+                        <td>{{ m.description|default:"—" }}</td>
+                        <td>{{ m.supplier }}</td>
+                        <td>{{ m.unit }}</td>
+                        <td>{{ m.price }}</td>
+                        <td>{{ m.count }}</td>
+                        <td><a href="{% url 'materials:delete' m.id %}" onclick="return confirm('Видалити матеріал?')">Видалити</a>
+                            |
+                            <a href="{% url 'materials:edit' m.id %}">Редагувати</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8">Немає матеріалів</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
     </div>
 
-    <!-- ======= Блок з постачальниками ======= -->
     <div id="suppliers" class="tab-content">
         <button id="openSupplierModal" class="add-btn">Додати постачальника</button>
 
-        <!-- Модальне вікно для постачальників -->
         <div id="supplierModal" class="modal">
             <div class="modal-content">
                 <span class="close" id="closeSupplierModal">&times;</span>
@@ -124,35 +119,36 @@
         </div>
 
         <hr>
-
-        <!-- Таблиця постачальників -->
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Назва компанії</th>
-                <th>Контактна особа</th>
-                <th>Телефон</th>
-                <th>Email</th>
-                <th>Адреса</th>
-                <th>Дії</th>
-            </tr>
-            {% for s in suppliers_list %}
+        <div class="table-wrapper">
+            <table>
                 <tr>
-                    <td>{{ s.id }}</td>
-                    <td>{{ s.name }}</td>
-                    <td>{{ s.contact_name|default:"—" }}</td>
-                    <td>{{ s.phone|default:"—" }}</td>
-                    <td>{{ s.email|default:"—" }}</td>
-                    <td>{{ s.address|default:"—" }}</td>
-                    <td><a href="{% url 'materials:edit_supplier' s.id %}">Редагувати</a> |
-                        <a href="{% url 'materials:delete_supplier' s.id %}" onclick="return confirm('Видалити постачальника?')">Видалити</a></td>
+                    <th>ID</th>
+                    <th>Назва компанії</th>
+                    <th>Контактна особа</th>
+                    <th>Телефон</th>
+                    <th>Email</th>
+                    <th>Адреса</th>
+                    <th>Дії</th>
                 </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="7">Постачальників поки немає</td>
-                </tr>
-            {% endfor %}
-        </table>
+                {% for s in suppliers_list %}
+                    <tr>
+                        <td>{{ s.id }}</td>
+                        <td>{{ s.name }}</td>
+                        <td>{{ s.contact_name|default:"—" }}</td>
+                        <td>{{ s.phone|default:"—" }}</td>
+                        <td>{{ s.email|default:"—" }}</td>
+                        <td>{{ s.address|default:"—" }}</td>
+                        <td><a href="{% url 'materials:edit_supplier' s.id %}">Редагувати</a> |
+                            <a href="{% url 'materials:delete_supplier' s.id %}"
+                               onclick="return confirm('Видалити постачальника?')">Видалити</a></td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7">Постачальників поки немає</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
     </div>
 
     <link rel="stylesheet" href="{% static 'materials/css/materials.css' %}">

@@ -1,39 +1,40 @@
 ﻿{% extends "core/layout.html" %}
+{% load static %}
 {% block title %}Фахівці інженерно-технічного персоналу{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
+    <div class="container mt-4">
 
-    <h2>Звіт: Інженерно-технічний персонал</h2>
+        <h2>Звіт: Інженерно-технічний персонал</h2>
 
-    <form method="get" class="mb-3">
+        <form method="get" class="mb-3">
 
-        <label>Управління:</label>
-        <select name="management_id">
-            <option value="">-- Всі --</option>
-            {% for m in managements %}
-                <option value="{{ m.0 }}" {% if selected_management == m.0|stringformat:"s" %}selected{% endif %}>
-                    {{ m.1 }}
-                </option>
-            {% endfor %}
-        </select>
+            <label>Управління:</label>
+            <select name="management_id">
+                <option value="">-- Всі --</option>
+                {% for m in managements %}
+                    <option value="{{ m.0 }}" {% if selected_management == m.0|stringformat:"s" %}selected{% endif %}>
+                        {{ m.1 }}
+                    </option>
+                {% endfor %}
+            </select>
 
-        <label>Дільниця:</label>
-        <select name="section_id">
-            <option value="">-- Всі --</option>
-            {% for s in sections %}
-                <option value="{{ s.0 }}" {% if selected_section == s.0|stringformat:"s" %}selected{% endif %}>
-                    {{ s.1 }}
-                </option>
-            {% endfor %}
-        </select>
+            <label>Дільниця:</label>
+            <select name="section_id">
+                <option value="">-- Всі --</option>
+                {% for s in sections %}
+                    <option value="{{ s.0 }}" {% if selected_section == s.0|stringformat:"s" %}selected{% endif %}>
+                        {{ s.1 }}
+                    </option>
+                {% endfor %}
+            </select>
 
-        <button type="submit" class="btn-primary">Фільтрувати</button>
-    </form>
+            <button type="submit">Фільтрувати</button>
+        </form>
 
-    {% if data %}
-        <table class="table table-bordered table-striped">
-            <thead class="table-light">
+        {% if data %}
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
                 <tr>
                     <th>#</th>
                     <th>ПІБ</th>
@@ -42,22 +43,24 @@
                     <th>Об’єкт</th>
                     <th>Управління</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 {% for row in data %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ row.full_name }}</td>
-                    <td>{{ row.position_name }}</td>
-                    <td>{{ row.section_name|default:"—" }}</td>
-                    <td>{{ row.site_name|default:"—" }}</td>
-                    <td>{{ row.management_name|default:"—" }}</td>
-                </tr>
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ row.full_name }}</td>
+                        <td>{{ row.position_name }}</td>
+                        <td>{{ row.section_name|default:"—" }}</td>
+                        <td>{{ row.site_name|default:"—" }}</td>
+                        <td>{{ row.management_name|default:"—" }}</td>
+                    </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Дані відсутні.</p>
-    {% endif %}
-</div>
+                </tbody>
+            </table>
+        {% else %}
+            <p>Дані відсутні.</p>
+        {% endif %}
+    </div>
+    <link rel="stylesheet" href="{% static 'reports/css/engineers.css' %}">
+
 {% endblock %}

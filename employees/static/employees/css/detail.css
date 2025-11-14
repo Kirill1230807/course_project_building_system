@@ -1,83 +1,88 @@
-﻿/* ==== Загальний фон і текст ==== */
-body {
-    background-color: #3b3b3b;
-    color: #fff;
+﻿main {
+    background-color: #FFFFFF;
+    color: #2C3E50;
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
 }
 
-h1 {
-    font-size: 28px;
-    font-weight: bold;
-    text-align: center;
-    color: #00e676;
-    margin-top: 30px;
-    margin-bottom: 30px;
+.detail-container {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 30px 35px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    border: 1px solid #DDDDDD;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-/* ==== Таблиця деталей ==== */
-table {
-    width: 70%;
-    margin: 0 auto;
+.page-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #E67E22;
+}
+
+/* Таблиця */
+.detail-table {
+    width: 100%;
     border-collapse: collapse;
-    background-color: #2d2d2d;
+    background-color: #fff;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    border: 1px solid #DDDDDD;
 }
 
-table th,
-table td {
-    padding: 12px 16px;
-    border: 1px solid #555;
+.detail-table th,
+.detail-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #EEE;
     text-align: left;
     font-size: 15px;
 }
 
-table th {
-    background-color: #1c1c1c;
-    color: #00e676;
-    width: 35%;
-    font-weight: 600;
+.detail-table th {
+    width: 40%;
+    font-weight: 700;
+    background-color: #F7F7F7;
 }
 
-table tr:hover td {
-    background-color: #424242;
+.detail-table tr:nth-child(even) td {
+    background-color: #FAFAFA;
 }
 
-/* ==== Кнопка "Назад до списку" ==== */
-.back {
+/* Кнопка Назад */
+.btn-back {
     display: block;
-    width: fit-content;
-    margin: 25px auto;
-    padding: 10px 20px;
-    background-color: #2196F3;
-    color: #fff;
+    text-align: center;
+    margin: 25px auto 0;
+    padding: 12px 20px;
+    background-color: #E67E22;
+    color: white;
     text-decoration: none;
     border-radius: 6px;
+    width: 60%;
     font-weight: 600;
-    transition: background-color 0.3s ease;
+    transition: 0.3s ease;
 }
 
-.back:hover {
-    background-color: #1976D2;
+.btn-back:hover {
+    background-color: #d65f0c;
 }
 
-/* ==== Адаптивність ==== */
+/* Адаптивність */
 @media (max-width: 768px) {
-    table {
-        width: 95%;
+    .detail-container {
+        padding: 20px;
     }
 
-    table th,
-    table td {
-        padding: 10px;
+    .detail-table th, .detail-table td {
         font-size: 14px;
+        padding: 10px;
     }
 
-    a {
-        width: 80%;
-        text-align: center;
+    .btn-back {
+        width: 90%;
     }
 }

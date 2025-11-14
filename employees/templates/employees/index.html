@@ -1,87 +1,95 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
 {% block title %}Працівники{% endblock %}
+
 {% block content %}
+
 <h1>Працівники</h1>
 
-<!-- Кнопка відкриття модального вікна -->
 <button id="openModalBtn">Додати працівника</button>
 
 <!-- Модальне вікно -->
 <div id="modal" class="modal">
-  <div class="modal-content">
-    <span id="closeModalBtn" class="close">&times;</span>
-    <h2>Новий працівник</h2>
+    <div class="modal-content">
+        <span id="closeModalBtn" class="close">&times;</span>
+        <h2>Новий працівник</h2>
 
-    <form id="employeeForm" method="post" action="{% url 'employees:add' %}">
-      {% csrf_token %}
+        <form id="employeeForm" method="post" action="{% url 'employees:add' %}">
+            {% csrf_token %}
 
-      <label>Ім’я:</label>
-      <input type="text" name="first_name" value="{{ form_data.first_name|default:'' }}" required><br>
+            <label>Ім’я:</label>
+            <input type="text" name="first_name" value="{{ form_data.first_name|default:'' }}" required>
 
-      <label>Прізвище:</label>
-      <input type="text" name="last_name" value="{{ form_data.last_name|default:'' }}" required><br>
+            <label>Прізвище:</label>
+            <input type="text" name="last_name" value="{{ form_data.last_name|default:'' }}" required>
 
-      <label>По-батькові:</label>
-      <input type="text" name="father_name" value="{{ form_data.father_name|default:'' }}"><br>
+            <label>По-батькові:</label>
+            <input type="text" name="father_name" value="{{ form_data.father_name|default:'' }}">
 
-      <label>Дата народження:</label>
-      <input type="date" name="birthday" value="{{ form_data.birthday|default:'' }}" required><br>
+            <label>Дата народження:</label>
+            <input type="date" name="birthday" value="{{ form_data.birthday|default:'' }}" required>
 
-      <label>Дата прийняття на роботу:</label>
-      <input type="date" name="start_date" value="{{ form_data.start_date|default:'' }}" required><br>
+            <label>Дата прийняття на роботу:</label>
+            <input type="date" name="start_date" value="{{ form_data.start_date|default:'' }}" required>
 
-      <label>Посада:</label>
-      <select id="positionSelect" name="position_id" required>
-        <option value="">— Оберіть посаду —</option>
-        {% for id, title, category in positions %}
-        <option value="{{ id }}" {% if form_data.position_id == id|stringformat:"s" %}selected{% endif %}>
-          {{ title }}
-        </option>
-        {% endfor %}
-      </select><br>
+            <label>Посада:</label>
+            <select id="positionSelect" name="position_id" required>
+                <option value="">-- Оберіть посаду --</option>
+                {% for id, title, category in positions %}
+                <option value="{{ id }}" {% if form_data.position_id == id|stringformat:"s" %}selected{% endif %}>
+                    {{ title }}
+                </option>
+                {% endfor %}
+            </select>
 
-      <label>Зарплата:</label>
-      <input type="number" name="salary" step="0.01" value="{{ form_data.salary|default:'' }}" required><br>
+            <label>Зарплата (₴):</label>
+            <input type="number" name="salary" step="0.01" value="{{ form_data.salary|default:'' }}" required>
 
-      {% if error_msg %}
-      <p class="error" style="color:red;">{{ error_msg }}</p>
-      {% endif %}
+            {% if error_msg %}
+            <p class="error-msg">{{ error_msg }}</p>
+            {% endif %}
 
-      <button type="submit">Зберегти</button>
-    </form>
-  </div>
+            <button type="submit">Зберегти</button>
+        </form>
+    </div>
 </div>
 
 <hr>
 
-<!-- Таблиця працівників -->
-<table border="1" cellpadding="6">
-  <tr>
-    <th>№</th>
-    <th>Прізвище</th>
-    <th>Ім’я</th>
-    <th>Посада</th>
-    <th>Оклад</th>
-    <th>Дії</th>
-  </tr>
+<div class="table-wrapper">
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Прізвище</th>
+                <th>Ім’я</th>
+                <th>Посада</th>
+                <th>Оклад</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
 
-  {% for e in employees %}
-  <tr>
-    <td>{{ forloop.counter }}</td>
-    <td>{{ e.last_name }}</td>
-    <td>{{ e.first_name }}</td>
-    <td>{{ e.position }}</td>
-    <td>{{ e.salary }}</td>
-    <td>
-      <a href="{% url 'employees:delete' e.id %}" onclick="return confirmDelete('{{ e.first_name }} {{ e.last_name }}')">Видалити</a> |
-      <a href="{% url 'employees:detail' e.id %}">Детальніше</a> |
-      <a href="{% url 'employees:edit' e.id %}">Редагувати</a>
-    </td>
-  </tr>
-  {% endfor %}
-</table>
+        <tbody>
+        {% for e in employees %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ e.last_name }}</td>
+                <td>{{ e.first_name }}</td>
+                <td>{{ e.position }}</td>
+                <td>{{ e.salary }}</td>
+                <td>
+                    <a href="{% url 'employees:delete' e.id %}"
+                       onclick="return confirmDelete('{{ e.first_name }} {{ e.last_name }}')">Видалити</a> |
+                    <a href="{% url 'employees:detail' e.id %}">Детальніше</a> |
+                    <a href="{% url 'employees:edit' e.id %}">Редагувати</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 <link rel="stylesheet" href="{% static 'employees/css/employees.css' %}">
 <script src="{% static 'employees/js/employees.js' %}"></script>
+
 {% endblock %}

@@ -1,9 +1,10 @@
 ﻿{% extends "core/layout.html" %}
+{% load static %}
 {% block content %}
     <div class="container mt-4">
         <h2>Історія доставок матеріалів</h2>
 
-        <form method="get" class="row g-3 mt-3 mb-4">
+        <form method="get" class="delivery-filter-form">
             <div class="col-md-3">
                 <label>Об’єкт:</label>
                 <select name="site_id" id="siteSelect" class="form-select">
@@ -35,11 +36,11 @@
             </div>
 
             <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">🔍 Фільтрувати</button>
+                <button type="submit">Фільтрувати</button>
             </div>
         </form>
 
-        <table class="table table-striped table-dark table-bordered align-middle">
+        <table class="">
             <thead class="table-success text-center">
             <tr>
                 <th>ID</th>
@@ -79,7 +80,7 @@
             </tbody>
         </table>
     </div>
-
+    <link rel="stylesheet" href="{% static 'deliveries/css/deliveries_list.css' %}">
     <script>
         document.getElementById('siteSelect').addEventListener('change', function () {
             const siteId = this.value;

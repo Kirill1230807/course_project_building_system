@@ -1,4 +1,5 @@
 ﻿{% extends "core/layout.html" %}
+{% load static %}
 {% block title %}Склад бригад на об’єкті{% endblock %}
 
 {% block content %}
@@ -16,7 +17,7 @@
                 </option>
             {% endfor %}
         </select>
-        <button type="submit" class="btn-primary">Показати</button>
+        <button type="submit" class="">Показати</button>
     </form>
 
     {% if data %}
@@ -50,4 +51,5 @@
         <p>Даних немає.</p>
     {% endif %}
 </div>
+    <link rel="stylesheet" href="{% static 'reports/css/brigade_staff.css' %}">
 {% endblock %}

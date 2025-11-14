@@ -97,14 +97,20 @@ def detail_site(request, site_id):
         cursor.execute("""
                        SELECT ss.id,
                               ss.name,
-                              COALESCE(e.last_name || ' ' || e.first_name || ' ' || e.father_name, NULL) AS chief_name
-                       FROM site_sections ss
-                                LEFT JOIN employees e ON ss.chief_employee_id = e.id
+                              TRIM(
+                                      COALESCE(e.last_name, '') || ' ' ||
+                                      COALESCE(e.first_name, '') || ' ' ||
+                                      COALESCE(e.father_name, '')
+                              ) AS chief_name
+                       FROM sections ss
+                                LEFT JOIN employees e ON ss.chief_id = e.id
                        WHERE ss.site_id = %s
                        ORDER BY ss.id;
                        """, [site_id])
+
         sections = [
-            {"id": r[0], "name": r[1], "chief_name": r[2]} for r in cursor.fetchall()
+            {"id": r[0], "name": r[1], "chief_name": r[2]}
+            for r in cursor.fetchall()
         ]
 
     return render(request, "sites/detail_site.html", {
@@ -309,14 +315,16 @@ def edit_section(request, section_id):
 
 
 def delete_section(request, section_id):
-    section = SectionQueries.get_by_id(section_id)
-    if not section:
-        return HttpResponseNotFound("Дільницю не знайдено")
+    site_id = request.GET.get("site_id")  # зчитуємо site_id з URL
 
-    site_id = request.GET.get("site_id") or section[2]
+    with connection.cursor() as cursor:
+        cursor.execute("DELETE FROM sections WHERE id=%s;", [section_id])
 
-    SectionQueries.delete(section_id)
-    return redirect("sites:sections", site_id=site_id)
+    if site_id:
+        return redirect(f"/sites/{site_id}")
+
+    return redirect("/sites/")
+
 
 
 # ========================== РОБОТА ==============================

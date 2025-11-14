@@ -1,100 +1,112 @@
-﻿body {
-    background-color: #3b3b3b;
-    color: #fff;
+﻿/* ===== Загальні стилі сторінки ===== */
+main {
+    background-color: #ffffff;
+    color: #2C3E50;
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
 }
 
+/* ===== Заголовок ===== */
 h1 {
     text-align: center;
-    color: #00e676;
-    margin-top: 30px;
-    margin-bottom: 25px;
-    font-size: 28px;
+    color: #E67E22;
+    margin-top: 25px;
+    margin-bottom: 20px;
+    font-size: 30px;
     font-weight: 700;
 }
 
+/* ===== Форма ===== */
 form {
-    background-color: #2d2d2d;
+    background-color: #FFFFFF;
     width: 480px;
     margin: 0 auto;
     padding: 25px 30px;
     border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    border: 1px solid #DDDDDD;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
 form label {
     display: block;
     margin-top: 12px;
-    font-weight: 500;
-    color: #e0e0e0;
+    font-weight: 600;
+    color: #2C3E50;
 }
 
+/* ===== Поля вводу ===== */
 form input[type="text"],
 form select,
 form textarea {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     margin-top: 5px;
-    border: 1px solid #666;
     border-radius: 6px;
-    background-color: #444;
-    color: #fff;
+    border: 1px solid #DDDDDD;
+    background-color: #F7F7F7;
+    color: #2C3E50;
     box-sizing: border-box;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
+    font-size: 15px;
+    transition: 0.2s ease;
 }
 
 form input:focus,
 form select:focus,
 form textarea:focus {
-    border-color: #00e676;
-    background-color: #555;
+    border-color: #E67E22;
+    background-color: #FFF3E0;
     outline: none;
 }
 
 textarea {
     resize: vertical;
+    min-height: 80px;
 }
 
+/* ===== Кнопка збереження ===== */
 form button {
     width: 100%;
-    background-color: #4CAF50;
+    background-color: #E67E22;
     color: white;
-    padding: 10px 20px;
+    padding: 12px;
     border: none;
     border-radius: 6px;
-    font-weight: 600;
-    font-size: 15px;
-    margin-top: 20px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: 0.3s ease;
 }
 
 form button:hover {
-    background-color: #388E3C;
+    background-color: #D35400;
 }
 
+/* ===== Повідомлення про помилки ===== */
 p[style*="color:red"] {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 10px;
     font-weight: 600;
+    color: #E74C3C !important;
 }
 
+/* ===== Кнопка Назад ===== */
 a {
     display: block;
     text-align: center;
     margin-top: 20px;
-    color: #2196F3;
+    color: #E67E22;
     text-decoration: none;
     font-weight: 600;
-    transition: color 0.3s ease;
+    transition: 0.3s ease;
 }
 
 a:hover {
-    color: #64b5f6;
+    color: #D35400;
 }
 
+/* ===== Адаптивність ===== */
 @media (max-width: 600px) {
     form {
         width: 90%;
@@ -102,10 +114,10 @@ a:hover {
     }
 
     h1 {
-        font-size: 22px;
+        font-size: 24px;
     }
 
     form button {
-        font-size: 14px;
+        font-size: 15px;
     }
 }

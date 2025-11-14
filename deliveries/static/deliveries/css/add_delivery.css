@@ -1,0 +1,141 @@
+﻿/* ===== Базовий стиль сторінки ===== */
+main {
+    background-color: #FFFFFF;
+    color: #2C3E50;
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    padding: 20px 40px;
+}
+
+/* ===== Заголовки ===== */
+h2, h4 {
+    color: #E67E22;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    display: block;
+    color: #2C3E50;
+}
+
+/* ===== Поля вводу ===== */
+input[type="text"],
+input[type="date"],
+input[type="number"],
+textarea,
+.form-control,
+.form-select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #DDDDDD;
+    background-color: #F7F7F7;
+    color: #2C3E50;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+textarea {
+    min-height: 120px;
+    max-height: 120px;
+    resize: none;
+}
+
+/* ===== Кнопки ===== */
+button,
+.btn,
+.btn-primary,
+.btn-secondary {
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 10px 18px;
+    cursor: pointer;
+    border: none;
+    font-size: 15px;
+    transition: 0.3s ease;
+}
+
+.btn-primary,
+button[type="submit"] {
+    background-color: #E67E22;
+    color: white;
+}
+
+.btn-primary:hover,
+button[type="submit"]:hover {
+    background-color: #D35400;
+}
+
+.btn-secondary {
+    background-color: #BDC3C7;
+    color: #2C3E50;
+}
+
+.btn-secondary:hover {
+    background-color: #A6ACAF;
+}
+
+.add-row-btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+/* ===== Повідомлення ===== */
+.alert {
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background-color: #E8F8F0;
+    color: #27AE60;
+    border: 1px solid #A9DFBF;
+}
+
+.alert-danger {
+    background-color: #FDEDEC;
+    color: #C0392B;
+    border: 1px solid #F5B7B1;
+}
+
+/* ===== Матеріали ===== */
+.material-row {
+    margin-bottom: 15px;
+    background-color: #FAFAFA;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #EEEEEE;
+}
+
+/* ===== Розділювач ===== */
+hr {
+    margin: 30px 0;
+    border: none;
+    border-top: 2px solid #EEEEEE;
+}
+
+/* ===== Адаптив ===== */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    .row > div {
+        margin-bottom: 15px;
+    }
+}

@@ -1,119 +1,130 @@
-﻿/* ==== Основний фон ==== */
-body {
-    background-color: #3b3b3b;
-    color: #fff;
+﻿/* === Загальні стилі сторінки === */
+main {
+    background-color: #FFFFFF;
+    color: #2C3E50;
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
 }
 
-/* ==== Заголовок ==== */
+/* === Заголовок === */
 h1 {
     text-align: center;
-    color: #00e676;
-    font-size: 28px;
+    color: #E67E22;
+    font-size: 30px;
+    font-weight: 700;
     margin-top: 25px;
     margin-bottom: 25px;
 }
 
-/* ==== Контейнер форми ==== */
+/* === Контейнер форми === */
 form {
-    width: 70%;
+    width: 500px;
+    background-color: #FFFFFF;
+    border: 1px solid #DDDDDD;
+    border-radius: 12px;
+    padding: 25px 30px;
     margin: 0 auto;
-    background-color: #555;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
-/* ==== Поля вводу ==== */
+/* === Мітки === */
 form label {
     display: block;
     margin-top: 15px;
-    margin-bottom: 5px;
     font-weight: 600;
-    color: #fff;
+    color: #2C3E50;
 }
 
+/* === Поля вводу === */
 form input[type="text"],
-form input[type="number"],
 form input[type="date"],
-form select {
+form select,
+form textarea {
     width: 100%;
     padding: 10px;
-    border: none;
+    margin-top: 6px;
     border-radius: 6px;
-    background-color: #777;
-    color: #fff;
-    box-sizing: border-box;
+    border: 1px solid #DDDDDD;
+    background-color: #F7F7F7;
+    color: #2C3E50;
     font-size: 15px;
-    transition: background-color 0.3s ease;
+    transition: 0.2s ease;
+    box-sizing: border-box;
 }
 
 form input:focus,
-form select:focus {
-    background-color: #888;
+form select:focus,
+form textarea:focus {
+    border-color: #E67E22;
+    background-color: #FFF3E0;
     outline: none;
 }
 
-/* ==== Кнопка "Зберегти зміни" ==== */
+/* === Текстове поле === */
+textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+/* === Кнопка збереження === */
 form button {
     width: 100%;
-    margin-top: 25px;
-    background-color: #4CAF50;
+    background-color: #E67E22;
     color: white;
-    padding: 12px 20px;
+    padding: 12px 0;
     border: none;
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
     font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    transition: background-color 0.3s ease;
+    margin-top: 22px;
+    transition: 0.3s ease;
 }
 
 form button:hover {
-    background-color: #3fa043;
+    background-color: #D35400;
 }
 
-/* ==== Повідомлення про помилку ==== */
-.error {
-    color: #ff8080;
-    margin-top: 10px;
+/* === Кнопка Назад === */
+.btn-back {
+    display: block;
     text-align: center;
-    font-weight: 500;
-}
-
-/* ==== Кнопка "Назад" (якщо є) ==== */
-a.back-link {
-    display: inline-block;
-    margin-top: 15px;
-    text-decoration: none;
-    color: #81d4fa;
+    width: 200px;
+    margin: 20px auto 0 auto;
+    padding: 10px 0;
+    background-color: #E67E22;
+    color: white !important;
     font-weight: 600;
-    transition: color 0.3s ease;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: 0.3s ease;
 }
 
-a.back-link:hover {
-    color: #4fc3f7;
+.btn-back:hover {
+    background-color: #D35400;
 }
 
-/* ==== Адаптивність ==== */
-@media (max-width: 768px) {
+/* === Помилки === */
+.error {
+    color: #E74C3C;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* === Адаптивність === */
+@media (max-width: 600px) {
     form {
-        width: 90%;
-        padding: 15px;
+        width: 92%;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 24px;
     }
 
     form button {
         font-size: 15px;
-        padding: 10px;
-    }
-
-    form label {
-        font-size: 14px;
     }
 }

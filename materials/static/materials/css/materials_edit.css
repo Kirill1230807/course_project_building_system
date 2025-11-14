@@ -1,112 +1,100 @@
-﻿/* ==== Загальні стилі ==== */
-body {
-    background-color: #3b3b3b;
-    color: #fff;
+﻿body {
+    background-color: #FFFFFF;
     font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    padding: 0;
+    color: #2C3E50;
 }
 
-/* ==== Заголовок ==== */
-h1 {
+/* Контейнер */
+.edit-container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 30px 35px;
+    border-radius: 12px;
+    border: 1px solid #DDDDDD;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+/* Заголовок */
+.page-title {
     text-align: center;
-    color: #00e676;
-    margin-top: 30px;
-    margin-bottom: 25px;
+    color: #E67E22;
     font-size: 28px;
+    margin-bottom: 25px;
     font-weight: 700;
 }
 
-/* ==== Форма ==== */
-form {
-    background-color: #2d2d2d;
-    width: 450px;
-    margin: 0 auto;
-    padding: 25px 30px;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-}
-
-form label {
+/* Формa */
+.edit-form label {
     display: block;
     margin-top: 12px;
-    font-weight: 500;
-    color: #e0e0e0;
-}
-
-form input[type="text"],
-form input[type="number"],
-form select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #666;
-    border-radius: 6px;
-    background-color: #444;
-    color: #fff;
-    box-sizing: border-box;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
-}
-
-form input:focus,
-form select:focus {
-    border-color: #00e676;
-    background-color: #555;
-    outline: none;
-}
-
-form button {
-    width: 100%;
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
     font-weight: 600;
+    color: #2C3E50;
+}
+
+.edit-form input,
+.edit-form select {
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px;
     font-size: 15px;
+    background: #F7F7F7;
+    border: 1px solid #DDDDDD;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+.error-msg {
+    color: #E74C3C;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+/* Кнопка збереження */
+.save-btn {
     margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background-color: #E67E22;
+    border: none;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: 0.3s;
 }
 
-form button:hover {
-    background-color: #388E3C;
+.save-btn:hover {
+    background-color: #D35400;
 }
 
-/* ==== Повідомлення про помилку ==== */
-p[style*="color:red"] {
-    text-align: center;
-    margin-top: 15px;
-    font-weight: 600;
-}
-
-/* ==== Посилання Назад ==== */
-a {
+/* Кнопка Назад */
+.back-btn {
     display: block;
+    margin: 25px auto 0;
     text-align: center;
-    margin-top: 20px;
-    color: #2196F3;
+    width: 60%;
+    padding: 12px;
+    background-color: #E67E22;
+    color: white;
     text-decoration: none;
+    border-radius: 6px;
     font-weight: 600;
-    transition: color 0.3s ease;
+    transition: 0.3s;
 }
 
-a:hover {
-    color: #64b5f6;
+.back-btn:hover {
+    background-color: #cf6d1b;
 }
 
-/* ==== Адаптивність ==== */
-@media (max-width: 600px) {
-    form {
-        width: 90%;
+/* Адаптивність */
+@media (max-width: 768px) {
+    .edit-container {
         padding: 20px;
     }
 
-    h1 {
-        font-size: 22px;
-    }
-
-    form button {
-        font-size: 14px;
+    .back-btn {
+        width: 90%;
     }
 }

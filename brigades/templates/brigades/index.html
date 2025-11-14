@@ -41,35 +41,36 @@
     </div>
 
     <hr>
-
-    <!-- Таблиця бригад -->
-    <table border="1" cellpadding="6">
-        <tr>
-            <th>№</th>
-            <th>Назва</th>
-            <th>Бригадир</th>
-            <th>Статус</th>
-            <th>Примітки</th>
-            <th>Дії</th>
-        </tr>
-
-        {% for b in brigades %}
+    <div class="table-wrapper">
+        <!-- Таблиця бригад -->
+        <table border="1" cellpadding="6">
             <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ b.1 }}</td>
-                <td>{{ b.2|default:"--" }}</td>
-                <td>{{ b.3 }}</td>
-                <td>{{ b.4|default:"--" }}</td>
-                <td>
-                    <a href="{% url 'brigades:delete' b.0 %}" onclick="return confirm('Видалити бригаду?')">Видалити</a>
-                    |
-                    <a href="{% url 'brigades:view' b.0 %}">Склад бригади</a> |
-                    <a href="{% url 'brigades:edit' b.0%}">Редагувати</a>
-                </td>
+                <th>№</th>
+                <th>Назва</th>
+                <th>Бригадир</th>
+                <th>Статус</th>
+                <th>Примітки</th>
+                <th>Дії</th>
             </tr>
-        {% endfor %}
-    </table>
 
+            {% for b in brigades %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ b.1 }}</td>
+                    <td>{{ b.2|default:"--" }}</td>
+                    <td>{{ b.3 }}</td>
+                    <td>{{ b.4|default:"--" }}</td>
+                    <td>
+                        <a href="{% url 'brigades:delete' b.0 %}"
+                           onclick="return confirm('Видалити бригаду?')">Видалити</a>
+                        |
+                        <a href="{% url 'brigades:view' b.0 %}">Склад бригади</a> |
+                        <a href="{% url 'brigades:edit' b.0 %}">Редагувати</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
     <link rel="stylesheet" href="{% static 'brigades/css/brigades.css' %}">
     <script src="{% static 'brigades/js/brigades.js' %}"></script>
 {% endblock %}

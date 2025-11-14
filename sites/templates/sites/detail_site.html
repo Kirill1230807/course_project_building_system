@@ -1,11 +1,13 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
 
-{% block title %}Деталі об’єкта — {{ site.name }}{% endblock %}
+{% block title %}Деталі об’єкта -- {{ site.name }}{% endblock %}
 
 {% block content %}
     <h1>Будівельний об’єкт: {{ site.name }}</h1>
-
+    <div class="back-btn-wrapper">
+        <a href="{% url 'sites:index' %}" class="btn-back">Назад до списку</a>
+    </div>
     <table border="1" cellpadding="6">
         <tr>
             <th>Адреса</th>
@@ -34,24 +36,17 @@
     </table>
 
     <h3>Дільниці цього об’єкта</h3>
-    <table border="1" cellpadding="6">
+    <table border="1" cellpadding="3">
         <tr>
             <th>ID</th>
             <th>Назва дільниці</th>
             <th>Начальник дільниці</th>
-            <th>Дії</th>
         </tr>
         {% for section in sections %}
             <tr>
-                <td>{{ section.id }}</td>
+                <td>{{ forloop.counter }}</td>
                 <td>{{ section.name }}</td>
                 <td>{% if section.chief_name %}{{ section.chief_name }}{% else %}—{% endif %}</td>
-                <td>
-                    <a href="{% url 'sites:edit_section' section.id %}">Редагувати</a> |
-                    <a href="{% url 'sites:delete_section' section.id site.id %}"
-                       onclick="return confirm('Видалити дільницю?')">Видалити</a> |
-                    <a href="{% url 'reports:site_schedule' site.id %}" class="btn btn-primary">Переглянути кошторис</a>
-                </td>
             </tr>
         {% empty %}
             <tr>
@@ -59,10 +54,6 @@
             </tr>
         {% endfor %}
     </table>
-
-    <br>
-    <a href="{% url 'sites:add_section' site.id %}" class="btn">Додати дільницю</a>
-    <a href="{% url 'sites:index' %}" class="btn-back">Назад до списку</a>
 
     <link rel="stylesheet" href="{% static 'sites/css/sites.css' %}">
 {% endblock %}

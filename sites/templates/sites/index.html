@@ -1,15 +1,13 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
 
-{% block title %}Об’єкти будівництва{% endblock %}
+{% block title %}Будівельні об'єкти{% endblock %}
 
 {% block content %}
     <h1>Об’єкти будівництва</h1>
 
-    <!-- Кнопка відкриття модального вікна -->
     <button id="openModalBtn">Додати об’єкт</button>
 
-    <!-- Модальне вікно -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <span id="closeModalBtn" class="close">&times;</span>
@@ -98,7 +96,8 @@
                     <a href="{% url 'sites:edit' s.0 %}">Редагувати</a> |
                     <a href="{% url 'sites:sections' s.0 %}">Дільниці</a> |
                     <a href="{% url 'sites:delete' s.0 %}" onclick="return confirm('Видалити об’єкт?')">Видалити</a> |
-                    <a href="{% url 'reports:site_schedule' s.0 %}">Кошторис</a>
+                    <a href="{% url 'reports:site_schedule' s.0 %}">Кошторис</a> |
+                    <a href="{% url 'sites:detail' s.0%}">Детальніше</a>
                 </td>
             </tr>
         {% empty %}

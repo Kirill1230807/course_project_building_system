@@ -1,11 +1,14 @@
 ﻿{% extends "core/layout.html" %}
+{% load static %}
 {% block title %}Звіт: Техніка на об’єктах{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Звіт: Будівельна техніка за об’єктами</h2>
 
-    <form method="get" class="mb-3">
+<div class="report-container">
+
+    <h1 class="page-title">Звіт: Будівельна техніка за об’єктами</h1>
+
+    <form method="get" class="filter-form">
         <label>Об’єкт:</label>
         <select name="site_id">
             <option value="">-- Всі --</option>
@@ -15,12 +18,14 @@
                 </option>
             {% endfor %}
         </select>
-        <button type="submit">Фільтрувати</button>
+
+        <button type="submit" class="filter-btn">Фільтрувати</button>
     </form>
 
     {% if data %}
-        <table class="table table-bordered table-striped">
-            <thead class="table-light">
+    <div class="table-wrapper">
+        <table>
+            <thead>
                 <tr>
                     <th>#</th>
                     <th>Об’єкт</th>
@@ -38,13 +43,18 @@
                     <td>{{ row.equipment_name }}</td>
                     <td>{{ row.equipment_type }}</td>
                     <td>{{ row.equipment_status }}</td>
-                    <td>{{ row.equipment_notes }}</td>
+                    <td>{{ row.equipment_notes|default:"—" }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+    </div>
     {% else %}
-        <p>Дані відсутні.</p>
+        <p class="no-data">Дані відсутні.</p>
     {% endif %}
+
 </div>
+
+<link rel="stylesheet" href="{% static 'reports/css/equipment_by_site.css' %}">
+
 {% endblock %}

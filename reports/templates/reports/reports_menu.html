@@ -1,4 +1,5 @@
 ﻿{% extends "core/layout.html" %}
+{% load static %}
 {% block content %}
     <div class="container mt-4">
 
@@ -72,5 +73,5 @@
             </li>
         </ul>
     </div>
-
+<link rel="stylesheet" href="{% static 'reports/css/reports.css' %}">
 {% endblock %}

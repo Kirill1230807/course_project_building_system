@@ -17,7 +17,7 @@
 
                 <label>Начальник дільниці:</label>
                 <select name="chief_id">
-                    <option value="">— Оберіть начальника —</option>
+                    <option value="">-- Оберіть начальника --</option>
                     {% for id, name in chiefs %}
                         <option value="{{ id }}">{{ name }}</option>
                     {% endfor %}
@@ -26,7 +26,7 @@
 
                 <label>Бригада:</label>
                 <select name="brigade_id">
-                    <option value="">— Оберіть бригаду —</option>
+                    <option value="">-- Оберіть бригаду --</option>
                     {% for id, name in brigades %}
                         <option value="{{ id }}">{{ name }}</option>
                     {% endfor %}
@@ -34,9 +34,6 @@
 
                 <label>Дата початку робіт:</label>
                 <input type="date" name="start_date" required>
-
-                <label>Дата завершення робіт:</label>
-                <input type="date" name="end_date">
 
                 <label>Примітки:</label>
                 <textarea name="notes" rows="3"></textarea>

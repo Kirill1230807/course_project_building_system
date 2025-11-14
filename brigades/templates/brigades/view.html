@@ -23,24 +23,34 @@
 
     <hr>
 
-    <h3>Додати учасника</h3>
-    <form method="post" action="{% url 'brigades:add_member' brigade.0 %}">
-        {% csrf_token %}
-        <label>Працівник:</label>
-        <select name="employee_id" required>
-            <option value="">-- Оберіть працівника --</option>
-            {% for id, name in employees %}
-                <option value="{{ id }}">{{ name }}</option>
-            {% endfor %}
+    <button id="openAddMember" class="btn-orange" style="margin-bottom: 15px;">
+    Додати учасника
+</button>
 
+<!-- Модальне вікно -->
+<div id="memberModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeMemberModal">&times;</span>
+        <h2>Додати учасника</h2>
 
-        </select>
+        <form method="post" action="{% url 'brigades:add_member' brigade.0 %}">
+            {% csrf_token %}
 
-        <label>Роль:</label>
-        <input type="text" name="role" placeholder="Напр., муляр, зварювальник" required>
+            <label>Працівник:</label>
+            <select name="employee_id" required>
+                <option value="">-- Оберіть працівника --</option>
+                {% for id, name in employees %}
+                    <option value="{{ id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
 
-        <button type="submit">Додати</button>
-    </form>
+            <label>Роль:</label>
+            <input type="text" name="role" placeholder="Напр., муляр, зварювальник" required>
+
+            <button type="submit">Додати</button>
+        </form>
+    </div>
+</div>
 
     <hr>
 
@@ -74,4 +84,5 @@
     <br>
     <a href="{% url 'brigades:index' %}">Повернутися до списку</a>
     <link rel="stylesheet" href="{% static 'brigades/css/view.css' %}">
+    <script src="{% static 'brigades/js/add_member.js' %}"></script>
 {% endblock %}

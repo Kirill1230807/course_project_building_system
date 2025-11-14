@@ -1,4 +1,5 @@
 ﻿{% extends "core/layout.html" %}
+{% load static %}
 {% block content %}
     <div class="container mt-4">
         <h2>Додати доставку матеріалів на дільницю</h2>
@@ -92,10 +93,11 @@
                 {% endfor %}
             </div>
 
-            <button type="button" class="btn btn-secondary" onclick="addMaterialRow()">+ Додати ще матеріал</button>
-            <button type="submit" class="btn btn-primary mt-3">Зберегти доставку</button>
+            <button type="button" onclick="addMaterialRow()">+ Додати ще матеріал</button>
+            <button type="submit">Зберегти доставку</button>
         </form>
     </div>
+    <link rel="stylesheet" href="{% static 'deliveries/css/add_delivery.css' %}">
 
     <script>
         // Автоматично приховати повідомлення через 4 секунди
