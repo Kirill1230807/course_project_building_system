@@ -1,0 +1,27 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/auth/auth.css' %}">
+{% endblock %}
+{% block content %}
+<div class="auth-container">
+    <h1>Заявки гостей</h1>
+
+    {% for req in requests %}
+        <div style="margin-bottom:20px;">
+            <p><strong>{{ req.user.username }}</strong></p>
+            <p>{{ req.message }}</p>
+
+            <a href="{% url 'approve_request' req.id %}">
+                <button>Схвалити</button>
+            </a>
+            <a href="{% url 'reject_request' req.id %}">
+                <button style="background:#b53434;">Відхилити</button>
+            </a>
+        </div>
+        <hr>
+    {% empty %}
+        <p>Немає нових заявок</p>
+    {% endfor %}
+</div>
+{% endblock %}

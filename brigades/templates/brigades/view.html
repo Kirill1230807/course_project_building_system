@@ -3,29 +3,32 @@
 
 {% block title %}{{ brigade.1 }}{% endblock %}
 
-{% block content %}
-    <h1>{{ brigade.1 }}</h1>
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'components/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'pages/brigades/view.css' %}">
+{% endblock %}
 
+{% block content %}
+<h1 class="page-title">{{ brigade.1 }}</h1>
+
+<div class="info-card">
     <p><strong>Бригадир:</strong> {{ brigade.2|default:"--" }}</p>
 
     {% if not brigade.2 %}
-        <a href="{% url 'brigades:reassign_leader' brigade.0 %}" class="btn btn-warning">
+        <a href="{% url 'brigades:reassign_leader' brigade.0 %}" class="btn-warning">
             Призначити нового бригадира
         </a>
     {% else %}
-        <a href="{% url 'brigades:reassign_leader' brigade.0 %}" class="btn btn-secondary">
+        <a href="{% url 'brigades:reassign_leader' brigade.0 %}" class="btn-secondary">
             Змінити бригадира
         </a>
     {% endif %}
 
     <p><strong>Статус:</strong> {{ brigade.3 }}</p>
     <p><strong>Примітки:</strong> {{ brigade.4|default:"--" }}</p>
+</div>
 
-    <hr>
-
-    <button id="openAddMember" class="btn-orange" style="margin-bottom: 15px;">
-    Додати учасника
-</button>
+<button id="openAddMember" class="btn-primary">Додати учасника</button>
 
 <!-- Модальне вікно -->
 <div id="memberModal" class="modal">
@@ -47,15 +50,16 @@
             <label>Роль:</label>
             <input type="text" name="role" placeholder="Напр., муляр, зварювальник" required>
 
-            <button type="submit">Додати</button>
+            <button type="submit" class="btn-primary">Додати</button>
         </form>
     </div>
 </div>
 
-    <hr>
+<h3 class="sub-title">Склад бригади</h3>
 
-    <h3>Склад бригади</h3>
-    <table border="1" cellpadding="6">
+<div class="table-wrapper">
+    <table class="styled-table">
+        <thead>
         <tr>
             <th>№</th>
             <th>Ім’я</th>
@@ -63,6 +67,9 @@
             <th>Роль</th>
             <th>Дії</th>
         </tr>
+        </thead>
+
+        <tbody>
         {% for m in members %}
             <tr>
                 <td>{{ forloop.counter }}</td>
@@ -71,18 +78,22 @@
                 <td>{{ m.3 }}</td>
                 <td>
                     <a href="{% url 'brigades:remove_member' brigade.0 m.0 %}"
-                       onclick="return confirm('Видалити з бригади?')">Видалити</a>
+                       class="table-action-delete"
+                       onclick="return confirm('Видалити з бригади?')">
+                        Видалити
+                    </a>
                 </td>
             </tr>
         {% empty %}
             <tr>
-                <td colspan="5">Немає учасників</td>
+                <td colspan="5" class="empty-row">Немає учасників</td>
             </tr>
         {% endfor %}
+        </tbody>
     </table>
+</div>
 
-    <br>
-    <a href="{% url 'brigades:index' %}">Повернутися до списку</a>
-    <link rel="stylesheet" href="{% static 'brigades/css/view.css' %}">
-    <script src="{% static 'brigades/js/add_member.js' %}"></script>
+<a href="{% url 'brigades:index' %}" class="btn-back">Повернутися до списку</a>
+
+<script src="{% static 'brigades/js/add_member.js' %}"></script>
 {% endblock %}

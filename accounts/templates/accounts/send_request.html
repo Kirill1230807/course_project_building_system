@@ -1,0 +1,20 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/auth/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="auth-container">
+        <h1>Заявка на доступ</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            <label>Повідомлення адміністратору:</label>
+            <textarea name="message" rows="4"
+                      placeholder="Наприклад: хочу, щоб ви мені надали права авторизованого користувача"></textarea>
+
+            <button type="submit">Відправити</button>
+        </form>
+    </div>
+{% endblock %}

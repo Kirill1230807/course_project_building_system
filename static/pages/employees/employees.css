@@ -1,0 +1,138 @@
+﻿.page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ff9800;
+    margin-bottom: 25px;
+}
+
+.btn-main {
+    background: #ff9800;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+.btn-main:hover {
+    background: #e68900;
+}
+
+.table-wrapper {
+    margin-top: 20px;
+}
+
+.styled-table {
+    width: 100%;
+    background: #fff;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.styled-table thead {
+    background: #ff9800;
+    color: #fff;
+}
+
+.styled-table th {
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.styled-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.styled-table tr:hover {
+    background: #fff3e0;
+}
+
+.row-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.action-edit {
+    color: #1976d2;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.action-edit:hover {
+    color: #0d47a1;
+}
+
+.action-info {
+    color: #5e35b1;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.action-info:hover {
+    color: #4527a0;
+}
+
+.action-delete {
+    color: #d32f2f;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.action-delete:hover {
+    color: #9a0007;
+}
+
+.styled-form label {
+    margin-top: 10px;
+    margin-bottom: 4px;
+    font-weight: 600;
+    color: #333;
+}
+
+.styled-form input,
+.styled-form select {
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    background: #fff;
+    transition: 0.2s;
+}
+
+.styled-form input:focus,
+.styled-form select:focus {
+    border-color: #ff9800;
+    box-shadow: 0 0 0 3px rgba(255,152,0,0.25);
+    outline: none;
+}
+
+.btn-save {
+    background: #ff9800;
+    border: none;
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.btn-save:hover {
+    background: #e68900;
+}
+
+.error-msg {
+    color: #d32f2f;
+    font-weight: 600;
+    margin-top: 10px;
+    text-align: center;
+}

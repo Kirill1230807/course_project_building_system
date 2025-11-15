@@ -1,0 +1,58 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/accounts/sql_console.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="sql-container">
+
+        <h1>SQL Консоль</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            <textarea name="query" placeholder="Введіть SELECT-запит тут...">{{ query }}</textarea>
+            <button type="submit">Виконати</button>
+        </form>
+
+        {% if error %}
+            <div class="error-box">{{ error }}</div>
+        {% endif %}
+
+        {% if result %}
+            {% if result.columns %}
+                <table>
+                    <tr>
+                        {% for col in result.columns %}
+                            <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+
+                    {% for row in result.rows %}
+                        <tr>
+                            {% for value in row %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+
+                {# ----------- КНОПКА ЗБЕРЕГТИ ----------- #}
+                {% if current_role == "authorized" or current_role == "admin" %}
+                    <form method="post" action="{% url 'accounts:save_sql_result' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="query" value="{{ query }}">
+                        <input type="hidden" name="result_text" value="{{ result_text }}">
+                        <button type="submit" class="save-btn">Зберегти результат</button>
+                    </form>
+                {% endif %}
+                {# ------------------------------------- #}
+
+            {% else %}
+                <div class="success-box">{{ result }}</div>
+            {% endif %}
+        {% endif %}
+
+    </div>
+{% endblock %}

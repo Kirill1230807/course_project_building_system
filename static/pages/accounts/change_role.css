@@ -1,0 +1,50 @@
+﻿.change-role-container {
+    width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.08);
+}
+
+.change-role-container h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 26px;
+    color: #333;
+}
+
+.change-role-container label {
+    display: block;
+    font-size: 16px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.change-role-container select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #aaa;
+    font-size: 15px;
+    background: #f5f7fb;
+}
+
+.change-role-container button {
+    width: 100%;
+    padding: 12px;
+    background: #3c6eaf;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.change-role-container button:hover {
+    background: #2b5385;
+}

@@ -2,34 +2,51 @@
 {% load static %}
 {% block title %}Редагування управління{% endblock %}
 
-{% block content %}
-    <h1>Редагування управління</h1>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/management/edit_management.css' %}">
+{% endblock %}
 
-    <form method="post" action="{% url 'management:edit_management' management.id %}">
+{% block content %}
+
+<h1 class="page-title">Редагування управління</h1>
+
+<div class="form-wrapper">
+    <form method="post" class="styled-form"
+          action="{% url 'management:edit_management' management.id %}">
         {% csrf_token %}
 
-        <label>Назва управління:</label>
-        <input type="text" name="name" value="{{ management.name }}" required><br>
+        <div class="form-group">
+            <label>Назва управління:</label>
+            <input type="text" name="name" value="{{ management.name }}" required>
+        </div>
 
-        <label>Керівник управління:</label>
-        <select name="head_employee_id">
-            <option value="">-- Оберіть керівника --</option>
-            {% for id, name in engineers %}
-                <option value="{{ id }}"
-                        {% if id == management.head_employee_id %}selected{% endif %}>{{ name }}</option>
-            {% endfor %}
-        </select><br>
+        <div class="form-group">
+            <label>Керівник управління:</label>
+            <select name="head_employee_id">
+                <option value="">-- Оберіть керівника --</option>
+                {% for id, name in engineers %}
+                    <option value="{{ id }}"
+                        {% if id == management.head_employee_id %}selected{% endif %}>
+                        {{ name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
-        <label>Примітки:</label>
-        <textarea name="notes" rows="3">{{ management.notes }}</textarea><br>
+        <div class="form-group">
+            <label>Примітки:</label>
+            <textarea name="notes" rows="3">{{ management.notes|default:'' }}</textarea>
+        </div>
 
         {% if error_msg %}
-            <p style="color:red;">{{ error_msg }}</p>
+        <p class="error-msg">{{ error_msg }}</p>
         {% endif %}
 
-        <button type="submit">Зберегти зміни</button>
+        <div class="actions">
+            <button type="submit" class="btn-primary">Зберегти зміни</button>
+            <a href="{% url 'management:index' %}" class="btn-back">Назад</a>
+        </div>
     </form>
+</div>
 
-    <a href="{% url 'management:index' %}">Назад</a>
-    <link rel="stylesheet" href="{% static 'management/css/edit_management.css' %}">
 {% endblock %}

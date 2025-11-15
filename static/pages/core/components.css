@@ -1,0 +1,53 @@
+﻿.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+}
+
+.styled-table th {
+    background: #F7F7F7;
+    padding: 12px;
+    font-weight: 700;
+    color: #2C3E50;
+}
+
+.styled-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.styled-table tr:hover {
+    background-color: #FFF3E0;
+}
+
+form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+form input[type="text"],
+form input[type="number"],
+form input[type="date"],
+form select,
+form textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #DDD;
+    background: #F7F7F7;
+    margin-top: 5px;
+}
+
+form button {
+    margin-top: 15px;
+    width: 100%;
+    background-color: #E67E22;
+    color: white;
+    padding: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}

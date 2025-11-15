@@ -1,0 +1,19 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/accounts/sql_saved_success.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <h1>Результат збережено!</h1>
+
+    <p>Ваш SQL-запит був успішно збережений.</p>
+
+    <div class="buttons">
+        <a href="{% url 'accounts:sql_console' %}" class="btn">Повернутися в SQL-консоль</a>
+        <a href="{% url 'accounts:saved_queries'%}" class="btn btn-secondary">Переглянути збережені запити</a>
+    </div>
+</div>
+{% endblock %}

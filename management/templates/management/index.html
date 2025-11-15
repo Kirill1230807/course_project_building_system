@@ -2,71 +2,80 @@
 {% load static %}
 {% block title %}Будівельні управління{% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'components/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'pages/management/management.css' %}">
+{% endblock %}
+
 {% block content %}
-    <h1>Будівельні управління</h1>
+<h1 class="page-title">Будівельні управління</h1>
 
-    <!-- Кнопка відкриття модального вікна -->
-    <button id="openModalBtn">Додати управління</button>
+<button id="openModalBtn" class="btn-orange">Додати управління</button>
 
-    <!-- Модальне вікно -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span id="closeModalBtn" class="close">&times;</span>
-            <h2>Нове управління</h2>
+<!-- Модальне вікно -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span id="closeModalBtn" class="close">&times;</span>
+        <h2>Нове управління</h2>
 
-            <form method="post" action="{% url 'management:add_management' %}">
-                {% csrf_token %}
+        <form method="post" action="{% url 'management:add_management' %}" class="styled-form">
+            {% csrf_token %}
 
-                <label>Назва управління:</label>
-                <input type="text" name="name" required><br>
+            <label>Назва управління:</label>
+            <input type="text" name="name" required>
 
-                <label>Керівник управління:</label>
-                <select name="head_employee_id">
-                    <option value="">— Оберіть керівника —</option>
-                    {% for id, name in engineers %}
-                        <option value="{{ id }}">{{ name }}</option>
-                    {% endfor %}
-                </select><br>
+            <label>Керівник управління:</label>
+            <select name="head_employee_id">
+                <option value="">-- Оберіть керівника --</option>
+                {% for id, name in engineers %}
+                    <option value="{{ id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
 
-                <label>Примітки:</label>
-                <textarea name="notes" rows="3"></textarea><br>
+            <label>Примітки:</label>
+            <textarea name="notes" rows="3"></textarea>
 
-                {% if error_msg %}
-                    <p style="color:red;">{{ error_msg }}</p>
-                {% endif %}
+            {% if error_msg %}
+                <p class="error-msg">{{ error_msg }}</p>
+            {% endif %}
 
-                <button type="submit">Зберегти</button>
-            </form>
-        </div>
+            <button type="submit" class="btn-save">Зберегти</button>
+        </form>
     </div>
+</div>
 
-    <hr>
-    <div class="table-wrapper">
-        <table border="1" cellpadding="6">
+<div class="table-wrapper">
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>№</th>
+            <th>Назва</th>
+            <th>Керівник</th>
+            <th>Примітки</th>
+            <th>Дії</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for m in managements %}
             <tr>
-                <th>№</th>
-                <th>Назва</th>
-                <th>Керівник</th>
-                <th>Примітки</th>
-                <th>Дії</th>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ m.1 }}</td>
+                <td>{{ m.2|default:"—" }}</td>
+                <td>{{ m.3|default:"—" }}</td>
+                <td>
+                    <a href="{% url 'management:delete_management' m.0 %}"
+                       class="btn-delete"
+                       onclick="return confirm('Видалити управління?')">Видалити</a>
+                    |
+                    <a href="{% url 'management:edit_management' m.0 %}"
+                       class="btn-edit">Редагувати</a>
+                </td>
             </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-            {% for m in managements %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ m.1 }}</td>
-                    <td>{{ m.2|default:"—" }}</td>
-                    <td>{{ m.3|default:"" }}</td>
-                    <td>
-                        <a href="{% url 'management:delete_management' m.0 %}"
-                           onclick="return confirm('Видалити управління?')">Видалити</a> |
-                        <a href="{% url 'management:edit_management' m.0 %}">Редагувати</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-
-    <link rel="stylesheet" href="{% static 'management/css/management.css' %}">
-    <script src="{% static 'management/js/management.js' %}"></script>
+<script src="{% static 'management/js/management.js' %}"></script>
 {% endblock %}

@@ -2,65 +2,86 @@
 {% load static %}
 {% block title %}Фахівці інженерно-технічного персоналу{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/reports/engineers.css' %}">
+{% endblock %}
+
 {% block content %}
-    <div class="container mt-4">
 
-        <h2>Звіт: Інженерно-технічний персонал</h2>
+<div class="report-container">
 
-        <form method="get" class="mb-3">
+    <h1 class="page-title">Звіт: Інженерно-технічний персонал</h1>
 
-            <label>Управління:</label>
-            <select name="management_id">
-                <option value="">-- Всі --</option>
-                {% for m in managements %}
-                    <option value="{{ m.0 }}" {% if selected_management == m.0|stringformat:"s" %}selected{% endif %}>
-                        {{ m.1 }}
-                    </option>
-                {% endfor %}
-            </select>
+    <!-- Форма фільтрів -->
+    <form method="get" class="filter-form">
+        <div class="form-row">
 
-            <label>Дільниця:</label>
-            <select name="section_id">
-                <option value="">-- Всі --</option>
-                {% for s in sections %}
-                    <option value="{{ s.0 }}" {% if selected_section == s.0|stringformat:"s" %}selected{% endif %}>
-                        {{ s.1 }}
-                    </option>
-                {% endfor %}
-            </select>
+            <div class="form-group">
+                <label>Управління:</label>
+                <select name="management_id">
+                    <option value="">-- Всі --</option>
+                    {% for m in managements %}
+                        <option value="{{ m.0 }}"
+                                {% if selected_management == m.0|stringformat:"s" %}selected{% endif %}>
+                            {{ m.1 }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-            <button type="submit">Фільтрувати</button>
-        </form>
+            <div class="form-group">
+                <label>Дільниця:</label>
+                <select name="section_id">
+                    <option value="">-- Всі --</option>
+                    {% for s in sections %}
+                        <option value="{{ s.0 }}"
+                                {% if selected_section == s.0|stringformat:"s" %}selected{% endif %}>
+                            {{ s.1 }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        {% if data %}
-            <table class="table table-bordered table-striped">
-                <thead class="table-light">
+            <div class="form-submit">
+                <button type="submit" class="filter-btn">Фільтрувати</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Таблиця результатів -->
+    {% if data %}
+    <div class="table-wrapper">
+        <table class="styled-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>ПІБ</th>
+                <th>Посада</th>
+                <th>Дільниця</th>
+                <th>Об’єкт</th>
+                <th>Управління</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for row in data %}
                 <tr>
-                    <th>#</th>
-                    <th>ПІБ</th>
-                    <th>Посада</th>
-                    <th>Дільниця</th>
-                    <th>Об’єкт</th>
-                    <th>Управління</th>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ row.full_name }}</td>
+                    <td>{{ row.position_name }}</td>
+                    <td>{{ row.section_name|default:"—" }}</td>
+                    <td>{{ row.site_name|default:"—" }}</td>
+                    <td>{{ row.management_name|default:"—" }}</td>
                 </tr>
-                </thead>
-                <tbody>
-                {% for row in data %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ row.full_name }}</td>
-                        <td>{{ row.position_name }}</td>
-                        <td>{{ row.section_name|default:"—" }}</td>
-                        <td>{{ row.site_name|default:"—" }}</td>
-                        <td>{{ row.management_name|default:"—" }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>Дані відсутні.</p>
-        {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <link rel="stylesheet" href="{% static 'reports/css/engineers.css' %}">
+
+    {% else %}
+        <p class="no-data">Дані відсутні.</p>
+    {% endif %}
+
+</div>
 
 {% endblock %}

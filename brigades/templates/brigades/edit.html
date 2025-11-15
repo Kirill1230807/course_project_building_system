@@ -1,20 +1,37 @@
 ﻿{% extends 'core/layout.html' %}
+{% load static %}
+
+{% block title %}Редагування бригади{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/brigades/brigade_edit.css' %}">
+{% endblock %}
+
 {% block content %}
-<h2>Редагувати бригаду</h2>
+<h1 class="page-title">Редагувати бригаду</h1>
 
-<form method="post">
-    {% csrf_token %}
-    <label>Назва бригади:</label><br>
-    <input type="text" name="name" value="{{ brigade.name }}" required><br><br>
+<div class="form-card">
+    <form method="post">
+        {% csrf_token %}
 
-    <label>Примітки:</label><br>
-    <input type="text" name="notes" value="{{ brigade.notes|default:'' }}"><br><br>
+        <div class="form-group">
+            <label>Назва бригади:</label>
+            <input type="text" name="name" value="{{ brigade.name }}" required>
+        </div>
 
-    {% if error_msg %}
-        <p style="color:red;">{{ error_msg }}</p>
-    {% endif %}
+        <div class="form-group">
+            <label>Примітки:</label>
+            <input type="text" name="notes" value="{{ brigade.notes|default:'' }}">
+        </div>
 
-    <button type="submit">Зберегти зміни</button>
-    <a href="{% url 'brigades:index' %}">Скасувати</a>
-</form>
+        {% if error_msg %}
+            <p class="error-msg">{{ error_msg }}</p>
+        {% endif %}
+
+        <div class="actions">
+            <button type="submit" class="btn-save">Зберегти зміни</button>
+            <a href="{% url 'brigades:index' %}" class="btn-back">Скасувати</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

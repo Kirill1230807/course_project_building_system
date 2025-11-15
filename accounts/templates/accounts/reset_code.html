@@ -1,0 +1,30 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Підтвердження коду</title>
+    <link rel="stylesheet" href="{% static 'pages/accounts/reset_code.css' %}">
+</head>
+<body>
+
+<div class="reset-container">
+
+    <h1>Підтвердження коду</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <label>Введіть код, який вам був надісланий:</label>
+        <input type="text" name="code" required>
+
+        <button type="submit" class="submit-btn">Перевірити</button>
+    </form>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+﻿.page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ff9800;
+    margin-bottom: 20px;
+}
+
+.btn-add {
+    background-color: #ff9800;
+    color: white;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.25s;
+    margin-bottom: 20px;
+}
+
+.btn-add:hover {
+    background-color: #e68900;
+}
+
+.table-wrapper {
+    margin-top: 20px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.styled-table thead {
+    background: #ff9800;
+    color: white;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 14px;
+    text-align: left;
+}
+
+.styled-table tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+.styled-table tbody tr:hover {
+    background: #f3f0ff;
+}
+
+.actions a {
+    margin-right: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-info {
+    color: #2980b9;
+}
+
+.btn-edit {
+    color: #e67e22;
+}
+
+.btn-delete {
+    color: #c0392b;
+}
+
+.error-msg {
+    color: #d9534f;
+    margin-top: 10px;
+    text-align: center;
+    font-weight: 600;
+}

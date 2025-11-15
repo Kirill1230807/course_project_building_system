@@ -1,0 +1,91 @@
+﻿.report-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 25px;
+}
+
+.page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ff9800;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.filter-form {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.filter-form label {
+    font-weight: 600;
+    color: #333;
+}
+
+.filter-form select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    font-size: 15px;
+    background: #fff;
+    transition: .2s;
+}
+
+.filter-form select:focus {
+    border-color: #ff9800;
+    box-shadow: 0 0 0 3px rgba(255,152,0,0.25);
+    outline: none;
+}
+
+.filter-btn {
+    background: #ff9800;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.filter-btn:hover {
+    background: #e68900;
+}
+
+.table-wrapper {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+}
+
+.styled-table thead {
+    background: #ff9800;
+    color: white;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.styled-table tbody tr:hover {
+    background: #fff7e6;
+}
+
+.no-data {
+    text-align: center;
+    font-size: 18px;
+    color: #777;
+    margin-top: 15px;
+}

@@ -2,37 +2,41 @@
 {% load static %}
 {% block title %}Редагування термінів роботи{% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/sites/section_work_edit.css' %}">
+{% endblock %}
+
 {% block content %}
-    <div class="container mt-4">
-        <h1>Редагування термінів роботи</h1>
 
-        <h4>{{ work.work_name }}</h4>
+<h1 class="page-title">Редагування термінів роботи</h1>
 
-        <form method="post">
-            {% csrf_token %}
+<h2 class="work-title">{{ work.work_name }}</h2>
 
-            <label>Плановий початок:</label>
-            <input type="date" name="planned_start"
-                   value="{{ work.planned_start|date:'Y-m-d' }}">
+<div class="form-wrapper">
+<form class="styled-form" method="post">
+    {% csrf_token %}
 
-            <label>Планове завершення:</label>
-            <input type="date" name="planned_end"
-                   value="{{ work.planned_end|date:'Y-m-d' }}">
+    <label>Плановий початок:</label>
+    <input type="date" name="planned_start"
+           value="{{ work.planned_start|date:'Y-m-d' }}">
 
-            <label>Фактичний початок:</label>
-            <input type="date" name="actual_start"
-                   value="{{ work.actual_start|date:'Y-m-d' }}">
+    <label>Планове завершення:</label>
+    <input type="date" name="planned_end"
+           value="{{ work.planned_end|date:'Y-m-d' }}">
 
-            <label>Фактичне завершення:</label>
-            <input type="date" name="actual_end"
-                   value="{{ work.actual_end|date:'Y-m-d' }}">
+    <label>Фактичний початок:</label>
+    <input type="date" name="actual_start"
+           value="{{ work.actual_start|date:'Y-m-d' }}">
 
-            <button class="" type="submit">Зберегти</button>
-        </form>
+    <label>Фактичне завершення:</label>
+    <input type="date" name="actual_end"
+           value="{{ work.actual_end|date:'Y-m-d' }}">
 
-        <a href="{% url 'sites:section_works' work.section_id %}?site_id={{ site_id }}"
-           class="back">Назад</a>
-    </div>
-    <link rel="stylesheet" href="{% static 'sites/css/section_work_edit.css' %}">
+    <button type="submit" class="btn-primary">Зберегти</button>
+</form>
+
+<a href="{% url 'sites:section_works' work.section_id %}?site_id={{ site_id }}"
+   class="btn-back">Назад</a>
+</div>
 
 {% endblock %}

@@ -1,0 +1,203 @@
+﻿.page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ff9800;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    border: 2px solid #ff9800;
+    background: #fff;
+    color: #ff9800;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.tab-button:hover {
+    background: #ffe0b2;
+}
+
+.tab-button.active {
+    background: #ff9800;
+    color: #fff;
+}
+
+.tab-content {
+    display: none;
+    animation: fade .3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fade {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+.add-btn {
+    background: #ff9800;
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: .2s;
+}
+
+.add-btn:hover {
+    background: #e68900;
+}
+
+.styled-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.styled-form label {
+    font-weight: 600;
+}
+
+.styled-form input,
+.styled-form select,
+.styled-form textarea {
+    padding: 10px;
+    font-size: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: .2s;
+}
+
+.styled-form input:focus,
+.styled-form select:focus,
+.styled-form textarea:focus {
+    border-color: #ff9800;
+    box-shadow: 0 0 0 3px rgba(255,152,0,0.2);
+}
+
+.btn-save {
+    background: #ff9800;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-save:hover {
+    background: #e68900;
+}
+
+.table-wrapper {
+    margin-top: 20px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.styled-table th {
+    background: #ff9800;
+    color: #fff;
+    padding: 12px;
+    text-align: left;
+}
+
+.styled-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.styled-table tr:hover {
+    background: #fff3e0;
+}
+
+.no-data {
+    text-align: center;
+    padding: 15px;
+    font-weight: 600;
+    color: #777;
+}
+
+.row-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.edit-link {
+    color: #1976d2;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.edit-link:hover {
+    color: #0d47a1;
+}
+
+.delete-link {
+    color: #d32f2f;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.delete-link:hover {
+    color: #b71c1c;
+}
+
+/* ===== Стовпець "Дії" в таблиці матеріалів ===== */
+.actions-cell {
+    white-space: nowrap;          /* не переносити "Видалити | Редагувати" */
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.actions-cell a {
+    text-decoration: none;
+    font-weight: 600;
+    margin: 0 4px;
+    transition: color 0.2s ease;
+}
+
+/* червоне посилання "Видалити" */
+.actions-cell .action-delete {
+    color: #d32f2f;
+}
+.actions-cell .action-delete:hover {
+    color: #b71c1c;
+}
+
+/* синє посилання "Редагувати" */
+.actions-cell .action-edit {
+    color: #1976d2;
+}
+.actions-cell .action-edit:hover {
+    color: #0d47a1;
+}
+
+/* роздільник між діями */
+.actions-separator {
+    color: #999;
+    margin: 0 2px;
+}

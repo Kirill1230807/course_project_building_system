@@ -1,0 +1,90 @@
+﻿.page-title {
+    font-size: 32px;
+    color: #ff9800;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.work-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #444;
+}
+
+.form-wrapper {
+    background: white;
+    padding: 30px;
+    margin: 0 auto;
+    max-width: 600px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.styled-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.styled-form label {
+    font-weight: 600;
+    color: #333;
+}
+
+.styled-form input[type="date"] {
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    border: 2px solid #ddd;
+    background: white;
+    transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.styled-form input[type="date"]:focus {
+    border-color: #ff9800;
+    box-shadow: 0 0 0 3px rgba(255,152,0,0.2);
+    outline: none;
+}
+
+.btn-primary {
+    background: #ff9800;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background: #e68900;
+}
+
+.btn-back {
+    display: inline-block;
+    margin-top: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #555;
+}
+
+.btn-back:hover {
+    color: #000;
+}
+
+@media (max-width: 600px) {
+    .form-wrapper {
+        padding: 20px;
+    }
+
+    .page-title {
+        font-size: 26px;
+    }
+
+    .work-title {
+        font-size: 18px;
+    }
+}

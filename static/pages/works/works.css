@@ -1,0 +1,130 @@
+﻿.page-title {
+    font-size: 32px;
+    color: #ff9800;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+.btn-main {
+    background: #ff9800;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btn-main:hover {
+    background: #e68900;
+}
+
+.table-wrapper {
+    margin-top: 25px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+
+.styled-table thead {
+    background: #ff9800;
+    color: #fff;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 14px;
+    font-size: 15px;
+}
+
+.styled-table tbody tr {
+    transition: .2s;
+}
+
+.styled-table tbody tr:hover {
+    background: #fff8e5;
+}
+
+.empty-row {
+    text-align: center;
+    padding: 15px;
+    font-style: italic;
+}
+
+.row-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.action-edit {
+    color: #1976d2;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.action-edit:hover {
+    color: #0d47a1;
+}
+
+.action-delete {
+    color: #d32f2f;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.action-delete:hover {
+    color: #9a0007;
+}
+
+.styled-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.styled-form label {
+    font-weight: 600;
+    color: #333;
+}
+
+.styled-form input,
+.styled-form select {
+    padding: 10px;
+    font-size: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: .2s;
+    background: #fff;
+}
+
+.styled-form input:focus,
+.styled-form select:focus {
+    border-color: #ff9800;
+    box-shadow: 0 0 0 3px rgba(255,152,0,0.2);
+}
+
+.btn-save {
+    background: #ff9800;
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: .2s;
+}
+
+.btn-save:hover {
+    background: #e68900;
+}

@@ -1,31 +1,56 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
 
+{% block title %}Редагування постачальника{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/materials/supplier_edit.css' %}">
+{% endblock %}
+
 {% block content %}
-<h2>Редагування постачальника</h2>
+<div class="page-container">
 
-<form method="post">
-  {% csrf_token %}
-  <label>Назва компанії:</label>
-  <input type="text" name="name" value="{{ supplier.name }}" required><br>
+    <h1 class="page-title">Редагування постачальника</h1>
 
-  <label>Контактна особа:</label>
-  <input type="text" name="contact_name" value="{{ supplier.contact_name }}"><br>
+    <div class="form-card">
+        <form method="post">
+            {% csrf_token %}
 
-  <label>Телефон:</label>
-  <input type="text" name="phone" value="{{ supplier.phone }}"><br>
+            <div class="form-group">
+                <label>Назва компанії:</label>
+                <input type="text" name="name" value="{{ supplier.name }}" required>
+            </div>
 
-  <label>Email:</label>
-  <input type="email" name="email" value="{{ supplier.email }}"><br>
+            <div class="form-group">
+                <label>Контактна особа:</label>
+                <input type="text" name="contact_name" value="{{ supplier.contact_name }}">
+            </div>
 
-  <label>Адреса:</label>
-  <input type="text" name="address" value="{{ supplier.address }}"><br>
+            <div class="form-group">
+                <label>Телефон:</label>
+                <input type="text" name="phone" value="{{ supplier.phone }}">
+            </div>
 
-  {% if error_msg %}
-    <p style="color:red;">{{ error_msg }}</p>
-  {% endif %}
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" name="email" value="{{ supplier.email }}">
+            </div>
 
-  <button type="submit">Зберегти зміни</button>
-  <a href="{% url 'materials:index' %}">Скасувати</a>
-</form>
+            <div class="form-group">
+                <label>Адреса:</label>
+                <input type="text" name="address" value="{{ supplier.address }}">
+            </div>
+
+            {% if error_msg %}
+                <p class="error-msg">{{ error_msg }}</p>
+            {% endif %}
+
+            <div class="actions">
+                <button type="submit" class="btn-save">Зберегти зміни</button>
+                <a href="{% url 'materials:index' %}" class="btn-back">Скасувати</a>
+            </div>
+        </form>
+    </div>
+
+</div>
 {% endblock %}

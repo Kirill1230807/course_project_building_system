@@ -2,6 +2,10 @@
 {% load static %}
 {% block title %}Звіт: Техніка на об’єктах{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/reports/equipment_by_site.css' %}">
+{% endblock %}
+
 {% block content %}
 
 <div class="report-container">
@@ -24,7 +28,7 @@
 
     {% if data %}
     <div class="table-wrapper">
-        <table>
+        <table class="styled-table">
             <thead>
                 <tr>
                     <th>#</th>
@@ -54,7 +58,5 @@
     {% endif %}
 
 </div>
-
-<link rel="stylesheet" href="{% static 'reports/css/equipment_by_site.css' %}">
 
 {% endblock %}

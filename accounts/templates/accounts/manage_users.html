@@ -1,0 +1,46 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/accounts/manage_users.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="manage-users-container">
+
+    <h1>Керування користувачами</h1>
+
+    <table class="users-table">
+        <tr>
+            <th>ID</th>
+            <th>Логін</th>
+            <th>Роль</th>
+            <th>Дія</th>
+        </tr>
+
+        {% for u in users %}
+        <tr>
+            <td>{{ u.id }}</td>
+            <td>{{ u.username }}</td>
+
+            <td>
+                <span class="role-badge
+                    {% if u.role == 'admin' %}role-admin
+                    {% elif u.role == 'operator' %}role-operator
+                    {% elif u.role == 'authorized' %}role-authorized
+                    {% else %}role-guest
+                    {% endif %}
+                ">
+                    {{ u.get_role_display }}
+                </span>
+            </td>
+
+            <td>
+                <a href="{% url 'change_role' u.id %}" class="role-btn">Змінити роль</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+{% endblock %}
