@@ -1,0 +1,126 @@
+﻿.page-title {
+    font-size: 32px;
+    color: #ff9800;
+    margin-bottom: 25px;
+    font-weight: 700;
+}
+
+.btn-orange {
+    background: #ff9800;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: 0.2s;
+}
+
+.btn-orange:hover {
+    background: #e68900;
+}
+
+.styled-form label {
+    font-weight: 600;
+    margin-top: 10px;
+    color: #333;
+    display: block;
+}
+
+.styled-form textarea {
+    resize: none;
+}
+
+.styled-form input,
+.styled-form select,
+.styled-form textarea {
+    padding: 10px;
+    width: 100%;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    margin-top: 4px;
+    background: #fff;
+    transition: 0.2s;
+}
+
+.styled-form input:focus,
+.styled-form select:focus,
+.styled-form textarea:focus {
+    border-color: #ff9800;
+    box-shadow: 0 0 0 3px rgba(255,152,0,0.25);
+    outline: none;
+}
+
+.btn-save {
+    margin-top: 15px;
+    background: #ff9800;
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-save:hover {
+    background: #e68900;
+}
+
+.table-wrapper {
+    margin-top: 20px;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.styled-table th {
+    background: #ff9800;
+    color: #fff;
+    padding: 12px;
+    font-size: 14px;
+    text-align: left;
+}
+
+.styled-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.styled-table tr:hover {
+    background: #fff3e0;
+}
+
+.btn-edit {
+    color: #1976d2;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.btn-edit:hover {
+    color: #0d47a1;
+}
+
+.btn-delete {
+    color: #d32f2f;
+    font-weight: 600;
+}
+
+.btn-delete:hover {
+    color: #9a0007;
+}
+
+.error-msg {
+    color: #d32f2f;
+    font-weight: 600;
+    margin-top: 10px;
+    text-align: center;
+}

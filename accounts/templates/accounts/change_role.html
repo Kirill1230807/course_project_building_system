@@ -1,0 +1,27 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/accounts/change_role.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="change-role-container">
+
+    <h1>Зміна ролі користувача: {{ user.username }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label>Нова роль:</label>
+        <select name="role">
+            <option value="admin" {% if user.role == "admin" %}selected{% endif %}>Адміністратор СД</option>
+            <option value="operator" {% if user.role == "operator" %}selected{% endif %}>Оператор СД</option>
+            <option value="authorized" {% if user.role == "authorized" %}selected{% endif %}>Авторизований</option>
+            <option value="guest" {% if user.role == "guest" %}selected{% endif %}>Гість</option>
+        </select>
+
+        <button type="submit">Зберегти</button>
+    </form>
+</div>
+{% endblock %}

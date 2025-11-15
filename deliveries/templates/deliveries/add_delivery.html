@@ -1,28 +1,37 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
-{% block content %}
-    <div class="container mt-4">
-        <h2>Додати доставку матеріалів на дільницю</h2>
 
-        <!-- Повідомлення -->
+{% block title %}Доставка матеріалів{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/deliveries/add_delivery.css' %}">
+    <link rel="stylesheet" href="{% static 'pages/core/components.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="delivery-container">
+
+        <h1 class="page-title">Додати доставку матеріалів на дільницю</h1>
+
         {% if messages %}
-            <div id="alert-container" class="mt-3">
+            <div id="alert-container">
                 {% for message in messages %}
-                    <div class="alert
-        {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}"
-                         role="alert">
+                    <div class="alert {% if message.tags == 'error' %}alert-error{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}">
                         {{ message }}
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
 
-        <form method="post">
+        <form method="post" class="delivery-form">
             {% csrf_token %}
-            <div class="row mb-3">
-                <div class="col-md-4">
+
+            <div class="form-section form-grid">
+
+                <div class="form-group">
                     <label>Об’єкт:</label>
-                    <select name="site_id" class="form-select" required>
+                    <select name="site_id" required>
                         <option value="">Оберіть об’єкт</option>
                         {% for s in sites %}
                             <option value="{{ s.0 }}"
@@ -33,9 +42,9 @@
                     </select>
                 </div>
 
-                <div class="col-md-4">
+                <div class="form-group">
                     <label>Дільниця:</label>
-                    <select name="section_id" class="form-select" required>
+                    <select name="section_id" required>
                         {% if selected_section %}
                             <option value="{{ selected_section }}" selected>Вибрана дільниця</option>
                         {% else %}
@@ -44,107 +53,70 @@
                     </select>
                 </div>
 
-                <div class="col-md-4">
+                <div class="form-group">
                     <label>Дата доставки:</label>
-                    <input type="date" name="delivery_date" class="form-control"
-                           value="{{ delivery_date|date:'Y-m-d' }}">
+                    <input type="date" name="delivery_date" value="{{ delivery_date|date:'Y-m-d' }}">
                 </div>
+
             </div>
 
-            <div class="mb-3">
+            <div class="form-group textarea-group">
                 <label>Примітка:</label>
-                <textarea name="notes" class="form-control">{{ notes|default_if_none:'' }}</textarea>
+                <textarea name="notes">{{ notes|default_if_none:'' }}</textarea>
             </div>
 
-            <hr>
-            <h4>Матеріали</h4>
+            <h2 class="materials-title">Матеріали</h2>
 
             <div id="materials-list">
                 {% for mid, qty in filled_materials %}
-                    <div class="row mb-2 material-row">
-                        <div class="col-md-5">
-                            <select name="material_id" class="form-select" required>
-                                {% for m in materials %}
-                                    <option value="{{ m.0 }}">{{ m.1 }} (На складі: {{ m.2 }})</option>
-                                {% endfor %}
-                            </select>
+                    <div class="material-row">
 
+                        <!-- Вибір матеріалу -->
+                        <select name="material_id" required>
+                            {% for m in materials %}
+                                <option value="{{ m.0 }}"
+                                        {% if m.0 == mid %}selected{% endif %}>
+                                    {{ m.1 }}
+                                </option>
+                            {% endfor %}
+                        </select>
 
-                        </div>
-                        <div class="col-md-3">
-                            <input type="number" step="0.01" name="quantity" class="form-control"
-                                   placeholder="Кількість" value="{{ qty }}">
-                        </div>
+                        <!-- Кількість -->
+                        <input type="number" step="0.01" name="quantity"
+                               placeholder="Кількість" value="{{ qty }}" required>
+
+                        <!-- Кнопка видалення -->
+                        <button type="button" class="remove-row-btn"
+                                onclick="removeMaterialRow(this)">×
+                        </button>
                     </div>
                 {% empty %}
-                    <div class="row mb-2 material-row">
-                        <div class="col-md-5">
-                            <select name="material_id" class="form-select" required>
-                                {% for m in materials %}
-                                    <option value="{{ m.0 }}">{{ m.1 }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <input type="number" step="0.01" name="quantity" class="form-control"
-                                   placeholder="Кількість" required>
-                        </div>
+                    <!-- Якщо матеріалів немає, то відображається один порожній рядок -->
+                    <div class="material-row">
+                        <select name="material_id" required>
+                            {% for m in materials %}
+                                <option value="{{ m.0 }}">{{ m.1 }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <input type="number" step="0.01" name="quantity"
+                               placeholder="Кількість" required>
+
+                        <button type="button" class="remove-row-btn"
+                                onclick="removeMaterialRow(this)">×
+                        </button>
                     </div>
                 {% endfor %}
             </div>
 
-            <button type="button" onclick="addMaterialRow()">+ Додати ще матеріал</button>
-            <button type="submit">Зберегти доставку</button>
+
+            <button type="button" class="btn-secondary" onclick="addMaterialRow()">+ Додати ще матеріал</button>
+
+            <button type="submit" class="btn-primary submit-btn">Зберегти доставку</button>
         </form>
+
     </div>
-    <link rel="stylesheet" href="{% static 'deliveries/css/add_delivery.css' %}">
 
-    <script>
-        // Автоматично приховати повідомлення через 4 секунди
-        setTimeout(() => {
-            const alertContainer = document.getElementById("alert-container");
-            if (alertContainer) alertContainer.style.display = "none";
-        }, 4000);
+    <script src="{% static 'deliveries/js/add_delivery.js' %}"></script>
 
-        // Додавання нового рядка матеріалу
-        function addMaterialRow() {
-            const container = document.getElementById('materials-list');
-            const first = container.querySelector('.material-row');
-            const clone = first.cloneNode(true);
-            clone.querySelectorAll('input').forEach(input => input.value = '');
-            container.appendChild(clone);
-        }
-
-        // Завантаження дільниць після вибору об’єкта
-        document.addEventListener("DOMContentLoaded", function () {
-            const siteSelect = document.querySelector("select[name='site_id']");
-            const sectionSelect = document.querySelector("select[name='section_id']");
-
-            siteSelect.addEventListener("change", function () {
-                const siteId = this.value;
-                sectionSelect.innerHTML = "<option>Завантаження...</option>";
-                if (!siteId) return;
-
-                fetch(`/deliveries/get-sections/${siteId}/`)
-                    .then(response => response.json())
-                    .then(data => {
-                        sectionSelect.innerHTML = "";
-                        if (data.sections.length === 0) {
-                            sectionSelect.innerHTML = "<option value=''>Немає дільниць</option>";
-                        } else {
-                            data.sections.forEach(sec => {
-                                const option = document.createElement("option");
-                                option.value = sec[0];
-                                option.textContent = sec[1];
-                                sectionSelect.appendChild(option);
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Помилка завантаження дільниць:", error);
-                        sectionSelect.innerHTML = "<option value=''>Помилка</option>";
-                    });
-            });
-        });
-    </script>
 {% endblock %}

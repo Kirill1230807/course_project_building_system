@@ -1,0 +1,97 @@
+﻿.sql-container {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+}
+
+.sql-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sql-container textarea {
+    width: 100%;
+    height: 160px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #999;
+    font-size: 15px;
+    font-family: Consolas, monospace;
+    resize: none;
+}
+
+.sql-container button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    background: #3c6eaf;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.sql-container button:hover {
+    background: #2c568e;
+}
+
+.error-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #ffcccc;
+    color: #900;
+    border-left: 5px solid #c00;
+    border-radius: 6px;
+}
+
+.success-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #d5ffd5;
+    color: #065f1c;
+    border-left: 5px solid #19a233;
+    border-radius: 6px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+}
+
+th {
+    background: #3c6eaf;
+    color: white;
+    padding: 10px;
+    text-align: left;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+    background: #f5f7fb;
+}
+
+.save-btn {
+    padding: 10px 18px;
+    background: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.2s;
+}
+
+.save-btn:hover {
+    background: #1b5e20;
+}

@@ -2,21 +2,27 @@
 {% load static %}
 {% block title %}Види робіт{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/works/works.css' %}">
+<link rel="stylesheet" href="{% static 'components/modal.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="page-container">
     <h1 class="page-title">Види робіт</h1>
 
     <!-- Кнопка відкриття модального вікна -->
-    <button id="openModalBtn" class="add-btn">Додати вид робіт</button>
+    <button id="openModalBtn" class="btn-main">Додати вид робіт</button>
 
     <!-- Модальне вікно -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <span id="closeModalBtn" class="close">&times;</span>
-            <h2>Новий вид робіт</h2>
+            <h2 class="modal-title">Новий вид робіт</h2>
 
-            <form method="post" action="{% url 'works:add' %}" class="form-container">
+            <form method="post" action="{% url 'works:add' %}" class="styled-form">
                 {% csrf_token %}
+
                 <label>Назва:</label>
                 <input type="text" name="name" placeholder="Наприклад, Заливка фундаменту" required>
 
@@ -31,22 +37,23 @@
                 <label>Вартість (грн):</label>
                 <input type="number" step="0.01" name="cost" placeholder="0.00" required>
 
-                <button type="submit" class="save-btn">Зберегти</button>
+                <button type="submit" class="btn-save">Зберегти</button>
             </form>
         </div>
     </div>
 
-    <div class="table-container">
+    <div class="table-wrapper">
         <table class="styled-table">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Назва</th>
                     <th>Одиниця</th>
-                    <th>Вартість за одиницю (грн)</th>
+                    <th>Вартість (грн)</th>
                     <th>Дії</th>
                 </tr>
             </thead>
+
             <tbody>
                 {% for w in work_types %}
                     <tr>
@@ -54,22 +61,20 @@
                         <td>{{ w.1 }}</td>
                         <td>{{ w.2 }}</td>
                         <td>{{ w.3 }}</td>
-                        <td class="actions">
-                            <a href="{% url 'works:edit' w.0 %}" class="edit-link">Редагувати</a>
-                            <a href="{% url 'works:delete' w.0 %}" class="delete-link"
+                        <td class="row-actions">
+                            <a href="{% url 'works:edit' w.0 %}" class="action-edit">Редагувати</a>
+                            <span>|</span>
+                            <a href="{% url 'works:delete' w.0 %}" class="action-delete"
                                onclick="return confirm('Видалити цей вид робіт?')">Видалити</a>
                         </td>
                     </tr>
                 {% empty %}
-                    <tr>
-                        <td colspan="5" class="no-data">Немає записів</td>
-                    </tr>
+                    <tr><td colspan="5" class="empty-row">Немає записів</td></tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
 
-<link rel="stylesheet" href="{% static 'works/css/works.css' %}">
 <script src="{% static 'works/js/works.js' %}"></script>
 {% endblock %}

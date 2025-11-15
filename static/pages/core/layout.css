@@ -1,0 +1,51 @@
+﻿.layout {
+    display: flex;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+aside {
+    width: 250px;
+    background: #1E1E1E;
+    padding: 20px;
+    color: white;
+    overflow-y: auto;
+}
+
+.user-info {
+    margin-bottom: 30px;
+}
+
+.logout-btn {
+    color: #e63946;
+    text-decoration: none;
+}
+
+.nav-menu ul {
+    list-style: none;
+}
+
+.nav-menu li {
+    margin: 12px 0;
+}
+
+.nav-menu a {
+    color: #FF9800;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.nav-menu a:hover {
+    color: #E65100;
+}
+
+main {
+    flex: 1;
+    padding: 40px;
+    background: #FFFFFF;
+    overflow-y: auto;
+}

@@ -1,84 +1,104 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
+
 {% block title %}Дільниці об'єкта{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'components/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'pages/sites/sections.css' %}">
+{% endblock %}
+
 {% block content %}
-    <h1>Дільниці об'єкта</h1>
+<h1 class="page-title">Дільниці об’єкта</h1>
 
-    <button id="openModalBtn">Додати дільницю</button>
+<button id="openModalBtn" class="btn-primary add-btn">Додати дільницю</button>
 
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span id="closeModalBtn" class="close">&times;</span>
-            <h2>Нова дільниця</h2>
-            <form method="post" action="{% url 'sites:add_section' site_id %}">
-                {% csrf_token %}
-                <label>Назва дільниці:</label>
-                <input type="text" name="name" required>
+<!-- Модальне вікно -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span id="closeModalBtn" class="close">&times;</span>
+        <h2>Нова дільниця</h2>
 
-                <label>Начальник дільниці:</label>
-                <select name="chief_id">
-                    <option value="">-- Оберіть начальника --</option>
-                    {% for id, name in chiefs %}
-                        <option value="{{ id }}">{{ name }}</option>
-                    {% endfor %}
-                </select>
+        <form method="post" action="{% url 'sites:add_section' site_id %}" class="form-container">
+            {% csrf_token %}
 
+            <label>Назва дільниці:</label>
+            <input type="text" name="name" required>
 
-                <label>Бригада:</label>
-                <select name="brigade_id">
-                    <option value="">-- Оберіть бригаду --</option>
-                    {% for id, name in brigades %}
-                        <option value="{{ id }}">{{ name }}</option>
-                    {% endfor %}
-                </select>
+            <label>Начальник дільниці:</label>
+            <select name="chief_id">
+                <option value="">-- Оберіть начальника --</option>
+                {% for id, name in chiefs %}
+                    <option value="{{ id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
 
-                <label>Дата початку робіт:</label>
-                <input type="date" name="start_date" required>
+            <label>Бригада:</label>
+            <select name="brigade_id">
+                <option value="">-- Оберіть бригаду --</option>
+                {% for id, name in brigades %}
+                    <option value="{{ id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
 
-                <label>Примітки:</label>
-                <textarea name="notes" rows="3"></textarea>
+            <label>Дата початку робіт:</label>
+            <input type="date" name="start_date" required>
 
-                <button type="submit">Зберегти</button>
-            </form>
-        </div>
+            <label>Примітки:</label>
+            <textarea name="notes" rows="3"></textarea>
+
+            <button type="submit" class="btn-primary modal-save-btn">Зберегти</button>
+        </form>
     </div>
+</div>
 
-    <hr>
+<hr>
 
-    <table border="1" cellpadding="6">
+<div class="table-wrapper">
+<table class="styled-table">
+    <thead>
+    <tr>
+        <th>№</th>
+        <th>Назва</th>
+        <th>Начальник</th>
+        <th>Бригада</th>
+        <th>Дата початку</th>
+        <th>Дата завершення</th>
+        <th>Примітки</th>
+        <th>Дії</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for s in sections %}
         <tr>
-            <th>№</th>
-            <th>Назва</th>
-            <th>Начальник</th>
-            <th>Бригада</th>
-            <th>Дата початку</th>
-            <th>Дата завершення</th>
-            <th>Примітки</th>
-            <th>Дії</th>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ s.1 }}</td>
+            <td>{{ s.2|default:"--" }}</td>
+            <td>{{ s.3|default:"--" }}</td>
+            <td>{{ s.4 }}</td>
+            <td>{{ s.5|default:"--" }}</td>
+            <td>{{ s.6|default:"--" }}</td>
+
+            <td class="actions-col">
+                <a href="{% url 'sites:edit_section' s.0 %}?site_id={{ site_id }}" class="action-link">Редагувати</a>
+                <span>|</span>
+                <a href="{% url 'sites:section_works' s.0 %}?site_id={{ site_id }}" class="action-link">Роботи</a>
+                <span>|</span>
+                <a href="{% url 'sites:delete_section' s.0 %}?site_id={{ site_id }}"
+                   onclick="return confirm('Видалити дільницю?')"
+                   class="action-delete">Видалити</a>
+                <span>|</span>
+                <a href="{% url 'materials:add_material_plan' s.0 %}"
+                   class="action-link">Кошторис</a>
+            </td>
         </tr>
-        {% for s in sections %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ s.1 }}</td>
-                <td>{{ s.2|default:"--" }}</td>
-                <td>{{ s.3|default:"--" }}</td>
-                <td>{{ s.4 }}</td>
-                <td>{{ s.5|default:"--" }}</td>
-                <td>{{ s.6|default:"--" }}</td>
-                <td>
-                    <a href="{% url 'sites:edit_section' s.0 %}?site_id={{ site_id }}">Редагувати</a> |
-                    <a href="{% url 'sites:section_works' s.0 %}?site_id={{ site_id }}">Роботи</a> |
-                    <a href="{% url 'sites:delete_section' s.0 %}?site_id={{ site_id }}"
-                       onclick="return confirm('Видалити дільницю?')">Видалити</a> |
-                    <a href="{% url 'materials:add_material_plan' s.0 %}"
-                       class="btn btn-sm btn-outline-primary"> Сформувати кошторис</a>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
 
-    <a href="{% url 'sites:index' %}" class="back-link">Назад до об'єктів</a>
+<a href="{% url 'sites:index' %}" class="back-link">Назад до об'єктів</a>
 
-    <link rel="stylesheet" href="{% static 'sites/css/sites.css' %}">
-    <script src="{% static 'sites/js/sites.js' %}"></script>
+<script src="{% static 'sites/js/sites.js' %}"></script>
 {% endblock %}

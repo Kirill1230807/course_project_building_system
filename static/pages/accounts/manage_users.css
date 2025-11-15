@@ -1,0 +1,81 @@
+﻿.manage-users-container {
+    width: 90%;
+    margin: 30px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.08);
+}
+
+.manage-users-container h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 28px;
+    color: #333;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.users-table th {
+    background: #3c6eaf;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.users-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    font-size: 15px;
+}
+
+.users-table tr:nth-child(even) {
+    background: #f5f7fb;
+}
+
+.users-table tr:hover {
+    background: #eaf1ff;
+}
+
+.role-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 13px;
+    color: white;
+}
+
+.role-admin {
+    background: #d9534f;
+}
+
+.role-operator {
+    background: #0275d8;
+}
+
+.role-authorized {
+    background: #5cb85c;
+}
+
+.role-guest {
+    background: #6c757d;
+}
+
+.role-btn {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #3c6eaf;
+    color: white !important;
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.role-btn:hover {
+    background: #2b5385;
+}

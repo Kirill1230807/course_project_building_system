@@ -1,5 +1,8 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/deliveries/deliveries_list.css' %}">
+{% endblock %}
 {% block content %}
     <div class="container mt-4">
         <h2>Історія доставок матеріалів</h2>
@@ -80,28 +83,5 @@
             </tbody>
         </table>
     </div>
-    <link rel="stylesheet" href="{% static 'deliveries/css/deliveries_list.css' %}">
-    <script>
-        document.getElementById('siteSelect').addEventListener('change', function () {
-            const siteId = this.value;
-            const sectionSelect = document.getElementById('sectionSelect');
-            sectionSelect.innerHTML = '<option>Завантаження...</option>';
-            sectionSelect.disabled = true;
-
-            if (siteId) {
-                fetch(`/deliveries/get-sections/${siteId}/`)
-                    .then(res => res.json())
-                    .then(data => {
-                        sectionSelect.innerHTML = '<option value="">Усі</option>';
-                        data.sections.forEach(s => {
-                            sectionSelect.innerHTML += `<option value="${s[0]}">${s[1]}</option>`;
-                        });
-                        sectionSelect.disabled = false;
-                    });
-            } else {
-                sectionSelect.innerHTML = '<option value="">Усі</option>';
-                sectionSelect.disabled = true;
-            }
-        });
-    </script>
+    <script src="{% static 'deliveries/js/delivery_list.js' %}"></script>
 {% endblock %}

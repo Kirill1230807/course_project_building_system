@@ -3,22 +3,32 @@
 
 {% block title %}Перепризначення бригадира{% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/brigades/reassign_leader.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1>Перепризначення бригадира</h1>
+<h1 class="page-title">Перепризначення бригадира</h1>
 
-<form method="post">
-    {% csrf_token %}
-    <label>Новий бригадир:</label>
-    <select name="new_leader_id" required>
-        <option value="">-- Оберіть нового бригадира --</option>
-        {% for id, name in candidates %}
-            <option value="{{ id }}">{{ name }}</option>
-        {% endfor %}
-    </select>
+<div class="form-card">
+    <form method="post">
+        {% csrf_token %}
 
-    <button type="submit">Призначити</button>
-</form>
+        <div class="form-group">
+            <label>Новий бригадир:</label>
+            <select name="new_leader_id" required>
+                <option value="">-- Оберіть нового бригадира --</option>
+                {% for id, name in candidates %}
+                    <option value="{{ id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-<br>
-<a href="{% url 'brigades:view' brigade_id %}" class="btn-back">Назад до бригади</a>
+        <div class="actions">
+            <button type="submit" class="btn-save">Призначити</button>
+            <a href="{% url 'brigades:view' brigade_id %}" class="btn-back">Назад до бригади</a>
+        </div>
+    </form>
+</div>
+
 {% endblock %}

@@ -1,0 +1,59 @@
+﻿.dashboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    min-height: 80vh;
+}
+
+.card {
+    background-color: #F5F5F5;
+    color: #fff;
+    padding: 25px 35px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 260px;
+    transition: 0.2s;
+}
+
+.card:hover {
+    background-color: #2C3E50;
+    transform: translateY(-5px);
+}
+
+.card h2 {
+    font-size: 3em;
+    margin-bottom: 10px;
+    color: #FF9800;
+}
+
+.card p {
+    font-size: 1.1em;
+    color: #FF9800;
+}
+
+h1 {
+    text-align: center;
+    color: #FF9800;
+    margin-top: 30px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.btn {
+    padding: 8px 14px;
+    background: #fff;
+    border: 2px solid #ff9800;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #ff9800;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    background: #ff9800;
+    color: #fff;
+}

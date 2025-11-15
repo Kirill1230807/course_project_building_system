@@ -16,13 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('accounts/', include('users.urls')),
-    path('', RedirectView.as_view(pattern_name='login', permanent=False)),
+
+    # КАСТОМНА авторизація - наш новий модуль accounts
+    path('accounts/', include('accounts.urls')),
+
+    # Сторінка "немає доступу"
+    path("no-access/", TemplateView.as_view(template_name="accounts/no_access.html"), name="no_access"),
+
+    # Головна -> редірект на логін
+    path('', RedirectView.as_view(pattern_name='accounts:login', permanent=False)),
     path('home/', include('core.urls')),
     path('management/', include('management.urls')),
     path('brigades/', include('brigades.urls')),

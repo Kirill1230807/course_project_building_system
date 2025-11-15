@@ -2,6 +2,10 @@
 {% load static %}
 {% block title %}Звіт: Об’єкти за управлінням{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/reports/sites_by_management.css' %}">
+{% endblock %}
+
 {% block content %}
 
 <div class="report-container">
@@ -13,14 +17,17 @@
         <select name="management_id">
             <option value="">-- Усі --</option>
             {% for m in managements %}
-                <option value="{{ m.0 }}" {% if request.GET.management_id == m.0|stringformat:"s" %}selected{% endif %}>{{ m.1 }}</option>
+                <option value="{{ m.0 }}" {% if request.GET.management_id == m.0|stringformat:"s" %}selected{% endif %}>
+                    {{ m.1 }}
+                </option>
             {% endfor %}
         </select>
+
         <button type="submit" class="filter-btn">Показати</button>
     </form>
 
     <div class="table-wrapper">
-        <table>
+        <table class="styled-table">
             <thead>
                 <tr>
                     <th>Управління</th>
@@ -58,7 +65,5 @@
     </div>
 
 </div>
-
-<link rel="stylesheet" href="{% static 'reports/css/sites_by_management.css' %}">
 
 {% endblock %}

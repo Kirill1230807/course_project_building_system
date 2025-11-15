@@ -2,19 +2,24 @@
 {% load static %}
 {% block title %}Працівники{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/employees/employees.css' %}">
+<link rel="stylesheet" href="{% static 'components/modal.css' %}">
+{% endblock %}
+
 {% block content %}
 
-<h1>Працівники</h1>
+<h1 class="page-title">Працівники</h1>
 
-<button id="openModalBtn">Додати працівника</button>
+<button id="openModalBtn" class="btn-main">Додати працівника</button>
 
 <!-- Модальне вікно -->
 <div id="modal" class="modal">
     <div class="modal-content">
         <span id="closeModalBtn" class="close">&times;</span>
-        <h2>Новий працівник</h2>
+        <h2 class="modal-title">Новий працівник</h2>
 
-        <form id="employeeForm" method="post" action="{% url 'employees:add' %}">
+        <form id="employeeForm" method="post" action="{% url 'employees:add' %}" class="styled-form">
             {% csrf_token %}
 
             <label>Ім’я:</label>
@@ -36,9 +41,10 @@
             <select id="positionSelect" name="position_id" required>
                 <option value="">-- Оберіть посаду --</option>
                 {% for id, title, category in positions %}
-                <option value="{{ id }}" {% if form_data.position_id == id|stringformat:"s" %}selected{% endif %}>
-                    {{ title }}
-                </option>
+                    <option value="{{ id }}"
+                            {% if form_data.position_id == id|stringformat:"s" %}selected{% endif %}>
+                        {{ title }}
+                    </option>
                 {% endfor %}
             </select>
 
@@ -46,27 +52,25 @@
             <input type="number" name="salary" step="0.01" value="{{ form_data.salary|default:'' }}" required>
 
             {% if error_msg %}
-            <p class="error-msg">{{ error_msg }}</p>
+                <p class="error-msg">{{ error_msg }}</p>
             {% endif %}
 
-            <button type="submit">Зберегти</button>
+            <button type="submit" class="btn-save">Зберегти</button>
         </form>
     </div>
 </div>
 
-<hr>
-
 <div class="table-wrapper">
     <table class="styled-table">
         <thead>
-            <tr>
-                <th>№</th>
-                <th>Прізвище</th>
-                <th>Ім’я</th>
-                <th>Посада</th>
-                <th>Оклад</th>
-                <th>Дії</th>
-            </tr>
+        <tr>
+            <th>№</th>
+            <th>Прізвище</th>
+            <th>Ім’я</th>
+            <th>Посада</th>
+            <th>Оклад</th>
+            <th>Дії</th>
+        </tr>
         </thead>
 
         <tbody>
@@ -77,11 +81,17 @@
                 <td>{{ e.first_name }}</td>
                 <td>{{ e.position }}</td>
                 <td>{{ e.salary }}</td>
-                <td>
+
+                <td class="row-actions">
                     <a href="{% url 'employees:delete' e.id %}"
-                       onclick="return confirmDelete('{{ e.first_name }} {{ e.last_name }}')">Видалити</a> |
-                    <a href="{% url 'employees:detail' e.id %}">Детальніше</a> |
-                    <a href="{% url 'employees:edit' e.id %}">Редагувати</a>
+                       class="action-delete"
+                       onclick="return confirmDelete('{{ e.first_name }} {{ e.last_name }}')">
+                        Видалити
+                    </a>
+                    <span>|</span>
+                    <a href="{% url 'employees:detail' e.id %}" class="action-info">Детальніше</a>
+                    <span>|</span>
+                    <a href="{% url 'employees:edit' e.id %}" class="action-edit">Редагувати</a>
                 </td>
             </tr>
         {% endfor %}
@@ -89,7 +99,6 @@
     </table>
 </div>
 
-<link rel="stylesheet" href="{% static 'employees/css/employees.css' %}">
 <script src="{% static 'employees/js/employees.js' %}"></script>
 
 {% endblock %}

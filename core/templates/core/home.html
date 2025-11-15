@@ -2,26 +2,33 @@
 {% load static %}
 
 {% block title %}Головна{% endblock %}
-
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/core/main_page.css' %}">
+{% endblock %}
 {% block content %}
-<h1>Інформаційна панель</h1>
+    {% if current_user %}
+        <h1>Інформаційна панель</h1>
+        {% else %}
+        <h1>Зареєструйтесь або увійдіть у систему</h1>
+    {% endif %}
+    {% if current_user and current_user.role == "guest" %}
+        <a href="{% url 'send_access' %}" class="btn">Надіслати заявку на авторизацію</a>
+    {% endif %}
+    <div class="dashboard">
+        <div class="card">
+            <h2>{{ total_sites }}</h2>
+            <p>Усього об’єктів</p>
+        </div>
 
-<div class="dashboard">
-  <div class="card">
-    <h2>{{ total_sites }}</h2>
-    <p>Усього об’єктів</p>
-  </div>
+        <div class="card">
+            <h2>{{ total_employees }}</h2>
+            <p>Працівників у системі</p>
+        </div>
 
-  <div class="card">
-    <h2>{{ total_employees }}</h2>
-    <p>Працівників у системі</p>
-  </div>
+        <div class="card">
+            <h2>{{ completed_sites }}</h2>
+            <p>Завершених об’єктів</p>
+        </div>
+    </div>
 
-  <div class="card">
-    <h2>{{ completed_sites }}</h2>
-    <p>Завершених об’єктів</p>
-  </div>
-</div>
-
-<link rel="stylesheet" href="{% static 'core/css/main_page.css' %}">
 {% endblock %}

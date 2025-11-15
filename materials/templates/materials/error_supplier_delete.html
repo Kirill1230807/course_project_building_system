@@ -5,13 +5,13 @@
 {% block content %}
 <h1 style="color: #ff5252;">Помилка видалення постачальника</h1>
 
-<div style="background:#2d2d2d; padding:25px; border-radius:10px; width:450px; margin:20px auto; text-align:center;">
-  <p style="font-size:18px;">{{ message }}</p>
-  <p>Спочатку видаліть або змініть усі матеріали, пов’язані з цим постачальником.</p>
+<div style="background:#ff9800; padding:25px; border-radius:10px; width:450px; margin:20px auto; text-align:center;">
+  <p style="font-size:18px; color: white">{{ message }}</p>
+  <p style="color: white">Спочатку видаліть або змініть усі матеріали, пов’язані з цим постачальником.</p>
   <a href="{% url 'materials:index' %}" style="
       display:inline-block;
       margin-top:15px;
-      background-color:#4CAF50;
+      background-color:#555;
       color:white;
       padding:10px 20px;
       border-radius:6px;

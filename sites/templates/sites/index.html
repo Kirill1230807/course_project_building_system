@@ -3,69 +3,74 @@
 
 {% block title %}Будівельні об'єкти{% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'components/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'pages/sites/sites.css' %}">
+{% endblock %}
+
 {% block content %}
-    <h1>Об’єкти будівництва</h1>
 
-    <button id="openModalBtn">Додати об’єкт</button>
+<h1 class="page-title">Об’єкти будівництва</h1>
 
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span id="closeModalBtn" class="close">&times;</span>
-            <h2>Новий об’єкт</h2>
+<button id="openModalBtn" class="btn-primary add-btn">Додати об’єкт</button>
 
-            <form id="siteForm" method="post" action="{% url 'sites:add' %}">
-                {% csrf_token %}
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span id="closeModalBtn" class="close">&times;</span>
+        <h2>Новий об’єкт</h2>
 
-                <label>Назва:</label>
-                <input type="text" name="name" required><br>
+        <form id="siteForm" method="post" action="{% url 'sites:add' %}" class="form-container">
+            {% csrf_token %}
 
-                <label>Адреса:</label>
-                <input type="text" name="address" required><br>
+            <label>Назва:</label>
+            <input type="text" name="name" required>
 
-                <label>Дата початку:</label>
-                <input type="date" name="start_date" required><br>
+            <label>Адреса:</label>
+            <input type="text" name="address" required>
 
-                <label>Дедлайн:</label>
-                <input type="date" name="deadline"><br>
+            <label>Дата початку:</label>
+            <input type="date" name="start_date" required>
 
-                <label>Управління:</label>
-                <select name="management_id">
-                    <option value="">-- Оберіть управління --</option>
-                    {% for id, name in managements %}
-                        <option value="{{ id }}">{{ name }}</option>
-                    {% endfor %}
-                </select><br>
+            <label>Дедлайн:</label>
+            <input type="date" name="deadline">
 
-                <label>Відповідальний інженер:</label>
-                <select name="responsible_engineer_id">
-                    <option value="">-- Оберіть інженера --</option>
-                    {% for id, name in engineers %}
-                        <option value="{{ id }}">{{ name }}</option>
-                    {% endfor %}
-                </select><br>
+            <label>Управління:</label>
+            <select name="management_id">
+                <option value="">-- Оберіть управління --</option>
+                {% for id, name in managements %}
+                    <option value="{{ id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
 
-                <label>Статус:</label>
-                <select name="status">
-                    <option value="Планується">Планується</option>
-                    <option value="В процесі" selected>В процесі</option>
-                </select><br>
+            <label>Відповідальний інженер:</label>
+            <select name="responsible_engineer_id">
+                <option value="">-- Оберіть інженера --</option>
+                {% for id, name in engineers %}
+                    <option value="{{ id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
 
-                <label>Примітки:</label>
-                <textarea name="notes" rows="3"></textarea><br>
+            <label>Статус:</label>
+            <select name="status">
+                <option value="Планується">Планується</option>
+                <option value="В процесі" selected>В процесі</option>
+            </select>
 
-                {% if error_msg %}
-                    <p class="error" style="color:red;">{{ error_msg }}</p>
-                {% endif %}
+            <label>Примітки:</label>
+            <textarea name="notes" rows="3"></textarea>
 
-                <button type="submit">Зберегти</button>
-            </form>
-        </div>
+            {% if error_msg %}
+                <p class="error-msg">{{ error_msg }}</p>
+            {% endif %}
+
+            <button type="submit" class="btn-primary modal-save-btn">Зберегти</button>
+        </form>
     </div>
+</div>
 
-    <hr>
 <div class="table-wrapper">
-    <!-- Таблиця з об’єктами -->
-    <table border="1" cellpadding="9">
+    <table class="styled-table">
+        <thead>
         <tr>
             <th>№</th>
             <th>Назва</th>
@@ -79,7 +84,9 @@
             <th>Примітки</th>
             <th>Дії</th>
         </tr>
+        </thead>
 
+        <tbody>
         {% for s in sites %}
             <tr>
                 <td>{{ forloop.counter }}</td>
@@ -92,22 +99,29 @@
                 <td>{{ s.9|default:"" }}</td>
                 <td>{{ s.8|default:"" }}</td>
                 <td>{{ s.7|default:"--" }}</td>
-                <td>
-                    <a href="{% url 'sites:edit' s.0 %}">Редагувати</a> |
-                    <a href="{% url 'sites:sections' s.0 %}">Дільниці</a> |
-                    <a href="{% url 'sites:delete' s.0 %}" onclick="return confirm('Видалити об’єкт?')">Видалити</a> |
-                    <a href="{% url 'reports:site_schedule' s.0 %}">Кошторис</a> |
-                    <a href="{% url 'sites:detail' s.0%}">Детальніше</a>
+                <td class="actions-col">
+                    <a href="{% url 'sites:edit' s.0 %}" class="action-edit">Редагувати</a>
+                    <span>|</span>
+                    <a href="{% url 'sites:sections' s.0 %}" class="action-sections">Дільниці</a>
+                    <span>|</span>
+                    <a href="{% url 'sites:delete' s.0 %}"
+                       onclick="return confirm('Видалити об’єкт?')"
+                       class="action-delete">Видалити</a>
+                    <span>|</span>
+                    <a href="{% url 'reports:site_schedule' s.0 %}" class="action-link">Кошторис</a>
+                    <span>|</span>
+                    <a href="{% url 'sites:detail' s.0 %}" class="action-link">Детальніше</a>
                 </td>
             </tr>
         {% empty %}
             <tr>
-                <td colspan="11" style="text-align:center;">Немає дільниць</td>
+                <td colspan="11" class="empty-row">Немає дільниць</td>
             </tr>
         {% endfor %}
+        </tbody>
     </table>
 </div>
 
-    <link rel="stylesheet" href="{% static 'sites/css/sites.css' %}">
-    <script src="{% static 'sites/js/sites.js' %}"></script>
+<script src="{% static 'sites/js/sites.js' %}"></script>
+
 {% endblock %}

@@ -1,20 +1,28 @@
 ﻿{% extends "core/layout.html" %}
-{% block title %}Об'єкти, дільниці та керівники{% endblock %}
 {% load static %}
-{% block content %}
-    <div class="container mt-4">
-        <h2>Звіт: Перелік будівельних об’єктів, дільниць і керівників</h2>
 
-        {% if data %}
-            <table class="table table-bordered table-striped mt-3">
-                <thead class="table-light">
-                <tr>
-                    <th>#</th>
-                    <th>Об’єкт</th>
-                    <th>Дільниця</th>
-                    <th>Керівник</th>
-                    <th>Посада</th>
-                </tr>
+{% block title %}Об'єкти, дільниці та керівники{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/reports/report_sites_sections_managers.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="report-container">
+
+    <h1 class="page-title">Звіт: Об’єкти -- Дільниці -- Керівники</h1>
+
+    {% if data %}
+        <div class="table-wrapper">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Об’єкт</th>
+                        <th>Дільниця</th>
+                        <th>Керівник</th>
+                        <th>Посада</th>
+                    </tr>
                 </thead>
                 <tbody>
                 {% for row in data %}
@@ -22,16 +30,16 @@
                         <td>{{ forloop.counter }}</td>
                         <td>{{ row.site_name }}</td>
                         <td>{{ row.section_name }}</td>
-                        <td>{{ row.manager_name }}</td>
-                        <td>{{ row.position_name }}</td>
+                        <td>{{ row.manager_name|default:"—" }}</td>
+                        <td>{{ row.position_name|default:"—" }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-        {% else %}
-            <p>Дані відсутні.</p>
-        {% endif %}
-    </div>
-    <link rel="stylesheet" href="{% static 'reports/css/report_sites_sections_managers.css' %}">
+        </div>
+    {% else %}
+        <p class="no-data">Дані відсутні.</p>
+    {% endif %}
 
+</div>
 {% endblock %}

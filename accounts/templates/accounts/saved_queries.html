@@ -1,0 +1,55 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/accounts/saved_queries.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="queries-container">
+
+    <h1>Збережені SQL-запити</h1>
+
+    {% if items %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>SQL-запит</th>
+            <th>Дата</th>
+            <th>Дія</th>
+        </tr>
+
+        {% for q in items %}
+        <tr>
+            <td>{{ q.id }}</td>
+            <td class="sql-text">{{ q.query }}</td>
+            <td>{{ q.created_at }}</td>
+            <td>
+                <button class="view-btn" onclick="showResult({{ q.id }})">
+                    Переглянути результат
+                </button>
+
+                <!-- ТУТ МИ ПРОСТО ХОВАЄМО ТЕКСТ -->
+                <pre id="result-{{ q.id }}" style="display: none;">{{ q.result_text }}</pre>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% else %}
+        <p class="empty">У вас поки немає збережених SQL-запитів.</p>
+    {% endif %}
+</div>
+
+
+<!-- МОДАЛЬНЕ ВІКНО -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Результат запиту</h2>
+        <pre id="modal-data"></pre>
+    </div>
+</div>
+
+<script src="{% static 'accounts/js/saved_queries.js' %}"></script>
+{% endblock %}

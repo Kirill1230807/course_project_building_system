@@ -1,77 +1,79 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
+{% block title %}Звіти{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/reports/reports.css' %}">
+{% endblock %}
+
 {% block content %}
-    <div class="container mt-4">
+    <div class="reports-container">
 
-        <h2 class="mb-4">Звіти будівельної організації</h2>
+        <h1 class="page-title">Звіти будівельної організації</h1>
 
-        <h4>Кошторис і графік будівництва по об’єктах</h4>
-        <p>Оберіть об’єкт, щоб переглянути графік робіт і загальний кошторис:</p>
+        <section class="report-section">
+            <h2 class="section-title">Кошторис і графік будівництва по об’єктах</h2>
+            <p class="section-desc">Оберіть об’єкт, щоб переглянути графік робіт і загальний кошторис:</p>
 
-        <table class="table table-bordered table-striped mt-3">
-            <thead class="table-light">
-            <tr>
-                <th>№</th>
-                <th>Назва об’єкта</th>
-                <th>Адреса</th>
-                <th>Статус</th>
-                <th>Звіт</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for site in sites %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ site.1 }}</td>
-                    <td>{{ site.2 }}</td>
-                    <td>{{ site.3 }}</td>
-                    <td>
-                        <a href="{% url 'reports:site_schedule' site.0 %}" class="btn btn-sm btn-outline-primary">
-                            Переглянути кошторис
-                        </a>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center text-muted">Немає зареєстрованих об’єктів.</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+            <div class="table-wrapper">
+                <table class="styled-table">
+                    <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Назва об’єкта</th>
+                        <th>Адреса</th>
+                        <th>Статус</th>
+                        <th>Звіт</th>
+                    </tr>
+                    </thead>
 
-        <hr class="my-5">
+                    <tbody>
+                    {% for site in sites %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ site.1 }}</td>
+                            <td>{{ site.2 }}</td>
+                            <td>{{ site.3 }}</td>
+                            <td>
+                                <a href="{% url 'reports:site_schedule' site.0 %}" class="table-btn">
+                                    Переглянути кошторис
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="empty-row">Немає зареєстрованих об’єктів.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-        <h4>Інші звіти</h4>
-        <ul class="list-group">
-            <li class="list-group-item">
-                <a href="{% url 'reports:report_brigades_by_work' %}">Бригади за видом робіт і періодом</a>
-            </li>
-            <li class="list-group-item">
-                <a href="{% url 'reports:report_materials_overbudget' %}">Матеріали з перевищенням кошторису</a>
-            </li>
-            <li class="list-group-item">
-                <a href="{% url 'reports:report_sites_sections_managers' %}">Перелік будівельних керувань й/або ділянок
-                    та їхніх керівників</a>
-            </li>
-            <li class="list-group-item">
-                <a href="{% url 'reports:report_equipment_by_site' %}">Звіт: Техніка на об’єктах</a>
-            </li>
-            <li class="list-group-item">
-                <a href="{% url 'reports:report_brigades_by_work' %}">Звіт: Види робіт по бригаді</a>
-            </li>
-            <li class="list-group-item">
-                <a href="{% url 'reports:report_sites_by_management' %}">Звіт: Об’єкти за управлінням</a>
-            </li>
-            <li class="list-group-item">
-                <a href="{% url 'reports:report_brigade_staff' %}">Звіт: Склад бригад для об’єкта</a>
-            </li>
-            <li class="list-group-item">
-                <a href="{% url 'reports:report_delayed_works' %}">Звіт: Роботи з перевищенням термінів виконання</a>
-            </li>
-            <li class="list-group-item">
-                <a href="{% url 'reports:report_engineers' %}">Звіт: Інженерно-технічні працівники</a>
-            </li>
-        </ul>
+        <hr class="section-separator">
+
+        <section class="report-section">
+            <h2 class="section-title">Інші звіти</h2>
+
+            <ul class="reports-list">
+                <li><a href="{% url 'reports:report_brigades_by_work' %}">Бригади за видом робіт і періодом</a></li>
+                <li><a href="{% url 'reports:report_materials_overbudget' %}">Матеріали з перевищенням кількості</a>
+                </li>
+                <li><a href="{% url 'reports:report_sites_sections_managers' %}">
+                    Будівельні керування / дільниці та їхні керівники</a></li>
+                <li><a href="{% url 'reports:report_equipment_by_site' %}">
+                    Техніка на об’єктах</a></li>
+                <li><a href="{% url 'reports:report_brigades_by_work' %}">
+                    Види робіт по бригаді</a></li>
+                <li><a href="{% url 'reports:report_sites_by_management' %}">
+                    Об’єкти за управлінням</a></li>
+                <li><a href="{% url 'reports:report_brigade_staff' %}">
+                    Склад бригад для об’єкта</a></li>
+                <li><a href="{% url 'reports:report_delayed_works' %}">
+                    Роботи з перевищенням термінів виконання</a></li>
+                <li><a href="{% url 'reports:report_engineers' %}">
+                    Інженерно-технічні працівники</a></li>
+            </ul>
+        </section>
     </div>
-<link rel="stylesheet" href="{% static 'reports/css/reports.css' %}">
 {% endblock %}

@@ -2,18 +2,24 @@
 {% load static %}
 {% block title %}Бригади за видом робіт{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/reports/brigades_by_work.css' %}">
+{% endblock %}
+
 {% block content %}
 
 <div class="report-container">
 
     <h1 class="page-title">Звіт: Бригади за видом робіт</h1>
 
+    <!-- Форма фільтрації -->
     <form method="get" class="filter-form">
         <div class="form-row">
+
             <div class="form-group">
                 <label>Вид робіт:</label>
                 <select name="work_id">
-                    <option value="">— Всі —</option>
+                    <option value="">-- Всі --</option>
                     {% for w in works %}
                         <option value="{{ w.0 }}"
                             {% if request.GET.work_id == w.0|stringformat:"s" %}selected{% endif %}>
@@ -36,11 +42,13 @@
             <div class="form-group form-submit">
                 <button type="submit" class="filter-btn">Фільтрувати</button>
             </div>
+
         </div>
     </form>
 
+    <!-- Таблиця -->
     <div class="table-wrapper">
-        <table>
+        <table class="styled-table">
             <thead>
             <tr>
                 <th>Вид робіт</th>
@@ -51,6 +59,7 @@
                 <th>Завершення</th>
             </tr>
             </thead>
+
             <tbody>
             {% if results %}
                 {% for r in results %}
@@ -80,5 +89,4 @@
 
 </div>
 
-<link rel="stylesheet" href="{% static 'reports/css/brigades_by_work.css' %}">
 {% endblock %}

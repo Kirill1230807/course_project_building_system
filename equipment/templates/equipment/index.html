@@ -3,86 +3,106 @@
 
 {% block title %}Техніка{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/equipment/equipment.css' %}">
+<link rel="stylesheet" href="{% static 'components/modal.css' %}">
+{% endblock %}
+
 {% block content %}
-    <h1>Техніка</h1>
+<h1 class="page-title">Техніка</h1>
 
-    <button id="openModalBtn">Додати техніку</button>
+<button id="openModalBtn" class="btn-main">Додати техніку</button>
 
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span id="closeModalBtn" class="close">&times;</span>
-            <h2>Додати нову техніку</h2>
+<!-- Модальне вікно -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span id="closeModalBtn" class="close">&times;</span>
+        <h2 class="modal-title">Додати нову техніку</h2>
 
-            <form method="post" action="{% url 'equipment:add' %}">
-                {% csrf_token %}
-                <label>Назва:</label>
-                <input type="text" name="name" required><br>
+        <form method="post" action="{% url 'equipment:add' %}" class="styled-form">
+            {% csrf_token %}
 
-                <label>Тип:</label>
-                <select name="type" required>
-                    <option value="">— Оберіть тип —</option>
-                    <option value="Кран">Кран</option>
-                    <option value="Бульдозер">Бульдозер</option>
-                    <option value="Грузовик">Грузовик</option>
-                    <option value="Екскаватор">Екскаватор</option>
-                </select><br>
+            <label>Назва:</label>
+            <input type="text" name="name" required>
 
-                <label>Статус:</label>
-                <select name="status">
-                    <option value="В роботі">В роботі</option>
-                    <option value="На ремонті">На ремонті</option>
-                    <option value="Вільна">Вільна</option>
-                </select><br>
+            <label>Тип:</label>
+            <select name="type" required>
+                <option value="">— Оберіть тип —</option>
+                <option value="Кран">Кран</option>
+                <option value="Бульдозер">Бульдозер</option>
+                <option value="Грузовик">Грузовик</option>
+                <option value="Екскаватор">Екскаватор</option>
+            </select>
 
-                <label>Закріплений об’єкт:</label>
-                <select name="assigned_site_id">
-                    <option value="">— Оберіть об’єкт —</option>
-                    {% for id, name in sites %}
-                        <option value="{{ id }}">{{ name }}</option>
-                    {% endfor %}
-                </select><br>
+            <label>Статус:</label>
+            <select name="status">
+                <option value="В роботі">В роботі</option>
+                <option value="На ремонті">На ремонті</option>
+                <option value="Вільна">Вільна</option>
+            </select>
 
-                <label>Примітки:</label>
-                <textarea name="notes"></textarea><br>
+            <label>Закріплений об’єкт:</label>
+            <select name="assigned_site_id">
+                <option value="">— Оберіть об’єкт —</option>
+                {% for id, name in sites %}
+                    <option value="{{ id }}">{{ name }}</option>
+                {% endfor %}
+            </select>
 
-                <button type="submit">Зберегти</button>
-            </form>
-        </div>
+            <label>Примітки:</label>
+            <textarea name="notes" rows="3"></textarea>
+
+            <button type="submit" class="btn-save">Зберегти</button>
+        </form>
     </div>
+</div>
 
-    <hr>
-    <div class="table-wrapper">
-        <table border="1" cellpadding="6">
+<div class="table-wrapper">
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Назва</th>
+            <th>Тип</th>
+            <th>Статус</th>
+            <th>Об'єкт</th>
+            <th>Примітки</th>
+            <th>Дії</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for e in equipment %}
             <tr>
-                <th>ID</th>
-                <th>Назва</th>
-                <th>Тип</th>
-                <th>Статус</th>
-                <th>Об'єкт</th>
-                <th>Примітки</th>
-                <th>Дії</th>
+                <td>{{ e.0 }}</td>
+                <td>{{ e.1 }}</td>
+                <td>{{ e.2 }}</td>
+                <td>{{ e.3 }}</td>
+                <td>{{ e.4|default:"--" }}</td>
+                <td>{{ e.5|default:"--" }}</td>
+
+                <td class="row-actions">
+                    <a href="{% url 'equipment:delete' e.0 %}"
+                       class="action-delete"
+                       onclick="return confirm('Видалити техніку?')">
+                        Видалити
+                    </a>
+                    <span>|</span>
+                    <a href="{% url 'equipment:edit' e.0 %}"
+                       class="action-edit">
+                        Редагувати
+                    </a>
+                </td>
             </tr>
-            {% for e in equipment %}
-                <tr>
-                    <td>{{ e.0 }}</td>
-                    <td>{{ e.1 }}</td>
-                    <td>{{ e.2 }}</td>
-                    <td>{{ e.3 }}</td>
-                    <td>{{ e.4|default:"--" }}</td>
-                    <td>{{ e.5|default:"--" }}</td>
-                    <td><a class="delete-equipment" href="{% url 'equipment:delete' e.0 %}"
-                           onclick="return confirm('Видалити техніку?')">Видалити</a> |
-                        <a class="delete-equipment" href="{% url 'equipment:edit' e.0 %}">Редагувати</a>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="7">Немає записів</td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-    <link rel="stylesheet" href="{% static 'equipment/css/equipment.css' %}">
-    <script src="{% static 'equipment/js/equipment.js' %}"></script>
+        {% empty %}
+            <tr>
+                <td colspan="7" class="empty-row">Немає записів</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="{% static 'equipment/js/equipment.js' %}"></script>
 
 {% endblock %}

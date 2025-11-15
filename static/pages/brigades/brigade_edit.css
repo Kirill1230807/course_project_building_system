@@ -1,0 +1,111 @@
+﻿/* ===== Заголовок сторінки ===== */
+.page-title {
+    font-size: 32px;
+    color: #ff9800;
+    margin-bottom: 25px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* ===== Контейнер форми ===== */
+.form-card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* ===== Стиль форми ===== */
+.form-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.form-group input[type="text"] {
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    font-size: 15px;
+    background-color: #fff;
+    transition: 0.2s;
+}
+
+.form-group input[type="text"]:focus {
+    border-color: #ff9800;
+    box-shadow: 0 0 0 3px rgba(255,152,0,0.25);
+    outline: none;
+}
+
+/* ===== Повідомлення про помилки ===== */
+.error-msg {
+    color: #d32f2f;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* ===== Кнопки ===== */
+.actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+/* Основна кнопка */
+.btn-save {
+    background: #ff9800;
+    color: white;
+    padding: 12px 18px;
+    border: none;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-save:hover {
+    background: #e68900;
+}
+
+/* Кнопка "Назад" */
+.btn-back {
+    display: inline-block;
+    padding: 12px 18px;
+    background: #f1f1f1;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #555;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-back:hover {
+    background: #e0e0e0;
+    color: #000;
+}
+
+/* ===== Адаптивність ===== */
+@media (max-width: 600px) {
+    .form-card {
+        padding: 20px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .btn-save,
+    .btn-back {
+        width: 100%;
+        text-align: center;
+    }
+}

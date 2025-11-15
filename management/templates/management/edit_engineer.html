@@ -1,7 +1,9 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
 {% block title %}Редагування інженера{% endblock %}
-
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/management/edit_engineer.css' %}">
+{% endblock %}
 {% block content %}
     <h1>Редагування інженера</h1>
 
@@ -40,6 +42,5 @@
         <button type="submit">Зберегти зміни</button>
     </form>
 
-    <a href="{% url 'management:engineers' %}">Назад</a>
-    <link rel="stylesheet" href="{% static 'management/css/edit_engineer.css' %}">
+    <a href="{% url 'management:engineers' %}" class="btn-back">Назад</a>
 {% endblock %}

@@ -1,42 +1,45 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/deliveries/delivery_detail.css' %}">
+{% endblock %}
 {% block content %}
-<div class="delivery-detail-container">
+    <div class="delivery-detail-container">
 
-    <h1>Деталі доставки №{{ delivery.0 }}</h1>
+        <h1>Деталі доставки №{{ delivery.0 }}</h1>
 
-    <table class="info-table">
-        <tr>
-            <th>Об’єкт:</th>
-            <td>{{ delivery.1 }}</td>
-        </tr>
-        <tr>
-            <th>Дільниця:</th>
-            <td>{{ delivery.2 }}</td>
-        </tr>
-        <tr>
-            <th>Постачальник:</th>
-            <td>{{ delivery.3 }}</td>
-        </tr>
-        <tr>
-            <th>Дата доставки:</th>
-            <td>{{ delivery.4|date:"Y-m-d" }}</td>
-        </tr>
-        <tr>
-            <th>Сума:</th>
-            <td>{{ delivery.5 }} ₴</td>
-        </tr>
-        <tr>
-            <th>Примітка:</th>
-            <td>{{ delivery.6|default:"—" }}</td>
-        </tr>
-    </table>
+        <table class="info-table">
+            <tr>
+                <th>Об’єкт:</th>
+                <td>{{ delivery.1 }}</td>
+            </tr>
+            <tr>
+                <th>Дільниця:</th>
+                <td>{{ delivery.2 }}</td>
+            </tr>
+            <tr>
+                <th>Постачальник:</th>
+                <td>{{ delivery.3 }}</td>
+            </tr>
+            <tr>
+                <th>Дата доставки:</th>
+                <td>{{ delivery.4|date:"Y-m-d" }}</td>
+            </tr>
+            <tr>
+                <th>Сума:</th>
+                <td>{{ delivery.5 }} ₴</td>
+            </tr>
+            <tr>
+                <th>Примітка:</th>
+                <td>{{ delivery.6|default:"—" }}</td>
+            </tr>
+        </table>
 
-    <h2 class="section-title">Матеріали у доставці</h2>
+        <h2 class="section-title">Матеріали у доставці</h2>
 
-    <div class="table-wrapper">
-        <table class="styled-table">
-            <thead>
+        <div class="table-wrapper">
+            <table class="styled-table">
+                <thead>
                 <tr>
                     <th>Матеріал</th>
                     <th>Одиниця</th>
@@ -44,29 +47,27 @@
                     <th>Ціна за одиницю</th>
                     <th>Сума</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 {% for item in items %}
-                <tr>
-                    <td>{{ item.0 }}</td>
-                    <td>{{ item.2 }}</td>
-                    <td>{{ item.3 }}</td>
-                    <td>{{ item.4 }} ₴</td>
-                    <td>{{ item.5 }} ₴</td>
-                </tr>
+                    <tr>
+                        <td>{{ item.0 }}</td>
+                        <td>{{ item.2 }}</td>
+                        <td>{{ item.3 }}</td>
+                        <td>{{ item.4 }} ₴</td>
+                        <td>{{ item.5 }} ₴</td>
+                    </tr>
                 {% empty %}
-                <tr>
-                    <td colspan="5" class="empty-row">Матеріали не знайдено</td>
-                </tr>
+                    <tr>
+                        <td colspan="5" class="empty-row">Матеріали не знайдено</td>
+                    </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                </tbody>
+            </table>
+        </div>
 
-    <div class="back-btn-wrapper">
-        <a href="{% url 'deliveries:deliveries_list' %}" class="btn-back">Повернутися до списку</a>
+        <div class="back-btn-wrapper">
+            <a href="{% url 'deliveries:deliveries_list' %}" class="btn-back">Повернутися до списку</a>
+        </div>
     </div>
-</div>
-
-<link rel="stylesheet" href="{% static 'deliveries/css/delivery_detail.css' %}">
 {% endblock %}

@@ -1,48 +1,55 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
 
-{% block title %}Редагування об’єкта{% endblock %}
+{% block title %}Редагування дільниці{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/sites/edit_section.css' %}">
+{% endblock %}
 
 {% block content %}
-    <h1>Редагування дільниці</h1>
 
-    <form method="post" action="{% url 'sites:edit_section' section.id %}">
-        {% csrf_token %}
+<h1 class="page-title">Редагування дільниці</h1>
 
-        <label>Назва дільниці:</label>
-        <input type="text" name="name" value="{{ section.name }}" required><br>
+<div class="form-wrapper">
+<form class="styled-form" method="post" action="{% url 'sites:edit_section' section.id %}">
+    {% csrf_token %}
 
-        <label>Начальник дільниці:</label>
-        <select name="chief_id">
-            <option value="">— Оберіть начальника —</option>
-            {% for id, name in chiefs %}
-                <option value="{{ id }}" {% if section.chief_id == id %}selected{% endif %}>
-                    {{ name }}
-                </option>
-            {% endfor %}
-        </select><br>
+    <label>Назва дільниці:</label>
+    <input type="text" name="name" value="{{ section.name }}" required>
 
-        <label>Бригада:</label>
-        <select name="brigade_id">
-            <option value="">— Оберіть бригаду —</option>
-            {% for id, name in brigades %}
-                <option value="{{ id }}" {% if section.brigade_id == id %}selected{% endif %}>
-                    {{ name }}
-                </option>
-            {% endfor %}
-        </select><br>
+    <label>Начальник дільниці:</label>
+    <select name="chief_id">
+        <option value="">-- Оберіть начальника --</option>
+        {% for id, name in chiefs %}
+            <option value="{{ id }}" {% if section.chief_id == id %}selected{% endif %}>
+                {{ name }}
+            </option>
+        {% endfor %}
+    </select>
 
-        <label>Дата початку:</label>
-        <input type="date" name="start_date" value="{{ section.start_date|date:'Y-m-d' }}"><br>
+    <label>Бригада:</label>
+    <select name="brigade_id">
+        <option value="">-- Оберіть бригаду --</option>
+        {% for id, name in brigades %}
+            <option value="{{ id }}" {% if section.brigade_id == id %}selected{% endif %}>
+                {{ name }}
+            </option>
+        {% endfor %}
+    </select>
 
-        <label>Дата завершення:</label>
-        <input type="date" name="end_date" value="{{ section.end_date|date:'Y-m-d' }}"><br>
+    <label>Дата початку:</label>
+    <input type="date" name="start_date" value="{{ section.start_date|date:'Y-m-d' }}">
 
-        <label>Примітки:</label>
-        <textarea name="notes">{{ section.notes }}</textarea><br>
+    <label>Дата завершення:</label>
+    <input type="date" name="end_date" value="{{ section.end_date|date:'Y-m-d' }}">
 
-        <button type="submit">Зберегти зміни</button>
-        <a href="{% url 'sites:sections' section.site_id %}" class="btn-back">Назад</a>
-    </form>
-    <link rel="stylesheet" href="{% static 'sites/css/edit_section.css' %}">
+    <label>Примітки:</label>
+    <textarea name="notes" rows="3">{{ section.notes|default_if_none:'' }}</textarea>
+
+    <button type="submit" class="btn-primary">Зберегти зміни</button>
+    <a href="{% url 'sites:sections' section.site_id %}" class="btn-back">Назад</a>
+</form>
+</div>
+
 {% endblock %}

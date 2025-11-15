@@ -1,0 +1,95 @@
+﻿.page-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #ff9800;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.section-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.detail-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.detail-table th {
+    width: 220px;
+    text-align: left;
+    padding: 12px;
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    font-weight: 600;
+    color: #333;
+}
+
+.detail-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    color: #444;
+}
+
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.styled-table thead {
+    background: #ff9800;
+    color: white;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 14px;
+    text-align: left;
+}
+
+.styled-table tbody tr:nth-child(even) {
+    background: #f8f8f8;
+}
+
+.styled-table tbody tr:hover {
+    background: #f3f3ff;
+}
+
+.empty-row {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+}
+
+.btn-back {
+    display: inline-block;
+    background: #eee;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #444;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-back:hover {
+    background: #ddd;
+}
+
+.back-btn-wrapper {
+    margin-bottom: 20px;
+}

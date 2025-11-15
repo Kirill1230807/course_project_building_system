@@ -29,7 +29,7 @@ def add_delivery(request):
 
             # оновлюємо суму
             DeliveryQueries.update_total(delivery_id)
-            messages.success(request, "✅ Доставку успішно створено!")
+            messages.success(request, "Доставку успішно створено!")
             return redirect("deliveries:add_delivery_success")
 
         except ValueError as e:

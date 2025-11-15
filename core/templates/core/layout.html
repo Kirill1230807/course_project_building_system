@@ -3,24 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'core/css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'pages/core/base.css' %}">
+    <link rel="stylesheet" href="{% static 'pages/core/layout.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
 <div class="layout">
     <aside>
         <div class="user-info">
-            {% if user.is_authenticated %}
-                <p>Привіт, {{ user.first_name|default:user.username }}!</p>
+
+            {% if current_user %}
+                <p>
+                    Привіт, {{ current_user.username }}!
+                    <br>
+                    <small>Роль:
+                        {% if current_user.role == "admin" %}Адміністратор СД
+                        {% elif current_user.role == "operator" %}Оператор СД
+                        {% elif current_user.role == "authorized" %}Авторизований користувач
+                        {% else %}Гість
+                        {% endif %}
+                    </small>
+                </p>
+                <a href="{% url 'accounts:logout' %}" class="logout-btn">Вийти</a>
             {% else %}
                 <p>Привіт, Гість</p>
+                <a href="{% url 'accounts:login' %}" class="logout-btn">Увійти</a>
+                <a href="{% url 'accounts:register' %}" class="logout-btn">Зареєструватись</a>
             {% endif %}
-            <a href="{% url 'login' %}" class="logout-btn">Вийти</a>
+
         </div>
+
         <nav class="nav-menu">
             <ul>
+                <li>{% if request.session.role == "admin" %}
+                    <a href="{% url 'manage_users' %}">Керування користувачами</a>
+                {% endif %}
+                </li>
+                {% if current_user and current_user.role == "admin" %}
+                    <a href="{% url 'manage_requests' %}">Заявки гостей</a>
+                {% endif %}
                 <li><a href="{% url 'home:home' %}">Головна</a></li>
-                <li><a href="{% url 'sites:index' %}">Будівельні об'єкти</a></li>
                 {# core #}
+
+                {% if current_role in "authorized operator admin"%}
+                <li><a href="{% url 'sites:index' %}">Будівельні об'єкти</a></li>
+                {# sites #}
                 <li><a href="{% url 'management:index' %}">Будівельні управління</a></li>
                 {# management #}
                 <li><a href="{% url 'management:engineers' %}">Інженерно-технічний персонал</a></li>
@@ -40,7 +67,13 @@
                 <li><a href="{% url 'deliveries:add_delivery' %}">Доставки</a></li>
                 {# deliveries #}
                 <li><a href="{% url 'deliveries:deliveries_list' %}">Історія доставок</a></li>
+                {# deliveries #}
                 <li><a href="{% url 'home:about' %}">Про курсову роботу</a></li>
+                {# core #}
+                {% if current_role == "admin" or current_role == "operator" or current_role == "authorized" %}
+                    <a href="{% url 'accounts:sql_console' %}">SQL Консоль</a>
+                {% endif %}
+            {% endif %}
             </ul>
         </nav>
     </aside>

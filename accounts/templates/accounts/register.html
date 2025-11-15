@@ -1,0 +1,24 @@
+﻿{% load static %}
+<link rel="stylesheet" href="{% static 'pages/auth/auth.css' %}">
+
+<div class="auth-container">
+    <h1>Реєстрація</h1>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <label>Логін:</label>
+        <input type="text" name="username">
+
+        <label>Пароль:</label>
+        <input type="password" name="password">
+
+        <button type="submit">Зареєструватись</button>
+    </form>
+    <div class="other-links">
+        <p style="text-align: center;">Маєте аккаунту? <a href="{% url 'login' %}">Увійти</a></p>
+    </div>
+</div>

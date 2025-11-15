@@ -2,84 +2,93 @@
 {% load static %}
 {% block title %}Інженерно-технічний персонал{% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'components/modal.css' %}">
+    <link rel="stylesheet" href="{% static 'pages/management/engineers.css' %}">
+{% endblock %}
+
 {% block content %}
-    <h1>Інженерно-технічний персонал</h1>
+<h1 class="page-title">Інженерно-технічний персонал</h1>
 
-    <button id="openModalBtn">Додати інженера</button>
+<button id="openModalBtn" class="btn-orange">Додати інженера</button>
 
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span id="closeModalBtn" class="close">&times;</span>
-            <h2>Новий інженер</h2>
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <span id="closeModalBtn" class="close">&times;</span>
+        <h2>Новий інженер</h2>
 
-            <form method="post" action="{% url 'management:add_engineer' %}">
-                {% csrf_token %}
+        <form method="post" action="{% url 'management:add_engineer' %}" class="styled-form">
+            {% csrf_token %}
 
-                <label>Прізвище:</label>
-                <input type="text" name="last_name" required><br>
+            <label>Прізвище:</label>
+            <input type="text" name="last_name" required>
 
-                <label>Ім’я:</label>
-                <input type="text" name="first_name" required><br>
+            <label>Ім’я:</label>
+            <input type="text" name="first_name" required>
 
-                <label>По-батькові:</label>
-                <input type="text" name="father_name"><br>
+            <label>По-батькові:</label>
+            <input type="text" name="father_name">
 
-                <label>Дата народження:</label>
-                <input type="date" name="birthday" required><br>
+            <label>Дата народження:</label>
+            <input type="date" name="birthday" required>
 
-                <label>Дата прийняття на роботу:</label>
-                <input type="date" name="start_date" required><br>
+            <label>Дата прийняття на роботу:</label>
+            <input type="date" name="start_date" required>
 
-                <label>Посада:</label>
-                <select name="position_id" required>
-                    <option value="">— Оберіть посаду —</option>
-                    {% for id, title in positions %}
-                        <option value="{{ id }}">{{ title }}</option>
-                    {% endfor %}
-                </select><br>
+            <label>Посада:</label>
+            <select name="position_id" required>
+                <option value="">— Оберіть посаду —</option>
+                {% for id, title in positions %}
+                    <option value="{{ id }}">{{ title }}</option>
+                {% endfor %}
+            </select>
 
-                <label>Зарплата:</label>
-                <input type="number" name="salary" step="0.01" required><br>
+            <label>Зарплата (₴):</label>
+            <input type="number" name="salary" step="0.01" required>
 
-                {% if error_msg %}
-                    <p style="color:red;">{{ error_msg }}</p>
-                {% endif %}
+            {% if error_msg %}
+                <p class="error-msg">{{ error_msg }}</p>
+            {% endif %}
 
-                <button type="submit">Зберегти</button>
-            </form>
-        </div>
+            <button type="submit" class="btn-save">Зберегти</button>
+        </form>
     </div>
+</div>
 
-    <hr>
-    <div class="table-wrapper">
-        <table border="1" cellpadding="6">
+<div class="table-wrapper">
+    <table class="styled-table">
+        <thead>
+        <tr>
+            <th>№</th>
+            <th>Прізвище</th>
+            <th>Ім’я</th>
+            <th>Посада</th>
+            <th>Зарплата</th>
+            <th>Дії</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for e in engineers %}
             <tr>
-                <th>№</th>
-                <th>Прізвище</th>
-                <th>Ім’я</th>
-                <th>Посада</th>
-                <th>Зарплата</th>
-                <th>Дії</th>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ e.1 }}</td>
+                <td>{{ e.2 }}</td>
+                <td>{{ e.3 }}</td>
+                <td>{{ e.4 }}</td>
+                <td>
+                    <a href="{% url 'management:delete_engineer' e.0 %}"
+                       class="btn-delete"
+                       onclick="return confirm('Видалити інженера?')">Видалити</a>
+                    |
+                    <a href="{% url 'management:edit_engineer' e.0 %}"
+                       class="btn-edit">Редагувати</a>
+                </td>
             </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-            {% for e in engineers %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ e.1 }}</td>
-                    <td>{{ e.2 }}</td>
-                    <td>{{ e.3 }}</td>
-                    <td>{{ e.4 }}</td>
-                    <td>
-                        <a href="{% url 'management:delete_engineer' e.0 %}"
-                           onclick="return confirm('Видалити інженера?')">Видалити</a> |
-                        <a href="{% url 'management:edit_engineer' e.0 %}">Редагувати</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-
-    <link rel="stylesheet" href="{% static 'management/css/engineers.css' %}">
-    <script src="{% static 'management/js/engineers.js' %}"></script>
-
+<script src="{% static 'management/js/engineers.js' %}"></script>
 {% endblock %}
