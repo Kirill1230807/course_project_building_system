@@ -22,24 +22,24 @@
 
         {% if result %}
             {% if result.columns %}
-                <table>
-                    <tr>
-                        {% for col in result.columns %}
-                            <th>{{ col }}</th>
-                        {% endfor %}
-                    </tr>
-
-                    {% for row in result.rows %}
+                <div class="table-wrapper">
+                    <table>
                         <tr>
-                            {% for value in row %}
-                                <td>{{ value }}</td>
+                            {% for col in result.columns %}
+                                <th>{{ col }}</th>
                             {% endfor %}
                         </tr>
-                    {% endfor %}
-                </table>
 
-                {# ----------- КНОПКА ЗБЕРЕГТИ ----------- #}
-                {% if current_role == "authorized" or current_role == "admin" %}
+                        {% for row in result.rows %}
+                            <tr>
+                                {% for value in row %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% if current_role == "authorized" or current_role == "admin" or current_role == "operator" %}
                     <form method="post" action="{% url 'accounts:save_sql_result' %}">
                         {% csrf_token %}
                         <input type="hidden" name="query" value="{{ query }}">
@@ -47,12 +47,9 @@
                         <button type="submit" class="save-btn">Зберегти результат</button>
                     </form>
                 {% endif %}
-                {# ------------------------------------- #}
-
             {% else %}
                 <div class="success-box">{{ result }}</div>
             {% endif %}
         {% endif %}
-
     </div>
 {% endblock %}

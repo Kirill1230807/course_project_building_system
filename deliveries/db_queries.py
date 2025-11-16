@@ -104,7 +104,7 @@ class DeliveryQueries:
 
     @staticmethod
     def get_deliveries(site_id=None, section_id=None, start_date=None, end_date=None):
-        """Отримати список доставок з фільтрами"""
+        """Отримати список доставок"""
         query = """
             SELECT 
                 d.id,

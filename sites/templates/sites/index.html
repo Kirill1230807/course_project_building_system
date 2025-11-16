@@ -10,118 +10,180 @@
 
 {% block content %}
 
-<h1 class="page-title">Об’єкти будівництва</h1>
+    <h1 class="page-title">Об’єкти будівництва</h1>
+    {% if current_role in "admin operator" %}
+        <button id="openModalBtn" class="btn-primary add-btn">Додати об’єкт</button>
 
-<button id="openModalBtn" class="btn-primary add-btn">Додати об’єкт</button>
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span id="closeModalBtn" class="close">&times;</span>
+                <h2>Новий об’єкт</h2>
 
-<div id="modal" class="modal">
-    <div class="modal-content">
-        <span id="closeModalBtn" class="close">&times;</span>
-        <h2>Новий об’єкт</h2>
+                <form id="siteForm" method="post" action="{% url 'sites:add' %}" class="form-container">
+                    {% csrf_token %}
 
-        <form id="siteForm" method="post" action="{% url 'sites:add' %}" class="form-container">
-            {% csrf_token %}
+                    <label>Назва:</label>
+                    <input type="text" name="name" required>
 
-            <label>Назва:</label>
-            <input type="text" name="name" required>
+                    <label>Адреса:</label>
+                    <input type="text" name="address" required>
 
-            <label>Адреса:</label>
-            <input type="text" name="address" required>
+                    <label>Дата початку:</label>
+                    <input type="date" name="start_date" required>
 
-            <label>Дата початку:</label>
-            <input type="date" name="start_date" required>
+                    <label>Дедлайн:</label>
+                    <input type="date" name="deadline">
 
-            <label>Дедлайн:</label>
-            <input type="date" name="deadline">
+                    <label>Управління:</label>
+                    <select name="management_id">
+                        <option value="">-- Оберіть управління --</option>
+                        {% for id, name in managements %}
+                            <option value="{{ id }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
 
-            <label>Управління:</label>
-            <select name="management_id">
-                <option value="">-- Оберіть управління --</option>
-                {% for id, name in managements %}
-                    <option value="{{ id }}">{{ name }}</option>
-                {% endfor %}
-            </select>
+                    <label>Відповідальний інженер:</label>
+                    <select name="responsible_engineer_id">
+                        <option value="">-- Оберіть інженера --</option>
+                        {% for id, name in engineers %}
+                            <option value="{{ id }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
 
-            <label>Відповідальний інженер:</label>
-            <select name="responsible_engineer_id">
-                <option value="">-- Оберіть інженера --</option>
-                {% for id, name in engineers %}
-                    <option value="{{ id }}">{{ name }}</option>
-                {% endfor %}
-            </select>
+                    <label>Статус:</label>
+                    <select name="status">
+                        <option value="Планується">Планується</option>
+                        <option value="В процесі" selected>В процесі</option>
+                    </select>
 
-            <label>Статус:</label>
-            <select name="status">
-                <option value="Планується">Планується</option>
-                <option value="В процесі" selected>В процесі</option>
-            </select>
+                    <label>Примітки:</label>
+                    <textarea name="notes" rows="3"></textarea>
 
-            <label>Примітки:</label>
-            <textarea name="notes" rows="3"></textarea>
+                    {% if error_msg %}
+                        <p class="error-msg">{{ error_msg }}</p>
+                    {% endif %}
 
-            {% if error_msg %}
-                <p class="error-msg">{{ error_msg }}</p>
-            {% endif %}
-
-            <button type="submit" class="btn-primary modal-save-btn">Зберегти</button>
-        </form>
+                    <button type="submit" class="btn-primary modal-save-btn">Зберегти</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+    <div class="tabs">
+        <button class="tab-button active" data-tab="active">Активні</button>
+        <button class="tab-button" data-tab="finished">Завершені</button>
     </div>
-</div>
 
-<div class="table-wrapper">
-    <table class="styled-table">
-        <thead>
-        <tr>
-            <th>№</th>
-            <th>Назва</th>
-            <th>Адреса</th>
-            <th>Дата початку</th>
-            <th>Дата завершення</th>
-            <th>Дедлайн</th>
-            <th>Статус</th>
-            <th>Головний інженер</th>
-            <th>Управління</th>
-            <th>Примітки</th>
-            <th>Дії</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        {% for s in sites %}
+    <!-- Активні об’єкти -->
+    <div id="tab-active" class="table-wrapper tab-content active">
+        <table class="styled-table">
+            <thead>
             <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ s.1 }}</td>
-                <td>{{ s.2 }}</td>
-                <td>{{ s.3|date:"Y-m-d" }}</td>
-                <td>{{ s.4|default:"--"|date:"Y-m-d" }}</td>
-                <td>{{ s.5|date:"Y-m-d" }}</td>
-                <td>{{ s.6|default:"" }}</td>
-                <td>{{ s.9|default:"" }}</td>
-                <td>{{ s.8|default:"" }}</td>
-                <td>{{ s.7|default:"--" }}</td>
-                <td class="actions-col">
-                    <a href="{% url 'sites:edit' s.0 %}" class="action-edit">Редагувати</a>
-                    <span>|</span>
-                    <a href="{% url 'sites:sections' s.0 %}" class="action-sections">Дільниці</a>
-                    <span>|</span>
-                    <a href="{% url 'sites:delete' s.0 %}"
-                       onclick="return confirm('Видалити об’єкт?')"
-                       class="action-delete">Видалити</a>
-                    <span>|</span>
-                    <a href="{% url 'reports:site_schedule' s.0 %}" class="action-link">Кошторис</a>
-                    <span>|</span>
-                    <a href="{% url 'sites:detail' s.0 %}" class="action-link">Детальніше</a>
-                </td>
+                <th>№</th>
+                <th>Назва</th>
+                <th>Адреса</th>
+                <th>Дата початку</th>
+                <th>Дата завершення</th>
+                <th>Дедлайн</th>
+                <th>Статус</th>
+                <th>Головний інженер</th>
+                <th>Управління</th>
+                <th>Примітки</th>
+                <th>Дії</th>
             </tr>
-        {% empty %}
-            <tr>
-                <td colspan="11" class="empty-row">Немає дільниць</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+            </thead>
 
-<script src="{% static 'sites/js/sites.js' %}"></script>
+            <tbody>
+            {% for s in sites %}
+                {% if s.6 != "Завершено" %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ s.1 }}</td>
+                        <td>{{ s.2 }}</td>
+                        <td>{{ s.3|date:"Y-m-d" }}</td>
+                        <td>{{ s.4|default:"--"|date:"Y-m-d" }}</td>
+                        <td>{{ s.5|date:"Y-m-d" }}</td>
+                        <td>{{ s.6 }}</td>
+                        <td>{{ s.9 }}</td>
+                        <td>{{ s.8 }}</td>
+                        <td>{{ s.7|default:"--" }}</td>
+
+                        <td class="actions-col">
+                            {% if current_role in "admin operator" %}
+                                <a href="{% url 'sites:edit' s.0 %}" class="action-edit">Редагувати</a>
+                                <span>|</span>
+                            {% endif %}
+                            <a href="{% url 'sites:sections' s.0 %}" class="action-sections">Дільниці</a>
+                            <span>|</span>
+                            {% if current_role in "admin operator" %}
+                                <a href="{% url 'sites:delete' s.0 %}"
+                                   onclick="return confirm('Видалити об’єкт?')"
+                                   class="action-delete">Видалити</a>
+                                <span>|</span>
+                            {% endif %}
+                            <a href="{% url 'reports:site_schedule' s.0 %}" class="action-link">Кошторис</a>
+                            <span>|</span>
+                            <a href="{% url 'sites:detail' s.0 %}" class="action-link">Детальніше</a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% empty %}
+                <tr>
+                    <td colspan="11" class="empty-row">Немає активних об’єктів</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Завершені об’єкти -->
+    <div id="tab-finished" class="table-wrapper tab-content">
+        <table class="styled-table">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Назва</th>
+                <th>Адреса</th>
+                <th>Дата початку</th>
+                <th>Дата завершення</th>
+                <th>Дедлайн</th>
+                <th>Статус</th>
+                <th>Головний інженер</th>
+                <th>Управління</th>
+                <th>Примітки</th>
+                <th>Дії</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for s in sites %}
+                {% if s.6 == "Завершено" %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ s.1 }}</td>
+                        <td>{{ s.2 }}</td>
+                        <td>{{ s.3|date:"Y-m-d" }}</td>
+                        <td>{{ s.4|date:"Y-m-d" }}</td>
+                        <td>{{ s.5|date:"Y-m-d" }}</td>
+                        <td>{{ s.6 }}</td>
+                        <td>{{ s.9 }}</td>
+                        <td>{{ s.8 }}</td>
+                        <td>{{ s.7|default:"--" }}</td>
+
+                        <td class="actions-col">
+                            <!-- Лише перегляд -->
+                            <a href="{% url 'sites:detail' s.0 %}" class="action-link">Детальніше</a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% empty %}
+                <tr>
+                    <td colspan="11" class="empty-row">Немає завершених об’єктів</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="{% static 'sites/js/sites.js' %}"></script>
 
 {% endblock %}

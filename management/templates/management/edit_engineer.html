@@ -25,6 +25,9 @@
         <label>Дата прийняття на роботу:</label>
         <input type="date" name="start_date" value="{{ engineer.start_date|date:'Y-m-d' }}"><br>
 
+        <label>Дата звільнення:</label>
+        <input type="date" name="end_date" value="{{ engineer.end_date|date:'Y-m-d' }}"><br>
+
         <label>Посада:</label>
         <select name="position_id" required>
             {% for id, title in positions %}

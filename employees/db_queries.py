@@ -8,7 +8,13 @@ class EmployeeQueries:
     def get_all():
         with connection.cursor() as cursor:
             cursor.execute("""
-                           SELECT e.id, e.first_name, e.last_name, e.salary, p.title AS position, e.category
+                           SELECT e.id,
+                                  e.first_name,
+                                  e.last_name,
+                                  e.salary,
+                                  p.title AS position,
+                                  e.category,
+                                  e.end_date
                            FROM employees e
                                     JOIN positions p ON e.position_id = p.id
                            WHERE e.category = 'Робітники'

@@ -1,0 +1,63 @@
+﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block title %}Деталі інженера{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/management/detail_engineer.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Деталі інженера</h1>
+
+<div class="detail-card">
+
+    <div class="detail-row">
+        <span class="label">Прізвище:</span>
+        <span class="value">{{ engineer.last_name }}</span>
+    </div>
+
+    <div class="detail-row">
+        <span class="label">Ім’я:</span>
+        <span class="value">{{ engineer.first_name }}</span>
+    </div>
+
+    <div class="detail-row">
+        <span class="label">По-батькові:</span>
+        <span class="value">{{ engineer.father_name|default:"—" }}</span>
+    </div>
+
+    <div class="detail-row">
+        <span class="label">Дата народження:</span>
+        <span class="value">{{ engineer.birthday|date:"Y-m-d" }}</span>
+    </div>
+
+    <div class="detail-row">
+        <span class="label">Дата прийняття:</span>
+        <span class="value">{{ engineer.start_date|date:"Y-m-d" }}</span>
+    </div>
+
+    <div class="detail-row">
+        <span class="label">Дата звільнення:</span>
+        <span class="value">
+            {{ engineer.end_date|default:"—"|date:"Y-m-d" }}
+        </span>
+    </div>
+
+    <div class="detail-row">
+        <span class="label">Посада:</span>
+        <span class="value">{{ position_title }}</span>
+    </div>
+
+    <div class="detail-row">
+        <span class="label">Зарплата:</span>
+        <span class="value">{{ engineer.salary }} ₴</span>
+    </div>
+
+</div>
+
+<div class="btn-row">
+    <a href="{% url 'management:engineers' %}" class="btn-back">Назад</a>
+</div>
+
+{% endblock %}

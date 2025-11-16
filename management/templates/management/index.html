@@ -9,10 +9,9 @@
 
 {% block content %}
 <h1 class="page-title">Будівельні управління</h1>
-
+{% if current_role in "admin operator" %}
 <button id="openModalBtn" class="btn-orange">Додати управління</button>
 
-<!-- Модальне вікно -->
 <div id="modal" class="modal">
     <div class="modal-content">
         <span id="closeModalBtn" class="close">&times;</span>
@@ -43,6 +42,7 @@
         </form>
     </div>
 </div>
+{% endif %}
 
 <div class="table-wrapper">
     <table class="styled-table">
@@ -52,7 +52,9 @@
             <th>Назва</th>
             <th>Керівник</th>
             <th>Примітки</th>
+            {% if current_role in "admin operator" %}
             <th>Дії</th>
+            {% endif %}
         </tr>
         </thead>
 
@@ -63,6 +65,7 @@
                 <td>{{ m.1 }}</td>
                 <td>{{ m.2|default:"—" }}</td>
                 <td>{{ m.3|default:"—" }}</td>
+                {% if current_role in "admin operator" %}
                 <td>
                     <a href="{% url 'management:delete_management' m.0 %}"
                        class="btn-delete"
@@ -71,6 +74,7 @@
                     <a href="{% url 'management:edit_management' m.0 %}"
                        class="btn-edit">Редагувати</a>
                 </td>
+            {% endif %}
             </tr>
         {% endfor %}
         </tbody>

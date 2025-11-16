@@ -3,8 +3,6 @@ from django.shortcuts import render, redirect
 from .models import CustomUser, GuestRequest
 from accounts.decorator import require_role
 from accounts.db_queries import Queries
-import json
-from django.db import connection
 import random
 from decimal import Decimal
 from datetime import date, datetime
@@ -22,7 +20,7 @@ def register_view(request):
         user.set_password(password)
         user.save()
 
-        return redirect("login")
+        return redirect("accounts:login")
 
     return render(request, "accounts/register.html")
 
@@ -59,14 +57,14 @@ def login_view(request):
 # LOGOUT
 def logout_view(request):
     request.session.flush()
-    return redirect("login")
+    return redirect("accounts:login")
 
 
 # SEND ACCESS REQUEST (Guest)
 def send_access_request(request):
     user_id = request.session.get("user_id")
     if not user_id:
-        return redirect("login")
+        return redirect("accounts:login")
 
     user = CustomUser.objects.get(id=user_id)
 
@@ -99,7 +97,7 @@ def approve_request(request, req_id):
 
     req.save()
 
-    return redirect("manage_requests")
+    return redirect("accounts:manage_requests")
 
 
 def reject_request(request, req_id):
@@ -123,7 +121,7 @@ def change_role(request, user_id):
         new_role = request.POST.get("role")
         user.role = new_role
         user.save()
-        return redirect("manage_users")
+        return redirect("accounts:manage_users")
 
     return render(request, "accounts/change_role.html", {"user": user})
 
@@ -133,7 +131,7 @@ FORBIDDEN_KEYWORDS = ["drop", "truncate", "alter", "delete", "update", "insert"]
 @require_role(["admin", "operator", "authorized"])
 def sql_console(request):
     result = None
-    query = None
+    query = ""
     result_text = ""
 
     if request.method == "POST":
@@ -229,7 +227,7 @@ def reset_code(request):
         if user.reset_code != input_code:
             error = "Невірний код підтвердження"
         else:
-            return redirect("reset_password")
+            return redirect("accounts:reset_password")
 
     return render(request, "accounts/reset_code.html", {"error": error})
 
@@ -252,6 +250,6 @@ def reset_password(request):
 
         request.session.flush()
 
-        return redirect("login")
+        return redirect("accounts:login")
 
     return render(request, "accounts/reset_password.html")

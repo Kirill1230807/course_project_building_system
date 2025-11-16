@@ -1,56 +1,57 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
 {% block title %}Працівник: {{ employee.last_name }} {{ employee.first_name }}{% endblock %}
-
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/employees/detail.css' %}">
+{% endblock %}
 {% block content %}
-<div class="detail-container">
-    <h1 class="page-title">Детальна інформація про працівника</h1>
+    <div class="detail-container">
+        <h1 class="page-title">Детальна інформація про працівника</h1>
 
-    <table class="detail-table">
-        <tr>
-            <th>ID</th>
-            <td>{{ employee.id }}</td>
-        </tr>
-        <tr>
-            <th>Прізвище</th>
-            <td>{{ employee.last_name }}</td>
-        </tr>
-        <tr>
-            <th>Ім’я</th>
-            <td>{{ employee.first_name }}</td>
-        </tr>
-        <tr>
-            <th>По-батькові</th>
-            <td>{{ employee.father_name|default:"—" }}</td>
-        </tr>
-        <tr>
-            <th>Дата народження</th>
-            <td>{{ employee.birthday }}</td>
-        </tr>
-        <tr>
-            <th>День прийняття на роботу</th>
-            <td>{{ employee.start_date }}</td>
-        </tr>
-        <tr>
-            <th>День звільнення</th>
-            <td>{{ employee.end_date|default:"—" }}</td>
-        </tr>
-        <tr>
-            <th>Посада</th>
-            <td>{{ employee.position }}</td>
-        </tr>
-        <tr>
-            <th>Категорія</th>
-            <td>{{ employee.category }}</td>
-        </tr>
-        <tr>
-            <th>Оклад</th>
-            <td>{{ employee.salary }} грн</td>
-        </tr>
-    </table>
+        <table class="detail-table">
+            <tr>
+                <th>ID</th>
+                <td>{{ employee.id }}</td>
+            </tr>
+            <tr>
+                <th>Прізвище</th>
+                <td>{{ employee.last_name }}</td>
+            </tr>
+            <tr>
+                <th>Ім’я</th>
+                <td>{{ employee.first_name }}</td>
+            </tr>
+            <tr>
+                <th>По-батькові</th>
+                <td>{{ employee.father_name|default:"—" }}</td>
+            </tr>
+            <tr>
+                <th>Дата народження</th>
+                <td>{{ employee.birthday|date:"Y-m-d" }}</td>
+            </tr>
+            <tr>
+                <th>День прийняття на роботу</th>
+                <td>{{ employee.start_date|date:"Y-m-d" }}</td>
+            </tr>
+            <tr>
+                <th>День звільнення</th>
+                <td>{{ employee.end_date|default:"—"|date:"Y-m-d" }}</td>
+            </tr>
+            <tr>
+                <th>Посада</th>
+                <td>{{ employee.position }}</td>
+            </tr>
+            <tr>
+                <th>Категорія</th>
+                <td>{{ employee.category }}</td>
+            </tr>
+            <tr>
+                <th>Оклад</th>
+                <td>{{ employee.salary }} грн</td>
+            </tr>
+        </table>
 
-    <a class="btn-back" href="{% url 'employees:index' %}">Назад до списку</a>
-</div>
+        <a class="btn-back" href="{% url 'employees:index' %}">Назад до списку</a>
+    </div>
 
-<link rel="stylesheet" href="{% static 'employees/css/../../../static/pages/employees/detail.css' %}">
 {% endblock %}

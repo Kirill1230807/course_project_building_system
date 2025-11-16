@@ -106,6 +106,10 @@
     transition: .2s;
 }
 
+.styled-form textarea {
+    resize: none;
+}
+
 .styled-form input:focus,
 .styled-form textarea:focus,
 .styled-form select:focus {

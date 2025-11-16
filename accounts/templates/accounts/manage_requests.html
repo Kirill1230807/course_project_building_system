@@ -12,10 +12,10 @@
             <p><strong>{{ req.user.username }}</strong></p>
             <p>{{ req.message }}</p>
 
-            <a href="{% url 'approve_request' req.id %}">
+            <a href="{% url 'accounts:approve_request' req.id %}">
                 <button>Схвалити</button>
             </a>
-            <a href="{% url 'reject_request' req.id %}">
+            <a href="{% url 'accounts:reject_request' req.id %}">
                 <button style="background:#b53434;">Відхилити</button>
             </a>
         </div>

@@ -61,6 +61,16 @@
     color: #0d47a1;
 }
 
+.btn-info {
+    color: #5e35b1;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-info:hover {
+    color: #4527a0;
+}
+
 .btn-delete {
     color: #d32f2f;
     font-weight: 600;
@@ -114,4 +124,38 @@
     color: #d32f2f;
     font-weight: 700;
     margin-top: 10px;
+}
+
+.tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 10px 18px;
+    background: #ddd;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.tab-button.active {
+    background: #ff9800;
+    color: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
 }

@@ -24,7 +24,6 @@
     color: #E67E22;
 }
 
-/* Таблиця */
 .detail-table {
     width: 100%;
     border-collapse: collapse;
@@ -52,7 +51,6 @@
     background-color: #FAFAFA;
 }
 
-/* Кнопка Назад */
 .btn-back {
     display: block;
     text-align: center;
@@ -71,7 +69,6 @@
     background-color: #d65f0c;
 }
 
-/* Адаптивність */
 @media (max-width: 768px) {
     .detail-container {
         padding: 20px;
