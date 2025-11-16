@@ -3,12 +3,15 @@ from django.http import HttpResponseNotFound
 from .db_queries import ManagementQueries, EngineerQueries
 from django.db import connection
 
+
 def index(request):
     managements = ManagementQueries.get_all()
     with connection.cursor() as cursor:
-        cursor.execute("SELECT id, last_name || ' ' || first_name FROM employees WHERE category='Інженерно-технічний персонал';")
+        cursor.execute(
+            "SELECT id, last_name || ' ' || first_name FROM employees WHERE category='Інженерно-технічний персонал';")
         engineers = cursor.fetchall()
     return render(request, "management/index.html", {"managements": managements, "engineers": engineers})
+
 
 def add_management(request):
     if request.method == "POST":
@@ -19,9 +22,11 @@ def add_management(request):
         return redirect("management:index")
     return redirect("management:index")
 
+
 def delete_management(request, management_id):
     ManagementQueries.delete(management_id)
     return redirect("management:index")
+
 
 def edit_management(request, management_id):
     """Редагування будівельного управління"""
@@ -32,10 +37,10 @@ def edit_management(request, management_id):
     # Отримуємо список інженерів для вибору керівника
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT id, last_name || ' ' || first_name
-            FROM employees
-            WHERE category = 'Інженерно-технічний персонал';
-        """)
+                       SELECT id, last_name || ' ' || first_name
+                       FROM employees
+                       WHERE category = 'Інженерно-технічний персонал';
+                       """)
         engineers = cursor.fetchall()
 
     if request.method == "POST":
@@ -58,21 +63,29 @@ def edit_management(request, management_id):
         "engineers": engineers
     })
 
-def engineers(request):
-    """Відображення списку інженерно-технічного персоналу"""
-    engineers = EngineerQueries.get_all()
 
-    # Отримуємо всі посади, які належать до ІТП
+def engineers(request):
+    # Отримуємо всіх інженерів
+    all_engineers = EngineerQueries.get_all()
+
+    # Якщо поле end_date порожнє - інженер, який працює
+    active_engineers = [e for e in all_engineers if e["end_date"] is None]
+
+    # Якщо поле end_date заповнене - інженер звільнений
+    fired_engineers = [e for e in all_engineers if e["end_date"] is not None]
+
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT id, title FROM positions 
-            WHERE category = 'Інженерно-технічний персонал'
-            ORDER BY title;
-        """)
+                       SELECT id, title
+                       FROM positions
+                       WHERE category = 'Інженерно-технічний персонал'
+                       ORDER BY title;
+                       """)
         positions = cursor.fetchall()
 
     return render(request, "management/engineers.html", {
-        "engineers": engineers,
+        "active_engineers": active_engineers,
+        "fired_engineers": fired_engineers,
         "positions": positions
     })
 
@@ -94,8 +107,10 @@ def add_engineer(request):
             engineers = EngineerQueries.get_all()
             with connection.cursor() as cursor:
                 cursor.execute("""
-                    SELECT id, title FROM positions WHERE category = 'Інженерно-технічний персонал';
-                """)
+                               SELECT id, title
+                               FROM positions
+                               WHERE category = 'Інженерно-технічний персонал';
+                               """)
                 positions = cursor.fetchall()
             return render(request, "management/engineers.html", {
                 "engineers": engineers,
@@ -115,6 +130,7 @@ def delete_engineer(request, engineer_id):
     EngineerQueries.delete(engineer_id)
     return redirect("management:engineers")
 
+
 def edit_engineer(request, engineer_id):
     """Редагування інженерно-технічного працівника"""
     engineer = EngineerQueries.get_by_id(engineer_id)
@@ -124,11 +140,11 @@ def edit_engineer(request, engineer_id):
     # Отримуємо посади, які належать до ІТП
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT id, title
-            FROM positions
-            WHERE category = 'Інженерно-технічний персонал'
-            ORDER BY title;
-        """)
+                       SELECT id, title
+                       FROM positions
+                       WHERE category = 'Інженерно-технічний персонал'
+                       ORDER BY title;
+                       """)
         positions = cursor.fetchall()
 
     if request.method == "POST":
@@ -137,6 +153,7 @@ def edit_engineer(request, engineer_id):
         father_name = request.POST.get("father_name") or None
         birthday = request.POST.get("birthday")
         start_date = request.POST.get("start_date")
+        end_date = request.POST.get("end_date") or None
         salary = request.POST.get("salary")
         position_id = request.POST.get("position_id")
 
@@ -147,10 +164,28 @@ def edit_engineer(request, engineer_id):
                 "error_msg": "Не всі поля заповнені!"
             })
 
-        EngineerQueries.update(engineer_id, first_name, last_name, father_name, birthday, start_date, salary, position_id)
+        EngineerQueries.update(engineer_id, first_name, last_name, father_name, birthday, start_date, end_date, salary,
+                               position_id)
         return redirect("management:engineers")
 
     return render(request, "management/edit_engineer.html", {
         "engineer": engineer,
         "positions": positions
+    })
+
+
+def engineer_detail(request, engineer_id):
+    engineer = EngineerQueries.get_by_id(engineer_id)
+    if not engineer:
+        return HttpResponseNotFound("Інженера не знайдено")
+
+    # Отримуємо назву посади
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT title FROM positions WHERE id = %s;", [engineer["position_id"]])
+        pos = cursor.fetchone()
+        position_title = pos[0] if pos else "—"
+
+    return render(request, "management/detail_engineer.html", {
+        "engineer": engineer,
+        "position_title": position_title
     })

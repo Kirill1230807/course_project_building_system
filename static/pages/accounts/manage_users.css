@@ -21,7 +21,7 @@
 }
 
 .users-table th {
-    background: #3c6eaf;
+    background: #FF9800;
     color: white;
     padding: 12px;
     text-align: left;
@@ -69,7 +69,7 @@
 .role-btn {
     display: inline-block;
     padding: 8px 14px;
-    background: #3c6eaf;
+    background: #FF9800;
     color: white !important;
     border-radius: 6px;
     font-size: 14px;
@@ -77,5 +77,5 @@
 }
 
 .role-btn:hover {
-    background: #2b5385;
+    background: #754900;
 }

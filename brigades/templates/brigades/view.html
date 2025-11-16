@@ -9,91 +9,97 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="page-title">{{ brigade.1 }}</h1>
+    <h1 class="page-title">{{ brigade.1 }}</h1>
 
-<div class="info-card">
-    <p><strong>Бригадир:</strong> {{ brigade.2|default:"--" }}</p>
+    <div class="info-card">
+        <p><strong>Бригадир:</strong> {{ brigade.2|default:"--" }}</p>
+        {% if current_role in "admin operator" %}
+            {% if not brigade.2 %}
+                <a href="{% url 'brigades:reassign_leader' brigade.0 %}" class="btn-warning">
+                    Призначити нового бригадира
+                </a>
+            {% else %}
+                <a href="{% url 'brigades:reassign_leader' brigade.0 %}" class="btn-secondary">
+                    Змінити бригадира
+                </a>
+            {% endif %}
+        {% endif %}
+        <p><strong>Статус:</strong> {{ brigade.3 }}</p>
+        <p><strong>Примітки:</strong> {{ brigade.4|default:"--" }}</p>
+    </div>
+    {% if current_role in "admin operator" %}
+        <button id="openAddMember" class="btn-primary">Додати учасника</button>
+    {% endif %}
+    {% if current_role in "admin operator" %}
+        <!-- Модальне вікно -->
+        <div id="memberModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeMemberModal">&times;</span>
+                <h2>Додати учасника</h2>
 
-    {% if not brigade.2 %}
-        <a href="{% url 'brigades:reassign_leader' brigade.0 %}" class="btn-warning">
-            Призначити нового бригадира
-        </a>
-    {% else %}
-        <a href="{% url 'brigades:reassign_leader' brigade.0 %}" class="btn-secondary">
-            Змінити бригадира
-        </a>
+                <form method="post" action="{% url 'brigades:add_member' brigade.0 %}">
+                    {% csrf_token %}
+
+                    <label>Працівник:</label>
+                    <select name="employee_id" required>
+                        <option value="">-- Оберіть працівника --</option>
+                        {% for id, name in employees %}
+                            <option value="{{ id }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label>Роль:</label>
+                    <input type="text" name="role" placeholder="Напр., муляр, зварювальник" required>
+
+                    <button type="submit" class="btn-primary">Додати</button>
+                </form>
+            </div>
+        </div>
     {% endif %}
 
-    <p><strong>Статус:</strong> {{ brigade.3 }}</p>
-    <p><strong>Примітки:</strong> {{ brigade.4|default:"--" }}</p>
-</div>
+    <h3 class="sub-title">Склад бригади</h3>
 
-<button id="openAddMember" class="btn-primary">Додати учасника</button>
+    <div class="table-wrapper">
+        <table class="styled-table">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Ім’я</th>
+                <th>Категорія</th>
+                <th>Роль</th>
+                {% if current_role in "admin operator" %}
+                    <th>Дії</th>
+                {% endif %}
+            </tr>
+            </thead>
 
-<!-- Модальне вікно -->
-<div id="memberModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeMemberModal">&times;</span>
-        <h2>Додати учасника</h2>
-
-        <form method="post" action="{% url 'brigades:add_member' brigade.0 %}">
-            {% csrf_token %}
-
-            <label>Працівник:</label>
-            <select name="employee_id" required>
-                <option value="">-- Оберіть працівника --</option>
-                {% for id, name in employees %}
-                    <option value="{{ id }}">{{ name }}</option>
-                {% endfor %}
-            </select>
-
-            <label>Роль:</label>
-            <input type="text" name="role" placeholder="Напр., муляр, зварювальник" required>
-
-            <button type="submit" class="btn-primary">Додати</button>
-        </form>
+            <tbody>
+            {% for m in members %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ m.1 }}</td>
+                    <td>{{ m.2 }}</td>
+                    <td>{{ m.3 }}</td>
+                    {% if current_role in "admin operator" %}
+                        <td>
+                            <a href="{% url 'brigades:remove_member' brigade.0 m.0 %}"
+                               class="table-action-delete"
+                               onclick="return confirm('Видалити з бригади?')">
+                                Видалити
+                            </a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="empty-row">Немає учасників</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
-</div>
 
-<h3 class="sub-title">Склад бригади</h3>
+    <a href="{% url 'brigades:index' %}" class="btn-back">Повернутися до списку</a>
 
-<div class="table-wrapper">
-    <table class="styled-table">
-        <thead>
-        <tr>
-            <th>№</th>
-            <th>Ім’я</th>
-            <th>Категорія</th>
-            <th>Роль</th>
-            <th>Дії</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        {% for m in members %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ m.1 }}</td>
-                <td>{{ m.2 }}</td>
-                <td>{{ m.3 }}</td>
-                <td>
-                    <a href="{% url 'brigades:remove_member' brigade.0 m.0 %}"
-                       class="table-action-delete"
-                       onclick="return confirm('Видалити з бригади?')">
-                        Видалити
-                    </a>
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="5" class="empty-row">Немає учасників</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-<a href="{% url 'brigades:index' %}" class="btn-back">Повернутися до списку</a>
-
-<script src="{% static 'brigades/js/add_member.js' %}"></script>
+    <script src="{% static 'brigades/js/add_member.js' %}"></script>
 {% endblock %}

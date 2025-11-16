@@ -9,90 +9,92 @@
 
 {% block content %}
 
-<h1 class="page-title">Роботи дільниці "{{ section.name }}"</h1>
+    <h1 class="page-title">Роботи дільниці "{{ section.name }}"</h1>
+    {% if current_role in "admin operator" %}
+        <button id="openModalBtn" class="btn-primary add-btn">Додати роботу</button>
 
-<button id="openModalBtn" class="btn-primary add-btn">Додати роботу</button>
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span id="closeModalBtn" class="close">&times;</span>
+                <h2>Нова робота</h2>
 
-<!-- Модальне вікно -->
-<div id="modal" class="modal">
-    <div class="modal-content">
-        <span id="closeModalBtn" class="close">&times;</span>
-        <h2>Нова робота</h2>
+                <form method="post" action="{% url 'sites:section_works' section.id %}?site_id={{ site_id }}"
+                      class="form-container">
+                    {% csrf_token %}
 
-        <form method="post" action="{% url 'sites:section_works' section.id %}?site_id={{ site_id }}" class="form-container">
-            {% csrf_token %}
+                    <label>Вид робіт:</label>
+                    <select name="work_type_id" required>
+                        <option value="">— Оберіть вид робіт —</option>
+                        {% for id, name, cost in work_types %}
+                            <option value="{{ id }}">{{ name }} ({{ cost }} грн/од.)</option>
+                        {% endfor %}
+                    </select>
 
-            <label>Вид робіт:</label>
-            <select name="work_type_id" required>
-                <option value="">— Оберіть вид робіт —</option>
-                {% for id, name, cost in work_types %}
-                    <option value="{{ id }}">{{ name }} ({{ cost }} грн/од.)</option>
-                {% endfor %}
-            </select>
+                    <label>Обсяг роботи (одиниць):</label>
+                    <input type="number" step="0.01" name="volume" placeholder="Вкажіть обсяг" required>
 
-            <label>Обсяг роботи (одиниць):</label>
-            <input type="number" step="0.01" name="volume" placeholder="Вкажіть обсяг" required>
+                    <button type="submit" class="btn-primary modal-save-btn">Зберегти</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
 
-            <button type="submit" class="btn-primary modal-save-btn">Зберегти</button>
-        </form>
+    <div class="table-wrapper">
+        <table class="styled-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Вид роботи</th>
+                <th>Ціна</th>
+                <th>Обсяг</th>
+                <th>Сума</th>
+                <th>План. початок</th>
+                <th>План. кінець</th>
+                <th>Факт. початок</th>
+                <th>Факт. кінець</th>
+                {% if current_role in "admin operator" %}
+                    <th>Дії</th>
+                {% endif %}
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for w in works %}
+                <tr>
+                    <td>{{ w.0 }}</td>
+                    <td>{{ w.1 }}</td>
+                    <td>{{ w.2 }}</td>
+                    <td>{{ w.3 }}</td>
+                    <td>{{ w.4 }}</td>
+
+                    <td>{{ w.5|default:"--"|date:"Y-m-d" }}</td>
+                    <td>{{ w.6|default:"--"|date:"Y-m-d" }}</td>
+                    <td>{{ w.7|default:"--"|date:"Y-m-d" }}</td>
+                    <td>{{ w.8|default:"--"|date:"Y-m-d" }}</td>
+                    {% if current_role in "admin operator" %}
+                        <td class="actions-col">
+                            <a href="{% url 'sites:edit_section_work' w.0 %}?site_id={{ site_id }}" class="action-edit">Редагувати</a>
+                            <span>|</span>
+                            <a href="{% url 'sites:delete_section_work' section.id w.0 %}?site_id={{ site_id }}"
+                               onclick="return confirm('Видалити цю роботу?')"
+                               class="action-delete">Видалити</a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="10" class="empty-row">Роботи ще не додано</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
-</div>
 
-<hr>
+    <hr>
 
-<div class="table-wrapper">
-<table class="styled-table">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Вид роботи</th>
-            <th>Ціна</th>
-            <th>Обсяг</th>
-            <th>Сума</th>
-            <th>План. початок</th>
-            <th>План. кінець</th>
-            <th>Факт. початок</th>
-            <th>Факт. кінець</th>
-            <th>Дії</th>
-        </tr>
-    </thead>
+    <h3 class="total-sum">Загальна вартість робіт: <span>{{ total_sum }}</span> грн</h3>
 
-    <tbody>
-    {% for w in works %}
-        <tr>
-            <td>{{ w.0 }}</td>
-            <td>{{ w.1 }}</td>
-            <td>{{ w.2 }}</td>
-            <td>{{ w.3 }}</td>
-            <td>{{ w.4 }}</td>
+    <a href="{% url 'sites:sections' site_id %}" class="btn-back">Назад до дільниць</a>
 
-            <td>{{ w.5|default:"--"|date:"Y-m-d" }}</td>
-            <td>{{ w.6|default:"--"|date:"Y-m-d" }}</td>
-            <td>{{ w.7|default:"--"|date:"Y-m-d" }}</td>
-            <td>{{ w.8|default:"--"|date:"Y-m-d" }}</td>
-
-            <td class="actions-col">
-                <a href="{% url 'sites:edit_section_work' w.0 %}?site_id={{ site_id }}" class="action-edit">Редагувати</a>
-                <span>|</span>
-                <a href="{% url 'sites:delete_section_work' section.id w.0 %}?site_id={{ site_id }}"
-                   onclick="return confirm('Видалити цю роботу?')"
-                   class="action-delete">Видалити</a>
-            </td>
-        </tr>
-    {% empty %}
-        <tr>
-            <td colspan="10" class="empty-row">Роботи ще не додано</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-</div>
-
-<hr>
-
-<h3 class="total-sum">Загальна вартість робіт: <span>{{ total_sum }}</span> грн</h3>
-
-<a href="{% url 'sites:sections' site_id %}" class="btn-back">Назад до дільниць</a>
-
-<script src="{% static 'sites/js/works.js' %}"></script>
+    <script src="{% static 'sites/js/works.js' %}"></script>
 {% endblock %}

@@ -62,13 +62,19 @@ class EngineerQueries:
     def get_all():
         with connection.cursor() as cursor:
             cursor.execute("""
-                           SELECT e.id, e.last_name, e.first_name, p.title AS position_title, e.salary
+                           SELECT e.id,
+                                  e.last_name,
+                                  e.first_name,
+                                  p.title AS position_title,
+                                  e.salary,
+                                  e.end_date
                            FROM employees e
                                     JOIN positions p ON e.position_id = p.id
                            WHERE e.category = 'Інженерно-технічний персонал'
                            ORDER BY e.last_name;
                            """)
-            return cursor.fetchall()
+            columns = [col[0] for col in cursor.description]
+            return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
     @staticmethod
     def add(first_name, last_name, father_name, birthday, start_date, salary, position_id):
@@ -95,6 +101,7 @@ class EngineerQueries:
                                   father_name,
                                   birthday,
                                   start_date,
+                                  end_date,
                                   salary,
                                   position_id
                            FROM employees
@@ -110,12 +117,13 @@ class EngineerQueries:
             "father_name": row[3],
             "birthday": row[4],
             "start_date": row[5],
-            "salary": row[6],
-            "position_id": row[7]
+            "end_date": row[6],
+            "salary": row[7],
+            "position_id": row[8]
         }
 
     @staticmethod
-    def update(eid, first_name, last_name, father_name, birthday, start_date, salary, position_id):
+    def update(eid, first_name, last_name, father_name, birthday, start_date, end_date, salary, position_id):
         """Оновити дані інженера"""
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -125,7 +133,10 @@ class EngineerQueries:
                                father_name = %s,
                                birthday    = %s,
                                start_date  = %s,
+                               end_date    = %s,
                                salary      = %s,
                                position_id = %s
                            WHERE id = %s;
-                           """, [first_name, last_name, father_name, birthday, start_date, salary, position_id, eid])
+                           """,
+                           [first_name, last_name, father_name, birthday, start_date, end_date, salary, position_id,
+                            eid])

@@ -28,7 +28,7 @@
     margin-top: 15px;
     width: 100%;
     padding: 12px;
-    background: #3c6eaf;
+    background: #FF9800;
     color: white;
     border: none;
     border-radius: 8px;
@@ -37,7 +37,7 @@
 }
 
 .sql-container button:hover {
-    background: #2c568e;
+    background: #8c5500;
 }
 
 .error-box {
@@ -58,14 +58,18 @@
     border-radius: 6px;
 }
 
-table {
+.table-wrapper {
     width: 100%;
-    border-collapse: collapse;
+    overflow-x: auto;
     margin-top: 25px;
 }
 
+.table-wrapper table {
+    min-width: 900px;
+}
+
 th {
-    background: #3c6eaf;
+    background: #FF9800;
     color: white;
     padding: 10px;
     text-align: left;

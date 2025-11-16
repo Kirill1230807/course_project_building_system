@@ -16,52 +16,51 @@
         <button class="tab-button" data-tab="suppliers">Постачальники</button>
     </div>
 
-    <!-- === МАТЕРІАЛИ === -->
     <div id="materials" class="tab-content active">
+        {% if current_role in "admin operator" %}
+            <button id="openMaterialModal" class="add-btn">Додати матеріал</button>
 
-        <button id="openMaterialModal" class="add-btn">Додати матеріал</button>
+            <div id="materialModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" id="closeMaterialModal">&times;</span>
+                    <h2 class="modal-title">Новий матеріал</h2>
 
-        <div id="materialModal" class="modal">
-            <div class="modal-content">
-                <span class="close" id="closeMaterialModal">&times;</span>
-                <h2 class="modal-title">Новий матеріал</h2>
+                    <form method="post" action="{% url 'materials:add' %}" class="styled-form">
+                        {% csrf_token %}
 
-                <form method="post" action="{% url 'materials:add' %}" class="styled-form">
-                    {% csrf_token %}
+                        <label>Назва:</label>
+                        <input type="text" name="name" required>
 
-                    <label>Назва:</label>
-                    <input type="text" name="name" required>
+                        <label>Опис:</label>
+                        <input type="text" name="description">
 
-                    <label>Опис:</label>
-                    <input type="text" name="description">
+                        <label>Постачальник:</label>
+                        <select name="supplier_id" required>
+                            <option value="">-- Оберіть постачальника --</option>
+                            {% for id, name in suppliers %}
+                                <option value="{{ id }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
 
-                    <label>Постачальник:</label>
-                    <select name="supplier_id" required>
-                        <option value="">-- Оберіть постачальника --</option>
-                        {% for id, name in suppliers %}
-                            <option value="{{ id }}">{{ name }}</option>
-                        {% endfor %}
-                    </select>
+                        <label>Одиниця вимірювання:</label>
+                        <select name="unit_id" required>
+                            <option value="">-- Оберіть одиницю --</option>
+                            {% for id, name, short in units %}
+                                <option value="{{ id }}">{{ name }} ({{ short }})</option>
+                            {% endfor %}
+                        </select>
 
-                    <label>Одиниця вимірювання:</label>
-                    <select name="unit_id" required>
-                        <option value="">-- Оберіть одиницю --</option>
-                        {% for id, name, short in units %}
-                            <option value="{{ id }}">{{ name }} ({{ short }})</option>
-                        {% endfor %}
-                    </select>
+                        <label>Ціна:</label>
+                        <input type="number" step="0.01" name="price" required>
 
-                    <label>Ціна:</label>
-                    <input type="number" step="0.01" name="price" required>
+                        <label>Кількість:</label>
+                        <input type="number" step="0.01" name="count" required>
 
-                    <label>Кількість:</label>
-                    <input type="number" step="0.01" name="count" required>
-
-                    <button type="submit" class="btn-save">Зберегти</button>
-                </form>
+                        <button type="submit" class="btn-save">Зберегти</button>
+                    </form>
+                </div>
             </div>
-        </div>
-
+        {% endif %}
         <div class="table-wrapper">
             <table class="styled-table">
                 <thead>
@@ -73,7 +72,9 @@
                     <th>Одиниця</th>
                     <th>Ціна</th>
                     <th>Кількість</th>
-                    <th>Дії</th>
+                    {% if current_role in "admin operator" %}
+                        <th>Дії</th>
+                    {% endif %}
                 </tr>
                 </thead>
 
@@ -82,23 +83,24 @@
                     <tr>
                         <td>{{ m.id }}</td>
                         <td>{{ m.name }}</td>
-                        <td>{{ m.description|default:"—" }}</td>
+                        <td>{{ m.description|default:"--" }}</td>
                         <td>{{ m.supplier }}</td>
                         <td>{{ m.unit }}</td>
                         <td>{{ m.price }}</td>
                         <td>{{ m.count }}</td>
-                        <td class="actions-cell">
-                            <a href="{% url 'materials:delete' m.id %}"
-                               class="action-delete"
-                               onclick="return confirm('Видалити матеріал?')">
-                                Видалити
-                            </a>
-                            <span class="actions-separator">|</span>
-                            <a href="{% url 'materials:edit' m.id %}" class="action-edit">
-                                Редагувати
-                            </a>
-                        </td>
-
+                        {% if current_role in "admin operator" %}
+                            <td class="actions-cell">
+                                <a href="{% url 'materials:delete' m.id %}"
+                                   class="action-delete"
+                                   onclick="return confirm('Видалити матеріал?')">
+                                    Видалити
+                                </a>
+                                <span class="actions-separator">|</span>
+                                <a href="{% url 'materials:edit' m.id %}" class="action-edit">
+                                    Редагувати
+                                </a>
+                            </td>
+                        {% endif %}
                     </tr>
                 {% empty %}
                     <tr>
@@ -110,9 +112,8 @@
         </div>
     </div>
 
-    <!-- === ПОСТАЧАЛЬНИКИ === -->
     <div id="suppliers" class="tab-content">
-
+    {% if current_role in "admin operator" %}
         <button id="openSupplierModal" class="add-btn">Додати постачальника</button>
 
         <div id="supplierModal" class="modal">
@@ -142,6 +143,7 @@
                 </form>
             </div>
         </div>
+    {% endif %}
 
         <div class="table-wrapper">
             <table class="styled-table">
@@ -153,7 +155,9 @@
                     <th>Телефон</th>
                     <th>Email</th>
                     <th>Адреса</th>
-                    <th>Дії</th>
+                    {% if current_role in "admin operator" %}
+                        <th>Дії</th>
+                    {% endif %}
                 </tr>
                 </thead>
 
@@ -162,16 +166,18 @@
                     <tr>
                         <td>{{ s.id }}</td>
                         <td>{{ s.name }}</td>
-                        <td>{{ s.contact_name|default:"—" }}</td>
-                        <td>{{ s.phone|default:"—" }}</td>
-                        <td>{{ s.email|default:"—" }}</td>
-                        <td>{{ s.address|default:"—" }}</td>
-                        <td class="actions-cell">
-                            <a href="{% url 'materials:edit_supplier' s.id %}" class="edit-link">Редагувати</a>
-                            <span>|</span>
-                            <a href="{% url 'materials:delete_supplier' s.id %}" class="delete-link"
-                               onclick="return confirm('Видалити постачальника?')">Видалити</a>
-                        </td>
+                        <td>{{ s.contact_name|default:"--" }}</td>
+                        <td>{{ s.phone|default:"--" }}</td>
+                        <td>{{ s.email|default:"--" }}</td>
+                        <td>{{ s.address|default:"--" }}</td>
+                        {% if current_role in "admin operator" %}
+                            <td class="actions-cell">
+                                <a href="{% url 'materials:edit_supplier' s.id %}" class="edit-link">Редагувати</a>
+                                <span>|</span>
+                                <a href="{% url 'materials:delete_supplier' s.id %}" class="delete-link"
+                                   onclick="return confirm('Видалити постачальника?')">Видалити</a>
+                            </td>
+                        {% endif %}
                     </tr>
                 {% empty %}
                     <tr>

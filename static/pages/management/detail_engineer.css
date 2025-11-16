@@ -1,0 +1,61 @@
+﻿.page-title {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.detail-card {
+    width: 70%;
+    max-width: 700px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 0 18px rgba(0,0,0,0.1);
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eaeaea;
+    font-size: 16px;
+}
+
+.label {
+    font-weight: bold;
+    color: #333;
+}
+
+.value {
+    color: #555;
+}
+
+.btn-row {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.btn-back, .btn-edit {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 15px;
+    text-decoration: none;
+    color: white;
+    margin: 0 10px;
+}
+
+.btn-back {
+    background: #424242;
+}
+
+.btn-back:hover {
+    background: #2c2c2c;
+}
+
+.btn-edit {
+    background: #FF9800;
+}
+
+.btn-edit:hover {
+    background: #c97600;
+}

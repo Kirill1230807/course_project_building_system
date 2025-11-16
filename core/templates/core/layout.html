@@ -36,44 +36,52 @@
         <nav class="nav-menu">
             <ul>
                 <li>{% if request.session.role == "admin" %}
-                    <a href="{% url 'manage_users' %}">Керування користувачами</a>
+                    <a href="{% url 'accounts:manage_users' %}">Керування користувачами</a>
                 {% endif %}
                 </li>
                 {% if current_user and current_user.role == "admin" %}
-                    <a href="{% url 'manage_requests' %}">Заявки гостей</a>
+                    <a href="{% url 'accounts:manage_requests' %}">Заявки гостей</a>
                 {% endif %}
                 <li><a href="{% url 'home:home' %}">Головна</a></li>
                 {# core #}
 
-                {% if current_role in "authorized operator admin"%}
-                <li><a href="{% url 'sites:index' %}">Будівельні об'єкти</a></li>
-                {# sites #}
-                <li><a href="{% url 'management:index' %}">Будівельні управління</a></li>
-                {# management #}
-                <li><a href="{% url 'management:engineers' %}">Інженерно-технічний персонал</a></li>
-                {# management #}
-                <li><a href="{% url 'brigades:index' %}">Бригади</a></li>
-                {# brigades #}
-                <li><a href="{% url 'employees:index' %}">Працівники</a></li>
-                {# employees #}
-                <li><a href="{% url 'equipment:index' %}">Техніка</a></li>
-                {# equipment #}
-                <li><a href="{% url 'works:index' %}">Види робіт</a></li>
-                {# works #}
-                <li><a href="{% url 'materials:index' %}">Матеріали</a></li>
-                {# materials #}
-                <li><a href="{% url 'reports:reports_menu' %}">Звіти</a></li>
-                {# reports #}
-                <li><a href="{% url 'deliveries:add_delivery' %}">Доставки</a></li>
-                {# deliveries #}
-                <li><a href="{% url 'deliveries:deliveries_list' %}">Історія доставок</a></li>
-                {# deliveries #}
-                <li><a href="{% url 'home:about' %}">Про курсову роботу</a></li>
-                {# core #}
-                {% if current_role == "admin" or current_role == "operator" or current_role == "authorized" %}
-                    <a href="{% url 'accounts:sql_console' %}">SQL Консоль</a>
+                {% if current_role in "authorized operator admin" %}
+                    <li><a href="{% url 'sites:index' %}">Будівельні об'єкти</a></li>
+                    {# sites #}
+                    <li><a href="{% url 'management:index' %}">Будівельні управління</a></li>
+                    {# management #}
+                    <li><a href="{% url 'management:engineers' %}">Інженерно-технічний персонал</a></li>
+                    {# management #}
+                    <li><a href="{% url 'brigades:index' %}">Бригади</a></li>
+                    {# brigades #}
+                    <li><a href="{% url 'employees:index' %}">Працівники</a></li>
+                    {# employees #}
+                    <li><a href="{% url 'equipment:index' %}">Техніка</a></li>
+                    {# equipment #}
+                    <li><a href="{% url 'works:index' %}">Види робіт</a></li>
+                    {# works #}
+                    <li><a href="{% url 'materials:index' %}">Матеріали</a></li>
+                    {# materials #}
+                    <li><a href="{% url 'reports:reports_menu' %}">Звіти</a></li>
+                    {# reports #}
+
+                    {% if current_role in "admin operator" %}
+                        <li><a href="{% url 'deliveries:add_delivery' %}">Доставки</a></li>
+                        {# deliveries #}
+                    {% endif %}
+
+                    <li><a href="{% url 'deliveries:deliveries_list' %}">Історія доставок</a></li>
+                    {# deliveries #}
+                    <li><a href="{% url 'home:about' %}">Про курсову роботу</a></li>
+                    {# core #}
+                    {% if current_role == "admin" or current_role == "operator" or current_role == "authorized" %}
+                        <li><a href="{% url 'accounts:sql_console' %}">SQL Консоль</a></li>
+                    {% endif %}
+                    {% if current_role == "admin" or current_role == "operator" or current_role == "authorized" %}
+                        <li><a href="{% url 'accounts:saved_queries' %}">Збережені SQL-запити </a></li>
+                    {% endif %}
+
                 {% endif %}
-            {% endif %}
             </ul>
         </nav>
     </aside>

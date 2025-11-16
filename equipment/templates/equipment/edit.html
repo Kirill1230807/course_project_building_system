@@ -2,7 +2,9 @@
 {% load static %}
 
 {% block title %}Редагування техніки{% endblock %}
-
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/equipment/edit_equipment.css' %}">
+{% endblock %}
 {% block content %}
     <h1>Редагування техніки</h1>
 
@@ -13,16 +15,25 @@
         <input type="text" name="name" value="{{ equipment.name }}" required>
 
         <label>Тип:</label>
-        <input type="text" name="type" value="{{ equipment.type }}" required>
+        <select name="type_id" required>
+            {% for t in types %}
+                <option value="{{ t.id }}" {% if equipment.type_id == t.id %}selected{% endif %}>
+                    {{ t.title }}
+                </option>
+            {% endfor %}
+        </select>
 
         <label>Статус:</label>
         <select name="status" required>
             {% if equipment.assigned_site_id %}
-                <option value="В роботі" {% if equipment.status == "В роботі" %}selected{% endif %}>В роботі</option>
-                <option value="В ремонті" {% if equipment.status == "В ремонті" %}selected{% endif %}>В ремонті</option>
+                <option value="В роботі" {% if equipment.status == "В роботі" %}selected{% endif %}>В роботі
+                </option>
+                <option value="В ремонті" {% if equipment.status == "В ремонті" %}selected{% endif %}>В ремонті
+                </option>
             {% else %}
                 <option value="Вільна" {% if equipment.status == "Вільна" %}selected{% endif %}>Вільна</option>
-                <option value="В ремонті" {% if equipment.status == "В ремонті" %}selected{% endif %}>В ремонті</option>
+                <option value="В ремонті" {% if equipment.status == "В ремонті" %}selected{% endif %}>В ремонті
+                </option>
             {% endif %}
         </select>
 
@@ -45,5 +56,4 @@
         <a href="{% url 'equipment:index' %}" class="btn-back">Назад до списку</a>
     </div>
 
-    <link rel="stylesheet" href="{% static 'equipment/css/../../../static/pages/equipment/edit_equipment.css' %}">
 {% endblock %}

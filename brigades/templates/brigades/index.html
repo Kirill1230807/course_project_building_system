@@ -8,45 +8,46 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="page-title">Бригади</h1>
+    <h1 class="page-title">Бригади</h1>
 
-<button id="openModalBtn" class="btn-add">Додати бригаду</button>
+    {% if current_role in "admin operator" %}
+        <button id="openModalBtn" class="btn-add">Додати бригаду</button>
+    {% endif %}
 
-<!-- Модальне вікно -->
-<div id="modal" class="modal">
-    <div class="modal-content">
-        <span id="closeModalBtn" class="close">&times;</span>
-        <h2>Нова бригада</h2>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="closeModalBtn" class="close">&times;</span>
+            <h2>Нова бригада</h2>
 
-        <form method="post" action="{% url 'brigades:add' %}">
-            {% csrf_token %}
+            <form method="post" action="{% url 'brigades:add' %}">
+                {% csrf_token %}
 
-            <label>Назва бригади:</label>
-            <input type="text" name="name" required>
+                <label>Назва бригади:</label>
+                <input type="text" name="name" required>
 
-            <label>Бригадир:</label>
-            <select name="leader_id">
-                <option value="">-- Оберіть бригадира --</option>
-                {% for id, name in workers %}
-                    <option value="{{ id }}">{{ name }}</option>
-                {% endfor %}
-            </select>
+                <label>Бригадир:</label>
+                <select name="leader_id">
+                    <option value="">-- Оберіть бригадира --</option>
+                    {% for id, name in workers %}
+                        <option value="{{ id }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
 
-            <label>Примітки:</label>
-            <input type="text" name="notes" placeholder="Напр., електрика">
+                <label>Примітки:</label>
+                <input type="text" name="notes" placeholder="Напр., електрика">
 
-            {% if error_msg %}
-                <p class="error-msg">{{ error_msg }}</p>
-            {% endif %}
+                {% if error_msg %}
+                    <p class="error-msg">{{ error_msg }}</p>
+                {% endif %}
 
-            <button type="submit" class="btn-save">Зберегти</button>
-        </form>
+                <button type="submit" class="btn-save">Зберегти</button>
+            </form>
+        </div>
     </div>
-</div>
 
-<div class="table-wrapper">
-    <table class="styled-table">
-        <thead>
+    <div class="table-wrapper">
+        <table class="styled-table">
+            <thead>
             <tr>
                 <th>№</th>
                 <th>Назва</th>
@@ -55,30 +56,32 @@
                 <th>Примітки</th>
                 <th>Дії</th>
             </tr>
-        </thead>
+            </thead>
 
-        <tbody>
-        {% for b in brigades %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ b.1 }}</td>
-                <td>{{ b.2|default:"--" }}</td>
-                <td>{{ b.3 }}</td>
-                <td>{{ b.4|default:"--" }}</td>
-                <td class="actions">
-                    <a href="{% url 'brigades:view' b.0 %}" class="btn-info">Склад</a>
-                    <a href="{% url 'brigades:edit' b.0 %}" class="btn-edit">Редагувати</a>
-                    <a href="{% url 'brigades:delete' b.0 %}"
-                       class="btn-delete"
-                       onclick="return confirm('Видалити бригаду?')">
-                        Видалити
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+            <tbody>
+            {% for b in brigades %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ b.1 }}</td>
+                    <td>{{ b.2|default:"--" }}</td>
+                    <td>{{ b.3 }}</td>
+                    <td>{{ b.4|default:"--" }}</td>
+                    <td class="actions">
+                        <a href="{% url 'brigades:view' b.0 %}" class="btn-info">Склад</a>
+                        {% if current_role in "admin operator" %}
+                            <a href="{% url 'brigades:edit' b.0 %}" class="btn-edit">Редагувати</a>
+                            <a href="{% url 'brigades:delete' b.0 %}"
+                               class="btn-delete"
+                               onclick="return confirm('Видалити бригаду?')">
+                                Видалити
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-<script src="{% static 'brigades/js/brigades.js' %}"></script>
+    <script src="{% static 'brigades/js/brigades.js' %}"></script>
 {% endblock %}
