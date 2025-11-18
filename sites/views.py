@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.db import connection
 from .db_queries import SiteQueries, SectionQueries, SectionWorkQueries
+from equipment.db_queries import EquipmentQueries
 
 
 # ========================= ОБ'ЄКТИ =============================
@@ -120,41 +121,8 @@ def detail_site(request, site_id):
 
 
 def edit_site(request, site_id):
-    # Отримуємо поточний об’єкт
-    with connection.cursor() as cursor:
-        cursor.execute("""
-                       SELECT id,
-                              name,
-                              address,
-                              start_date,
-                              end_date,
-                              deadline,
-                              management_id,
-                              responsible_engineer_id,
-                              status,
-                              notes
-                       FROM construction_sites
-                       WHERE id = %s;
-                       """, [site_id])
-        site_row = cursor.fetchone()
+    site = SiteQueries.get_by_id(site_id)
 
-    if not site_row:
-        return HttpResponseNotFound("Об’єкт не знайдено")
-
-    site = {
-        "id": site_row[0],
-        "name": site_row[1],
-        "address": site_row[2],
-        "start_date": site_row[3],
-        "end_date": site_row[4],
-        "deadline": site_row[5],
-        "management_id": site_row[6],
-        "responsible_engineer_id": site_row[7],
-        "status": site_row[8],
-        "notes": site_row[9],
-    }
-
-    # Отримуємо списки управлінь та інженерів
     with connection.cursor() as cursor:
         cursor.execute("SELECT id, name FROM managements ORDER BY name;")
         managements = cursor.fetchall()
@@ -179,34 +147,45 @@ def edit_site(request, site_id):
         status = request.POST.get("status")
         notes = request.POST.get("notes")
 
-        if not (name and address and start_date and status):
-            return render(request, "sites/edit_site.html", {
-                "site": site,
-                "managements": managements,
-                "engineers": engineers,
-                "error_msg": "Заповніть усі обов’язкові поля!"
-            })
-        if end_date and deadline and end_date > deadline:
-            status = 'Завершено із запізненням'
-        if end_date and deadline and end_date < deadline:
-            status = 'Завершено'
-        # Оновлення об’єкта
-        with connection.cursor() as cursor:
-            cursor.execute("""
-                           UPDATE construction_sites
-                           SET name                    = %s,
-                               address                 = %s,
-                               start_date              = %s,
-                               end_date                = %s,
-                               deadline                = %s,
-                               management_id           = %s,
-                               responsible_engineer_id = %s,
-                               status                  = %s,
-                               notes                   = %s
-                           WHERE id = %s;
-                           """,
-                           [name, address, start_date, end_date, deadline, management_id, responsible_engineer_id, status, notes,
-                            site_id])
+        if end_date and deadline:
+            if end_date > deadline:
+                status = "Завершено із запізненням"
+            else:
+                status = "Завершено"
+
+        if status in ["Завершено", "Завершено із запізненням"]:
+            EquipmentQueries.unassign_equipment_from_finished_site(site_id)
+            # Деактивація всіх бригад з цього об'єкта
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                               UPDATE brigades
+                               SET status = 'Неактивна'
+                               WHERE id IN (SELECT brigade_id
+                                            FROM sections
+                                            WHERE site_id = %s
+                                              AND brigade_id IS NOT NULL);
+                               """, [site_id])
+
+            # 3. Зняття бригад з дільниць
+            with connection.cursor() as cursor:
+                cursor.execute("""
+                               UPDATE sections
+                               SET brigade_id = NULL
+                               WHERE site_id = %s;
+                               """, [site_id])
+
+        SiteQueries.update(
+            site_id=site_id,
+            name=name,
+            address=address,
+            start_date=start_date,
+            end_date=end_date,
+            deadline=deadline,
+            management_id=management_id,
+            responsible_engineer_id=responsible_engineer_id,
+            status=status,
+            notes=notes
+        )
 
         return redirect("sites:index")
 
@@ -326,7 +305,6 @@ def delete_section(request, section_id):
     return redirect("/sites/")
 
 
-
 # ========================== РОБОТА ==============================
 def section_works(request, section_id):
     """Відображення або додавання робіт до конкретної дільниці"""
@@ -413,22 +391,22 @@ def delete_section_work(request, section_id, work_id):
 
     return redirect(f"/sites/sections/{section_id}/works/?site_id={site_id}")
 
+
 def edit_section_work(request, work_id):
     row = None
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT 
-                sw.id,
-                sw.section_id,
-                wt.name AS work_name,
-                sw.planned_start,
-                sw.planned_end,
-                sw.actual_start,
-                sw.actual_end
-            FROM section_works sw
-            JOIN work_types wt ON wt.id = sw.work_type_id
-            WHERE sw.id = %s;
-        """, [work_id])
+                       SELECT sw.id,
+                              sw.section_id,
+                              wt.name AS work_name,
+                              sw.planned_start,
+                              sw.planned_end,
+                              sw.actual_start,
+                              sw.actual_end
+                       FROM section_works sw
+                                JOIN work_types wt ON wt.id = sw.work_type_id
+                       WHERE sw.id = %s;
+                       """, [work_id])
         row = cursor.fetchone()
 
     if not row:

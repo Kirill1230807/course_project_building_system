@@ -37,6 +37,8 @@
     padding: 10px 12px;
     border-bottom: 1px solid #e8e8e8;
     color: #333;
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 .styled-table tr:hover {
@@ -142,4 +144,8 @@
 
 .tab-content.active {
     display: block;
+}
+
+.table-wrapper {
+    overflow-x: auto;
 }

@@ -100,3 +100,17 @@ class EquipmentQueries:
                            INSERT INTO equipment (name, type_id, status, assigned_site_id, notes)
                            VALUES (%s, %s, %s, %s, %s);
                            """, [name, type_id, status, assigned_site_id, notes])
+
+    @staticmethod
+    def unassign_equipment_from_finished_site(site_id):
+        """Відкріплює всю техніку від завершеного об'єкта та робить її 'Вільна'"""
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           UPDATE equipment
+                           SET assigned_site_id = NULL,
+                               status           = CASE
+                                                      WHEN status != 'В ремонті' THEN 'Вільна'
+                                                      ELSE status
+                                   END
+                           WHERE assigned_site_id = %s;
+                           """, [site_id])

@@ -102,12 +102,10 @@ def test_add_employee_position_category_mismatch(client, positions_ids):
     emp = _get_employee(_count("employees"))
     assert emp["category"] == "Робітники"
 
-
 # 5) detail - 404 для неіснуючого
 def test_employee_detail_404_for_missing(client):
     resp = client.get(reverse("employees:detail", args=[999_999]))
     assert resp.status_code == 404
-
 
 # 6) delete - видаляє працівника
 def test_delete_employee(client, positions_ids):
@@ -126,8 +124,7 @@ def test_delete_employee(client, positions_ids):
     assert resp.status_code == 302
     assert _get_employee(eid) is None
 
-
-# 7) edit - бізнес-правила (залишаємо без змін)
+# 7) edit - бізнес-правила
 @pytest.mark.parametrize(
     "category, position_title, expect_error_part",
     [
