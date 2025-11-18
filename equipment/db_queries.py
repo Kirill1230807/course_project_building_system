@@ -114,3 +114,130 @@ class EquipmentQueries:
                                    END
                            WHERE assigned_site_id = %s;
                            """, [site_id])
+
+    @staticmethod
+    def close_active_history(equipment_id):
+        """
+        Закриває активний запис історії для техніки.
+        """
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           UPDATE equipment_work_history
+                           SET end_date = CURRENT_DATE
+                           WHERE equipment_id = %s
+                             AND end_date IS NULL;
+                           """, [equipment_id])
+
+    @staticmethod
+    def add_history_entry(equipment_id, site_id, notes=None):
+        """
+        Створює новий запис — техніку призначено на об’єкт.
+        """
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           INSERT INTO equipment_work_history (equipment_id, site_id, start_date, notes)
+                           VALUES (%s, %s, CURRENT_DATE, %s);
+                           """, [equipment_id, site_id, notes])
+
+    @staticmethod
+    def add_history_for_finished_site(site_id):
+        """
+        Додає історію роботи техніки при завершенні об'єкта.
+        Беремо ВСЮ техніку, що була прив'язана до site_id,
+        та записуємо один запис в історію із датами об'єкта.
+        """
+
+        # 1. Отримуємо початок і кінець об'єкта
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT start_date, end_date
+                FROM construction_sites
+                WHERE id = %s;
+            """, [site_id])
+            row = cursor.fetchone()
+
+        if not row:
+            return
+
+        site_start, site_end = row
+
+        if not site_end:
+            # якщо об’єкт ще не завершено — нічого не робимо
+            return
+
+        # 2. Отримуємо техніку, що була прив'язана
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT id, notes
+                FROM equipment
+                WHERE assigned_site_id = %s;
+            """, [site_id])
+            equipment_list = cursor.fetchall()
+
+        # 3. Додаємо історію
+        with connection.cursor() as cursor:
+            for eq_id, notes in equipment_list:
+                cursor.execute("""
+                    INSERT INTO equipment_work_history (equipment_id, site_id, start_date, end_date, notes)
+                    VALUES (%s, %s, %s, %s, %s);
+                """, [eq_id, site_id, site_start, site_end, notes])
+
+    @staticmethod
+    def finish_equipment_history_for_site(site_id):
+        """
+        Закриває або створює записи історії техніки при завершенні об'єкта.
+        """
+
+        # 1. Беремо дату завершення об'єкта
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT start_date, end_date
+                FROM construction_sites
+                WHERE id = %s;
+            """, [site_id])
+            row = cursor.fetchone()
+
+        if not row:
+            return
+
+        site_start, site_end = row
+        if not site_end:
+            return  # об’єкт ще не завершений
+
+        # 2. Отримуємо всю техніку, яка була закріплена
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT id, notes
+                FROM equipment
+                WHERE assigned_site_id = %s;
+            """, [site_id])
+            equipment_list = cursor.fetchall()
+
+        # 3. Для кожної техніки коректно створюємо/закриваємо історію
+        with connection.cursor() as cursor:
+            for eq_id, notes in equipment_list:
+
+                # 3.1 шукаємо активну історію
+                cursor.execute("""
+                    SELECT id
+                    FROM equipment_work_history
+                    WHERE equipment_id = %s
+                      AND site_id = %s
+                      AND end_date IS NULL;
+                """, [eq_id, site_id])
+                active = cursor.fetchone()
+
+                if active:
+                    # 3.2 Закриваємо активну
+                    cursor.execute("""
+                        UPDATE equipment_work_history
+                        SET end_date = %s
+                        WHERE id = %s;
+                    """, [site_end, active[0]])
+
+                else:
+                    # 3.3 Створюємо нову історію та одразу закриваємо
+                    cursor.execute("""
+                        INSERT INTO equipment_work_history (equipment_id, site_id, start_date, end_date, notes)
+                        VALUES (%s, %s, %s, %s, %s);
+                    """, [eq_id, site_id, site_start, site_end, notes])

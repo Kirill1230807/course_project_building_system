@@ -1,6 +1,6 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
-{% block title %}Звіт: Техніка на об’єктах{% endblock %}
+{% block title %}Звіт: Техніка за об’єктами{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'pages/reports/equipment_by_site.css' %}">
@@ -12,6 +12,7 @@
 
     <h1 class="page-title">Звіт: Будівельна техніка за об’єктами</h1>
 
+    <!-- Фільтр -->
     <form method="get" class="filter-form">
         <label>Об’єкт:</label>
         <select name="site_id">
@@ -27,6 +28,7 @@
     </form>
 
     {% if data %}
+    <!-- Таблиця -->
     <div class="table-wrapper">
         <table class="styled-table">
             <thead>
@@ -35,10 +37,11 @@
                     <th>Об’єкт</th>
                     <th>Назва техніки</th>
                     <th>Тип</th>
-                    <th>Статус</th>
                     <th>Примітки</th>
+                    <th>Початок роботи</th>
                 </tr>
             </thead>
+
             <tbody>
                 {% for row in data %}
                 <tr>
@@ -46,13 +49,14 @@
                     <td>{{ row.site_name }}</td>
                     <td>{{ row.equipment_name }}</td>
                     <td>{{ row.equipment_type }}</td>
-                    <td>{{ row.equipment_status }}</td>
-                    <td>{{ row.equipment_notes|default:"—" }}</td>
+                    <td>{{ row.notes|default:"—" }}</td>
+                    <td>{{ row.start_date|date:"d.m.Y" }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
     {% else %}
         <p class="no-data">Дані відсутні.</p>
     {% endif %}

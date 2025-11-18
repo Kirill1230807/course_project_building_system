@@ -37,43 +37,45 @@ class ReportQueries:
     @staticmethod
     def get_brigades_by_work_and_period(work_id=None, start_date=None, end_date=None):
         """
-        Бригади, що виконували вказаний вид робіт у період,
-        з вказанням об'єкта та дільниці.
-        Дати беремо з sections.start_date / sections.end_date.
-        Фільтр по періоду — умова перетину інтервалів.
+        Повертає бригади, які виконували певний вид робіт у вибраний період.
+        Дані базуються на brigade_work_history.
         """
+
         query = """
-                SELECT wt.name      AS work_name, \
-                       b.name       AS brigade_name, \
-                       cs.name      AS site_name, \
-                       s.name       AS section_name, \
-                       s.start_date AS section_start, \
-                       s.end_date   AS section_end
-                FROM section_works sw
+                SELECT wt.name AS work_name, \
+                       b.name  AS brigade_name, \
+                       cs.name AS site_name, \
+                       s.name  AS section_name, \
+                       h.start_date, \
+                       h.end_date
+                FROM brigade_work_history h
+                         JOIN section_works sw ON h.section_work_id = sw.id
                          JOIN work_types wt ON sw.work_type_id = wt.id
                          JOIN sections s ON sw.section_id = s.id
-                         LEFT JOIN brigades b ON s.brigade_id = b.id
                          JOIN construction_sites cs ON s.site_id = cs.id
+                         JOIN brigades b ON h.brigade_id = b.id
                 WHERE 1 = 1 \
                 """
+
         params = []
 
+        # Фільтр по виду робіт
         if work_id:
             query += " AND wt.id = %s"
             params.append(work_id)
 
-        # фільтр по періоду: перетин [s.start_date, s.end_date] з [start_date, end_date]
+        # Дата: перетин діапазонів
         if start_date and end_date:
-            query += " AND s.start_date <= %s AND (s.end_date IS NULL OR s.end_date >= %s)"
-            params.extend([end_date, start_date])
+            query += " AND h.start_date <= %s AND (h.end_date IS NULL OR h.end_date >= %s)"
+            params += [end_date, start_date]
         elif start_date:
-            query += " AND (s.end_date IS NULL OR s.end_date >= %s)"
+            query += " AND (h.end_date IS NULL OR h.end_date >= %s)"
             params.append(start_date)
         elif end_date:
-            query += " AND s.start_date <= %s"
+            query += " AND h.start_date <= %s"
             params.append(end_date)
 
-        query += " ORDER BY s.start_date NULLS LAST, site_name, section_name;"
+        query += " ORDER BY h.start_date"
 
         with connection.cursor() as c:
             c.execute(query, params)
@@ -158,21 +160,19 @@ class ReportQueries:
 
     # 5) Перелік техніки, виділеної на об’єкт
     @staticmethod
-    def get_equipment_by_site(site_id=None):
-        """
-        Отримати перелік будівельної техніки, закріпленої за об’єктами.
-        Якщо задано site_id — фільтруємо по ньому.
-        """
+    def get_equipment_history(site_id=None):
         query = """
-                SELECT COALESCE(cs.name, '--') AS site_name,
-                       e.name                  AS equipment_name,
-                       et.title                AS equipment_type,
-                       e.status                AS equipment_status,
-                       COALESCE(e.notes, '--') AS equipment_notes
-                FROM equipment e
-                         LEFT JOIN construction_sites cs ON e.assigned_site_id = cs.id
+                SELECT cs.name                 AS site_name, \
+                       e.name                  AS equipment_name, \
+                       et.title                AS equipment_type, \
+                       h.start_date, \
+                       h.end_date, \
+                       COALESCE(h.notes, '--') AS notes
+                FROM equipment_work_history h
+                         JOIN equipment e ON h.equipment_id = e.id
                          LEFT JOIN equipment_types et ON e.type_id = et.id
-                WHERE 1 = 1
+                         LEFT JOIN construction_sites cs ON h.site_id = cs.id
+                WHERE 1 = 1 \
                 """
         params = []
 
@@ -180,7 +180,7 @@ class ReportQueries:
             query += " AND cs.id = %s"
             params.append(site_id)
 
-        query += " ORDER BY cs.name, e.name;"
+        query += " ORDER BY h.start_date DESC;"
 
         with connection.cursor() as c:
             c.execute(query, params)

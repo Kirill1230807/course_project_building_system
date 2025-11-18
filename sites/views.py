@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.db import connection
+
+from brigades.db_queries import BrigadeQueries
 from .db_queries import SiteQueries, SectionQueries, SectionWorkQueries
 from equipment.db_queries import EquipmentQueries
 
@@ -154,7 +156,12 @@ def edit_site(request, site_id):
                 status = "Завершено"
 
         if status in ["Завершено", "Завершено із запізненням"]:
+            # 1. Записуємо історію роботи техніки
+            EquipmentQueries.finish_equipment_history_for_site(site_id)
+
+            # 2. Розприв'язуємо техніку
             EquipmentQueries.unassign_equipment_from_finished_site(site_id)
+
             # Деактивація всіх бригад з цього об'єкта
             with connection.cursor() as cursor:
                 cursor.execute("""
@@ -247,6 +254,10 @@ def edit_section(request, section_id):
     if not row:
         return HttpResponseNotFound("Дільницю не знайдено")
 
+    # Запамʼятовуємо стару end_date
+    old_end_date = row[6]
+
+    # Формуємо словник для GET-відображення сторінки
     section = {
         "id": row[0],
         "name": row[1],
@@ -258,32 +269,49 @@ def edit_section(request, section_id):
         "notes": row[7],
     }
 
-    # Отримуємо site_id або з таблиці, або з параметра GET
     site_id = request.GET.get("site_id") or section["site_id"]
 
+    # --------------------------------------
+    #               POST
+    # --------------------------------------
     if request.method == "POST":
         name = request.POST.get("name")
         chief_id = request.POST.get("chief_id")
         brigade_id = request.POST.get("brigade_id")
         start_date = request.POST.get("start_date")
-        end_date = request.POST.get("end_date")
+        end_date = request.POST.get("end_date") or None
         notes = request.POST.get("notes")
 
-        SectionQueries.update(section_id, name, chief_id, brigade_id, start_date, end_date, notes)
+        # UPDATE
+        SectionQueries.update(
+            section_id, name, chief_id, brigade_id,
+            start_date, end_date, notes
+        )
+
+        # Якщо дільниця тільки-но завершилась
+        if old_end_date is None and end_date is not None:
+            from brigades.db_queries import BrigadeQueries
+            BrigadeQueries.record_history_for_section(section_id, end_date)
+
         return redirect("sites:sections", site_id=site_id)
 
+    # --------------------------------------
+    #               GET
+    # --------------------------------------
     with connection.cursor() as cursor:
         cursor.execute("""
-                       SELECT e.id, e.last_name || ' ' || e.first_name AS full_name
-                       FROM employees e
-                                JOIN positions p ON e.position_id = p.id
-                       WHERE e.category = 'Інженерно-технічний персонал'
-                         AND LOWER(p.title) LIKE '%начальник дільниці%'
-                       ORDER BY e.last_name, e.first_name;
-                       """)
+            SELECT e.id, e.last_name || ' ' || e.first_name AS full_name
+            FROM employees e
+            JOIN positions p ON e.position_id = p.id
+            WHERE e.category = 'Інженерно-технічний персонал'
+              AND LOWER(p.title) LIKE '%начальник дільниці%'
+            ORDER BY e.last_name, e.first_name;
+        """)
         chiefs = cursor.fetchall()
 
-        cursor.execute("SELECT id, name FROM brigades ORDER BY name;")
+        cursor.execute("""
+            SELECT id, name FROM brigades ORDER BY name;
+        """)
         brigades = cursor.fetchall()
 
     return render(request, "sites/edit_section.html", {

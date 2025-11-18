@@ -24,7 +24,7 @@
 
                     <label>Вид робіт:</label>
                     <select name="work_type_id" required>
-                        <option value="">— Оберіть вид робіт —</option>
+                        <option value="">-- Оберіть вид робіт --</option>
                         {% for id, name, cost in work_types %}
                             <option value="{{ id }}">{{ name }} ({{ cost }} грн/од.)</option>
                         {% endfor %}
@@ -73,7 +73,7 @@
                     <td>{{ w.8|default:"--"|date:"Y-m-d" }}</td>
                     {% if current_role in "admin operator" %}
                         <td class="actions-col">
-                            <a href="{% url 'sites:edit_section_work' w.0 %}?site_id={{ site_id }}" class="action-edit">Редагувати</a>
+                            <a href="{% url 'sites:edit_section_work' w.0 %}?site_id={{ site_id }}" class="action-edit">Дати роботи</a>
                             <span>|</span>
                             <a href="{% url 'sites:delete_section_work' section.id w.0 %}?site_id={{ site_id }}"
                                onclick="return confirm('Видалити цю роботу?')"

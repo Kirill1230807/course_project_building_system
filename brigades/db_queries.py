@@ -2,8 +2,8 @@
 
 
 class BrigadeQueries:
-
     """Запити до таблиці бригад"""
+
     @staticmethod
     def get_all():
         with connection.cursor() as cursor:
@@ -167,3 +167,77 @@ class BrigadeQueries:
         with connection.cursor() as c:
             c.execute(base, params)
             return c.fetchall()
+
+    @staticmethod
+    def get_available_workers_for_leader():
+        """
+        Повертає список працівників, які можуть бути бригадирами:
+        - не є бригадирами у таблиці brigades
+        - не входять до складу жодної бригади (brigade_members)
+        Формат: [(id, "Прізвище Ім’я"), ...]
+        """
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT e.id,
+                                  e.last_name || ' ' || e.first_name AS full_name
+                           FROM employees e
+                           WHERE NOT EXISTS (SELECT 1
+                                             FROM brigades b
+                                             WHERE b.leader_id = e.id)
+                             AND NOT EXISTS (SELECT 1
+                                             FROM brigade_members bm
+                                             WHERE bm.employee_id = e.id)
+                           ORDER BY full_name;
+                           """)
+            return cursor.fetchall()
+
+    @staticmethod
+    def record_history_for_section(section_id, section_end_date):
+        """
+        Створює записи у brigade_work_history для всіх робіт дільниці.
+        Викликається лише в момент завершення дільниці.
+        """
+
+        with connection.cursor() as c:
+
+            # 1. Отримуємо бригаду, яка працювала на дільниці
+            c.execute("""
+                      SELECT brigade_id
+                      FROM sections
+                      WHERE id = %s;
+                      """, [section_id])
+            row = c.fetchone()
+
+            if not row or not row[0]:
+                # Немає бригади – записувати нічого
+                return
+
+            brigade_id = row[0]
+
+            # 2. Отримуємо всі види робіт на дільниці
+            c.execute("""
+                      SELECT id,
+                             COALESCE(actual_start, planned_start),
+                             COALESCE(actual_end, planned_end)
+                      FROM section_works
+                      WHERE section_id = %s;
+                      """, [section_id])
+
+            works = c.fetchall()
+
+            # 3. Записуємо історію
+            for work in works:
+                section_work_id = work[0]
+                start_date = work[1]
+                end_date = work[2] or section_end_date  # fallback якщо в роботі немає дати
+
+                c.execute("""
+                          INSERT INTO brigade_work_history
+                              (brigade_id, section_work_id, start_date, end_date)
+                          VALUES (%s, %s, %s, %s);
+                          """, [
+                              brigade_id,
+                              section_work_id,
+                              start_date,
+                              end_date
+                          ])
