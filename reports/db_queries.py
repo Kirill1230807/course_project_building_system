@@ -164,14 +164,15 @@ class ReportQueries:
         Якщо задано site_id — фільтруємо по ньому.
         """
         query = """
-                SELECT cs.name                 AS site_name, \
-                       e.name                  AS equipment_name, \
-                       e.type                  AS equipment_type, \
-                       e.status                AS equipment_status, \
+                SELECT COALESCE(cs.name, '--') AS site_name,
+                       e.name                  AS equipment_name,
+                       et.title                AS equipment_type,
+                       e.status                AS equipment_status,
                        COALESCE(e.notes, '--') AS equipment_notes
                 FROM equipment e
                          LEFT JOIN construction_sites cs ON e.assigned_site_id = cs.id
-                WHERE 1 = 1 \
+                         LEFT JOIN equipment_types et ON e.type_id = et.id
+                WHERE 1 = 1
                 """
         params = []
 
@@ -339,10 +340,10 @@ class ReportQueries:
                 SELECT cs.name                                                                  AS site_name, \
                        b.id                                                                     AS brigade_id, \
                        b.name                                                                   AS brigade_name, \
-
+ \
                        e.id                                                                     AS employee_id, \
                        e.last_name || ' ' || e.first_name || COALESCE(' ' || e.father_name, '') AS employee_full_name, \
-
+ \
                        p.title                                                                  AS position_title, \
                        bm.role                                                                  AS brigade_role, \
                        bm.start_date, \
@@ -402,3 +403,63 @@ class ReportQueries:
             cursor.execute(query, params)
             cols = [col[0] for col in cursor.description]
             return [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    @staticmethod
+    def get_full_work_report(report_id: int):
+        """Отримати повний звіт: загальні дані, матеріали, техніку."""
+        result = {}
+
+        # 1) Основна інформація про звіт
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT wr.id,
+                                  wr.work_plan_id,
+                                  wr.actual_start,
+                                  wr.actual_end,
+                                  wr.actual_quantity,
+                                  wr.comment,
+                                  wp.section_id,
+                                  s.name  AS section_name,
+                                  wt.name AS work_name
+                           FROM work_reports wr
+                                    JOIN work_plans wp ON wr.work_plan_id = wp.id
+                                    JOIN sections s ON wp.section_id = s.id
+                                    JOIN work_types wt ON wp.work_type_id = wt.id
+                           WHERE wr.id = %s;
+                           """, [report_id])
+
+            cols = [col[0] for col in cursor.description]
+            result["report"] = dict(zip(cols, cursor.fetchone()))
+
+        # 2) Матеріали
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT m.name                 AS material_name,
+                                  wrm.quantity,
+                                  m.price,
+                                  wrm.quantity * m.price AS total_cost
+                           FROM work_report_materials wrm
+                                    JOIN materials m ON wrm.material_id = m.id
+                           WHERE wrm.report_id = %s
+                           ORDER BY material_name;
+                           """, [report_id])
+
+            cols = [col[0] for col in cursor.description]
+            result["materials"] = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+        # 3) Техніка
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT e.name AS equipment_name,
+                                  e.type,
+                                  wre.quantity
+                           FROM work_report_equipment wre
+                                    JOIN equipment e ON wre.equipment_id = e.id
+                           WHERE wre.report_id = %s
+                           ORDER BY equipment_name;
+                           """, [report_id])
+
+            cols = [col[0] for col in cursor.description]
+            result["equipment"] = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+        return result

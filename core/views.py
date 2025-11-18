@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.db import connection
 
+
 # Create your views here.
 def home(request):
     # Підрахунок кількості об’єктів
@@ -15,7 +16,8 @@ def home(request):
 
     # Підрахунок кількості завершених об’єктів
     with connection.cursor() as cursor:
-        cursor.execute("SELECT COUNT(*) FROM construction_sites WHERE status = 'Завершено';")
+        cursor.execute(
+            "SELECT COUNT(*) FROM construction_sites WHERE status IN ('Завершено', 'Завершено із запізненням');")
         completed_sites = cursor.fetchone()[0]
 
     context = {
@@ -25,6 +27,7 @@ def home(request):
     }
 
     return render(request, "core/home.html", context)
+
 
 def about(request):
     return render(request, 'core/about.html')

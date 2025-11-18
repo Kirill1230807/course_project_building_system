@@ -29,26 +29,38 @@ class SiteQueries:
 
     @staticmethod
     def get_by_id(site_id):
-        """Отримати один об’єкт за ID"""
         with connection.cursor() as cursor:
             cursor.execute("""
-                           SELECT cs.id,
-                                  cs.name,
-                                  cs.address,
-                                  cs.start_date,
-                                  cs.end_date,
-                                  cs.deadline,
-                                  cs.status,
-                                  cs.notes,
-                                  m.name                             AS management_name,
-                                  e.last_name || ' ' || e.first_name AS engineer_name
-
-                           FROM construction_sites cs
-                                    LEFT JOIN managements m ON cs.management_id = m.id
-                                    LEFT JOIN employees e ON cs.responsible_engineer_id = e.id
-                           WHERE cs.id = %s;
+                           SELECT id,
+                                  name,
+                                  address,
+                                  start_date,
+                                  end_date,
+                                  deadline,
+                                  status,
+                                  notes,
+                                  management_id,
+                                  responsible_engineer_id
+                           FROM construction_sites
+                           WHERE id = %s;
                            """, [site_id])
-            return cursor.fetchone()
+            row = cursor.fetchone()
+
+        if not row:
+            return None
+
+        return {
+            "id": row[0],
+            "name": row[1],
+            "address": row[2],
+            "start_date": row[3],
+            "end_date": row[4],
+            "deadline": row[5],
+            "status": row[6],
+            "notes": row[7],
+            "management_id": row[8],
+            "responsible_engineer_id": row[9],
+        }
 
     @staticmethod
     def add(name, address, start_date, end_date, deadline, management_id, responsible_engineer_id, status, notes):
@@ -64,8 +76,8 @@ class SiteQueries:
                                  status or 'В процесі', notes or None])
 
     @staticmethod
-    def update(site_id, name, address, start_date, end_date, deadline, management_id, responsible_engineer_id, status,
-               notes):
+    def update(*, site_id, name, address, start_date, end_date, deadline,
+               management_id, responsible_engineer_id, status, notes):
         """Оновити дані об’єкта"""
         with connection.cursor() as cursor:
             cursor.execute("""

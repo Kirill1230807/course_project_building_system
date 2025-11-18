@@ -108,8 +108,8 @@ class DeliveryQueries:
         query = """
             SELECT 
                 d.id,
-                cs.name AS site_name,
-                s.name AS section_name,
+                COALESCE(cs.name, '--') AS site_name,
+                COALESCE(s.name, '--') AS section_name,
                 d.delivery_date,
                 sup.name AS supplier_name,
                 d.total_amount,

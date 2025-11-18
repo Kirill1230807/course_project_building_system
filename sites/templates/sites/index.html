@@ -94,7 +94,7 @@
 
             <tbody>
             {% for s in sites %}
-                {% if s.6 != "Завершено" %}
+                {% if s.6 != "Завершено" and s.6 != "Завершено із запізненням" %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ s.1 }}</td>
@@ -135,7 +135,6 @@
         </table>
     </div>
 
-    <!-- Завершені об’єкти -->
     <div id="tab-finished" class="table-wrapper tab-content">
         <table class="styled-table">
             <thead>
@@ -156,7 +155,7 @@
 
             <tbody>
             {% for s in sites %}
-                {% if s.6 == "Завершено" %}
+                {% if s.6 == "Завершено" or s.6 == "Завершено із запізненням" %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td>{{ s.1 }}</td>
@@ -170,7 +169,6 @@
                         <td>{{ s.7|default:"--" }}</td>
 
                         <td class="actions-col">
-                            <!-- Лише перегляд -->
                             <a href="{% url 'sites:detail' s.0 %}" class="action-link">Детальніше</a>
                         </td>
                     </tr>

@@ -28,10 +28,11 @@
                     <label>Тип:</label>
                     <select name="type_id" required>
                         <option value="">-- Оберіть тип --</option>
-                        {% for id, title in types %}
-                            <option value="{{ id }}">{{ title }}</option>
+                        {% for t in types %}
+                            <option value="{{ t.id }}">{{ t.title }}</option>
                         {% endfor %}
                     </select>
+
 
                     <label>Статус:</label>
                     <select name="status">
@@ -67,7 +68,7 @@
                 <th>Об'єкт</th>
                 <th>Примітки</th>
                 {% if current_role in "admin operator" %}
-                <th>Дії</th>
+                    <th>Дії</th>
                 {% endif %}
             </tr>
             </thead>
@@ -83,19 +84,19 @@
                     <td>{{ e.5|default:"--" }}</td>
 
                     {% if current_role in "admin operator" %}
-                    <td class="row-actions">
-                        <a href="{% url 'equipment:delete' e.0 %}"
-                           class="action-delete"
-                           onclick="return confirm('Видалити техніку?')">
-                            Видалити
-                        </a>
-                        <span>|</span>
-                        <a href="{% url 'equipment:edit' e.0 %}"
-                           class="action-edit">
-                            Редагувати
-                        </a>
-                    </td>
-                {% endif %}
+                        <td class="row-actions">
+                            <a href="{% url 'equipment:delete' e.0 %}"
+                               class="action-delete"
+                               onclick="return confirm('Видалити техніку?')">
+                                Видалити
+                            </a>
+                            <span>|</span>
+                            <a href="{% url 'equipment:edit' e.0 %}"
+                               class="action-edit">
+                                Редагувати
+                            </a>
+                        </td>
+                    {% endif %}
                 </tr>
             {% empty %}
                 <tr>

@@ -225,7 +225,6 @@ def reassign_leader(request, brigade_id):
 
         return redirect("brigades:view", brigade_id=brigade_id)
 
-    # --- GET-запит: показуємо кандидатів ---
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT e.id,

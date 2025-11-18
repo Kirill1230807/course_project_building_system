@@ -140,7 +140,7 @@ def sql_console(request):
         result = Queries.execute_sql(query)
 
         if isinstance(result, dict) and "rows" in result:
-            # Перетворюємо результат у текст для збереження
+
             lines = []
             for row in result["rows"]:
                 line = " | ".join(str(x) for x in row)
