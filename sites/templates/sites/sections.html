@@ -74,8 +74,8 @@
                     <td>{{ s.1 }}</td>
                     <td>{{ s.2|default:"--" }}</td>
                     <td>{{ s.3|default:"--" }}</td>
-                    <td>{{ s.4 }}</td>
-                    <td>{{ s.5|default:"--" }}</td>
+                    <td>{{ s.4|date:"Y-m-d" }}</td>
+                    <td>{{ s.5|default:"--"|date:"Y-m-d" }}</td>
                     <td>{{ s.6|default:"--" }}</td>
 
                     <td class="actions-col">

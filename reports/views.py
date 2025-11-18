@@ -97,7 +97,7 @@ def report_equipment_by_site(request):
         sites = c.fetchall()
 
     site_id = request.GET.get("site_id")
-    data = ReportQueries.get_equipment_by_site(site_id)
+    data = ReportQueries.get_equipment_history(site_id)
 
     return render(request, "reports/report_equipment_site.html", {
         "sites": sites,

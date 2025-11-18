@@ -1,5 +1,7 @@
 ﻿from django.db import connection
 
+from brigades.db_queries import BrigadeQueries
+
 
 class SiteQueries:
     """Робота з таблицею construction_sites"""
@@ -157,6 +159,7 @@ class SectionQueries:
                            """, [name, site_id, chief_id or None, brigade_id or None, start_date, end_date or None,
                                  notes or None])
 
+
     @staticmethod
     def update(section_id, name, chief_id, brigade_id, start_date, end_date, notes):
         with connection.cursor() as cursor:
@@ -204,11 +207,18 @@ class SectionWorkQueries:
 
     @staticmethod
     def add(section_id, work_type_id, volume):
-        with connection.cursor() as cursor:
-            cursor.execute("""
+        with connection.cursor() as c:
+            c.execute("""
                            INSERT INTO section_works (section_id, work_type_id, volume)
                            VALUES (%s, %s, %s);
                            """, [section_id, work_type_id, volume])
+
+            section_work_id = c.fetchone()[0]
+
+        # BrigadeQueries.register_brigade_history(section_work_id)
+
+        return section_work_id
+
 
     @staticmethod
     def delete(work_id):
