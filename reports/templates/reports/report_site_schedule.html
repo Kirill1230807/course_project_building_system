@@ -4,16 +4,21 @@
 {% block title %}Звіти{% endblock %}
 
 {% block content %}
+    {% block extra_css %}
+        <link rel="stylesheet" href="{% static 'pages/reports/site_schedule.css' %}">
+    {% endblock %}
 
-<link rel="stylesheet" href="{% static 'reports/css/../../../static/pages/reports/site_schedule.css' %}">
-
-<div class="page-container">
+    <div class="page-container">
 
     <h2>Графік і кошторис будівництва об’єкта: {{ site.name }}</h2>
 
     <p><strong>Адреса:</strong> {{ site.address }}</p>
     <p><strong>Період:</strong> {{ site.start_date }} — {{ site.end_date }}</p>
     <p><strong>Статус:</strong> {{ site.status }}</p>
+
+    <hr>
+
+    <h3>Роботи, проведені на об'єкті</h3>
 
     <table>
         <thead>
@@ -31,8 +36,8 @@
         {% for row in data %}
             <tr>
                 <td>{{ row.section_name }}</td>
-                <td>{{ row.section_start }}</td>
-                <td>{{ row.section_end }}</td>
+                <td>{{ row.section_start|date:"Y-m-d" }}</td>
+                <td>{{ row.section_end|date:"Y-m-d" }}</td>
                 <td>{{ row.work_name }}</td>
                 <td>{{ row.cost_per_unit }}</td>
                 <td>{{ row.volume }}</td>

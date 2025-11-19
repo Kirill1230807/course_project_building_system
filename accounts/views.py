@@ -168,7 +168,7 @@ def save_sql_result(request):
         return redirect("accounts:sql_saved_success")
 
 
-@require_role(["authorized", "admin"])
+@require_role(["authorized", "admin", "operator"])
 def saved_queries(request):
     user_id = request.session.get("user_id")
     data = Queries.get_saved_queries(user_id)
