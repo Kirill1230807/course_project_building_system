@@ -10,7 +10,7 @@ class CustomUser(models.Model):
     )
 
     class Meta:
-        db_table = "Keys"
+        db_table = "accounts_keys"
 
     username = models.CharField(max_length=150, unique=True)
     password_hash = models.CharField(max_length=255)
