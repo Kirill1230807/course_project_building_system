@@ -86,8 +86,8 @@ def delivery_detail(request, delivery_id):
     with connection.cursor() as cursor:
         cursor.execute("""
                        SELECT d.id,
-                              cs.name  AS site_name,
-                              s.name   AS section_name,
+                              COALESCE(cs.name, '--')  AS site_name,
+                              coalesce(s.name, '--')   AS section_name,
                               sup.name AS supplier_name,
                               d.delivery_date,
                               d.total_amount,
