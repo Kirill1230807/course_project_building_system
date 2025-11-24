@@ -48,11 +48,11 @@
                         <td>{{ r.0 }}</td>
                         <td>{{ r.1 }}</td>
                         <td>{{ r.2 }}</td>
-                        <td>{{ r.3 }}</td>
-                        <td>{{ r.4 }}</td>
-                        <td>{{ r.5 }}</td>
-                        <td>{{ r.6 }}</td>
-                        <td>{{ r.7 }}</td>
+                        <td>{{ r.3|date:"Y-m-d"|default:"--" }}</td>
+                        <td>{{ r.4|date:"Y-m-d"|default:"--" }}</td>
+                        <td>{{ r.5|default:"--" }}</td>
+                        <td>{{ r.6|date:"Y-m-d"|default:"--" }}</td>
+                        <td>{{ r.7|date:"Y-m-d"|default:"--" }}</td>
                     </tr>
                 {% endfor %}
             {% else %}

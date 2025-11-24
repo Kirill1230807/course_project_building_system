@@ -333,31 +333,31 @@ class ReportQueries:
             cols = [col[0] for col in cursor.description]
             return [dict(zip(cols, row)) for row in cursor.fetchall()]
 
-    # 9) Склад бригад, що працювали на об’єкті
     @staticmethod
     def get_brigade_staff_for_site(site_id: int):
         query = """
                 SELECT cs.name                                                                  AS site_name, \
                        b.id                                                                     AS brigade_id, \
                        b.name                                                                   AS brigade_name, \
- \
+
                        e.id                                                                     AS employee_id, \
                        e.last_name || ' ' || e.first_name || COALESCE(' ' || e.father_name, '') AS employee_full_name, \
- \
+
                        p.title                                                                  AS position_title, \
                        bm.role                                                                  AS brigade_role, \
-                       bm.start_date, \
-                       bm.end_date
+                       bwh.start_date, \
+                       bwh.end_date
 
                 FROM construction_sites cs
                          JOIN sections s ON s.site_id = cs.id
-                         JOIN brigades b ON b.id = s.brigade_id
+                         JOIN section_works sw ON sw.section_id = s.id
+                         JOIN brigade_work_history bwh ON bwh.section_work_id = sw.id
+                         JOIN brigades b ON b.id = bwh.brigade_id
                          JOIN brigade_members bm ON bm.brigade_id = b.id
                          JOIN employees e ON e.id = bm.employee_id
                          LEFT JOIN positions p ON p.id = e.position_id
 
                 WHERE cs.id = %s
-
                 ORDER BY b.name, employee_full_name; \
                 """
         with connection.cursor() as cursor:

@@ -24,13 +24,11 @@ def register_view(request):
 
     return render(request, "accounts/register.html")
 
-
 def login_guest(request):
     request.session["user_id"] = None
     request.session["role"] = "guest"
 
     return redirect("home:home")
-
 
 # LOGIN
 def login_view(request):
@@ -53,12 +51,10 @@ def login_view(request):
 
     return render(request, "accounts/login.html")
 
-
 # LOGOUT
 def logout_view(request):
     request.session.flush()
     return redirect("accounts:login")
-
 
 # SEND ACCESS REQUEST (Guest)
 def send_access_request(request):
@@ -75,7 +71,6 @@ def send_access_request(request):
 
     return render(request, "accounts/send_request.html")
 
-
 # ADMIN PANEL
 def manage_requests(request):
     role = request.session.get("role")
@@ -85,7 +80,6 @@ def manage_requests(request):
 
     reqs = GuestRequest.objects.filter(status="new")
     return render(request, "accounts/manage_requests.html", {"requests": reqs})
-
 
 def approve_request(request, req_id):
     req = GuestRequest.objects.get(id=req_id)
@@ -99,19 +93,16 @@ def approve_request(request, req_id):
 
     return redirect("accounts:manage_requests")
 
-
 def reject_request(request, req_id):
     req = GuestRequest.objects.get(id=req_id)
     req.status = "rejected"
     req.save()
     return redirect("manage_requests")
 
-
 @require_role(["admin"])
 def manage_users(request):
     users = CustomUser.objects.all().order_by("id")
     return render(request, "accounts/manage_users.html", {"users": users})
-
 
 @require_role(["admin"])
 def change_role(request, user_id):
@@ -125,7 +116,6 @@ def change_role(request, user_id):
 
     return render(request, "accounts/change_role.html", {"user": user})
 
-
 FORBIDDEN_KEYWORDS = ["drop", "truncate", "alter", "delete", "update", "insert"]
 
 @require_role(["admin", "operator", "authorized"])
@@ -135,23 +125,39 @@ def sql_console(request):
     result_text = ""
 
     if request.method == "POST":
-        query = request.POST.get("query")
+        query = request.POST.get("query", "")
+
+        role = request.session.get("role")
+
+        if role != "admin":
+            lowered = query.lower()
+            for keyword in FORBIDDEN_KEYWORDS:
+                if keyword in lowered:
+                    return render(request, "accounts/sql_console.html", {
+                        "query": query,
+                        "error": f"Команда '{keyword.upper()}' заборонена для вашої ролі.",
+                    })
 
         result = Queries.execute_sql(query)
 
-        if isinstance(result, dict) and "rows" in result:
+        if isinstance(result, dict):
 
-            lines = []
-            for row in result["rows"]:
-                line = " | ".join(str(x) for x in row)
-                lines.append(line)
-            result_text = "\n".join(lines)
+            if "error" in result:
+                result_text = "Помилка: " + result["error"]
+
+            elif "rows" in result:
+                lines = [" | ".join(str(x) for x in row) for row in result["rows"]]
+                result_text = "\n".join(lines)
+
+            elif "message" in result:
+                result_text = result["message"]
 
     return render(request, "accounts/sql_console.html", {
         "query": query,
         "result": result,
         "result_text": result_text,
     })
+
 
 @require_role(["authorized", "admin"])
 def save_sql_result(request):
@@ -211,7 +217,6 @@ def forgot_password(request):
     return render(request, "accounts/forgot_password.html",
                   {"message": message, "error": error})
 
-
 def reset_code(request):
     error = None
 
@@ -230,7 +235,6 @@ def reset_code(request):
             return redirect("accounts:reset_password")
 
     return render(request, "accounts/reset_code.html", {"error": error})
-
 
 def reset_password(request):
     error = None

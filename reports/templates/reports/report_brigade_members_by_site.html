@@ -49,8 +49,8 @@
                     <td>{{ row.employee_full_name }}</td>
                     <td>{{ row.position_title }}</td>
                     <td>{{ row.brigade_role|default:"—" }}</td>
-                    <td>{{ row.start_date }}</td>
-                    <td>{{ row.end_date|default:"—" }}</td>
+                    <td>{{ row.start_date|date:"Y-m-d" }}</td>
+                    <td>{{ row.end_date|default:"—"|date:"Y-m-d" }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

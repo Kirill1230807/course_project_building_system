@@ -13,7 +13,7 @@
     <h2>Графік і кошторис будівництва об’єкта: {{ site.name }}</h2>
 
     <p><strong>Адреса:</strong> {{ site.address }}</p>
-    <p><strong>Період:</strong> {{ site.start_date }} — {{ site.end_date }}</p>
+    <p><strong>Період:</strong> {{ site.start_date|date:"Y-m-d" }} — {{ site.end_date|date:"Y-m-d"|default:"Не встановлено" }}</p>
     <p><strong>Статус:</strong> {{ site.status }}</p>
 
     <hr>
