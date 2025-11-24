@@ -26,11 +26,25 @@ def add_equipment(request):
         assigned_site_id = request.POST.get("assigned_site_id") or None
         notes = request.POST.get("notes") or ""
 
+        # Додаємо техніку
         EquipmentQueries.add(name, type_id, status, assigned_site_id, notes)
-        EquipmentQueries.update_status_based_on_site()
-        return redirect("equipment:index")
-    return redirect("equipment:index")
 
+        with connection.cursor() as c:
+            c.execute("SELECT MAX(id) FROM equipment;")
+            equipment_id = c.fetchone()[0]
+
+        if assigned_site_id:
+            EquipmentQueries.add_history_entry(
+                equipment_id=equipment_id,
+                site_id=assigned_site_id,
+                notes=notes
+            )
+
+        EquipmentQueries.update_status_based_on_site()
+
+        return redirect("equipment:index")
+
+    return redirect("equipment:index")
 
 def edit_equipment(request, equipment_id):
     """Редагування техніки з логікою історії."""
@@ -40,7 +54,6 @@ def edit_equipment(request, equipment_id):
 
     types = EquipmentQueries.get_types()
 
-    # Правильний доступ до словника!
     old_site_id = equipment["assigned_site_id"]
     old_notes = equipment["notes"]
 
@@ -56,11 +69,9 @@ def edit_equipment(request, equipment_id):
         notes = request.POST.get("notes") or ""
 
         if new_site_id:
-            # Прив’язали до об'єкта → в роботі або ремонт
             if status not in ["В роботі", "В ремонті"]:
                 status = "В роботі"
         else:
-            # Відв’язали → вільна або ремонт
             if status not in ["Вільна", "В ремонті"]:
                 status = "Вільна"
 

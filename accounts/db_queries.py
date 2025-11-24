@@ -1,6 +1,7 @@
 ﻿from django.db import connection
 from datetime import datetime
 
+
 class Queries:
 
     @staticmethod
@@ -33,8 +34,19 @@ class Queries:
 
     @staticmethod
     def execute_sql(query):
-        with connection.cursor() as c:
-            c.execute(query)
-            rows = c.fetchall()
-            colnames = [col[0] for col in c.description]
-            return {"columns": colnames, "rows": rows}
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+
+                # Якщо є результати (SELECT)
+                if cursor.description:
+                    columns = [col[0] for col in cursor.description]
+                    rows = cursor.fetchall()
+                    return {"columns": columns, "rows": rows}
+
+                # Якщо це INSERT/UPDATE/DELETE
+                return {"message": "Запит виконано успішно."}
+
+        except Exception as e:
+            # Повертаємо помилку у нормальному вигляді
+            return {"error": str(e)}

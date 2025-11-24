@@ -152,7 +152,7 @@ def delayed_works_view(request):
     data = ReportQueries.get_delayed_works()
     return render(request, "reports/report_delayed_works.html", {"data": data})
 
-# 9) Склад бригад, що працювали на зазначеному об’єкті
+# 9) Бригади, що працювали на зазначеному об’єкті
 def brigade_staff_for_site_view(request):
     site_id = request.GET.get("site_id")
 
@@ -170,6 +170,7 @@ def brigade_staff_for_site_view(request):
         "selected_site": site_id,
         "data": data
     })
+
 
 # 10) Список ІТП фахівців по ділянці або управлінню
 def engineers_view(request):
