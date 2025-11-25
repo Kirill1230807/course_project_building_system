@@ -1,14 +1,15 @@
 ﻿from django.db import connection
 
+
 class DeliveryQueries:
     @staticmethod
     def add_delivery(section_id, delivery_date, notes):
         """Створити нову доставку"""
         query = """
-            INSERT INTO deliveries (section_id, supplier_id, delivery_date, notes, total_amount)
-            VALUES (%s, (SELECT id FROM suppliers LIMIT 1), %s, %s, 0)
-            RETURNING id;
-        """
+                INSERT INTO deliveries (section_id, supplier_id, delivery_date, notes, total_amount)
+                VALUES (%s, (SELECT id FROM suppliers LIMIT 1), %s, %s, 0)
+                RETURNING id; \
+                """
         with connection.cursor() as cursor:
             cursor.execute(query, [section_id, delivery_date, notes])
             return cursor.fetchone()[0]
@@ -68,14 +69,12 @@ class DeliveryQueries:
     def update_total(delivery_id):
         """Оновити суму накладної"""
         query = """
-            UPDATE deliveries
-            SET total_amount = (
-                SELECT COALESCE(SUM(total_price), 0)
-                FROM delivery_items
-                WHERE delivery_id = %s
-            )
-            WHERE id = %s;
-        """
+                UPDATE deliveries
+                SET total_amount = (SELECT COALESCE(SUM(total_price), 0)
+                                    FROM delivery_items
+                                    WHERE delivery_id = %s)
+                WHERE id = %s; \
+                """
         with connection.cursor() as cursor:
             cursor.execute(query, [delivery_id, delivery_id])
 
@@ -83,7 +82,8 @@ class DeliveryQueries:
     def get_reference_data():
         """Отримати списки для форми (об’єкти, матеріали з кількістю на складі)"""
         with connection.cursor() as cursor:
-            cursor.execute("SELECT id, name FROM construction_sites ORDER BY name;")
+            cursor.execute(
+                "SELECT id, name FROM construction_sites WHERE status IN ('Планується', 'В процесі') ORDER BY name;")
             sites = cursor.fetchall()
 
             cursor.execute("""
@@ -99,27 +99,26 @@ class DeliveryQueries:
     def get_sections_by_site(site_id):
         """Отримати дільниці конкретного об’єкта"""
         with connection.cursor() as cursor:
-            cursor.execute("SELECT id, name FROM sections WHERE site_id = %s ORDER BY name;", [site_id])
+            cursor.execute("SELECT id, name FROM sections WHERE site_id = %s AND end_date IS NULL ORDER BY name;", [site_id])
             return cursor.fetchall()
 
     @staticmethod
     def get_deliveries(site_id=None, section_id=None, start_date=None, end_date=None):
         """Отримати список доставок"""
         query = """
-            SELECT 
-                d.id,
-                COALESCE(cs.name, '--') AS site_name,
-                COALESCE(s.name, '--') AS section_name,
-                d.delivery_date,
-                sup.name AS supplier_name,
-                d.total_amount,
-                d.notes
-            FROM deliveries d
-            LEFT JOIN sections s ON d.section_id = s.id
-            LEFT JOIN construction_sites cs ON s.site_id = cs.id
-            LEFT JOIN suppliers sup ON d.supplier_id = sup.id
-            WHERE 1=1
-        """
+                SELECT d.id,
+                       COALESCE(cs.name, '--') AS site_name,
+                       COALESCE(s.name, '--')  AS section_name,
+                       d.delivery_date,
+                       sup.name                AS supplier_name,
+                       d.total_amount,
+                       d.notes
+                FROM deliveries d
+                         LEFT JOIN sections s ON d.section_id = s.id
+                         LEFT JOIN construction_sites cs ON s.site_id = cs.id
+                         LEFT JOIN suppliers sup ON d.supplier_id = sup.id
+                WHERE 1 = 1 \
+                """
         params = []
 
         if site_id:
@@ -147,18 +146,17 @@ class DeliveryQueries:
     def get_delivery_items(delivery_id):
         """Отримати матеріали (позиції) конкретної доставки"""
         query = """
-            SELECT 
-                m.name AS material_name,
-                m.unit_id,
-                u.short_name AS unit_name,
-                di.quantity,
-                di.price_per_unit,
-                di.total_price
-            FROM delivery_items di
-            JOIN materials m ON di.material_id = m.id
-            LEFT JOIN units u ON m.unit_id = u.id
-            WHERE di.delivery_id = %s;
-        """
+                SELECT m.name       AS material_name,
+                       m.unit_id,
+                       u.short_name AS unit_name,
+                       di.quantity,
+                       di.price_per_unit,
+                       di.total_price
+                FROM delivery_items di
+                         JOIN materials m ON di.material_id = m.id
+                         LEFT JOIN units u ON m.unit_id = u.id
+                WHERE di.delivery_id = %s; \
+                """
         with connection.cursor() as cursor:
             cursor.execute(query, [delivery_id])
             return cursor.fetchall()

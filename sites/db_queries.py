@@ -181,6 +181,16 @@ class SectionQueries:
         with connection.cursor() as cursor:
             cursor.execute("DELETE FROM sections WHERE id=%s;", [section_id])
 
+    @staticmethod
+    def get_inactive_brigades():
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                           SELECT id, name
+                           FROM brigades
+                           WHERE status = 'Неактивна'
+                           ORDER BY name;
+                           """)
+            return cursor.fetchall()
 
 class SectionWorkQueries:
     """Запити для таблиці section_works"""

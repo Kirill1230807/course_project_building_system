@@ -35,8 +35,8 @@
                     <label>Бригада:</label>
                     <select name="brigade_id">
                         <option value="">-- Оберіть бригаду --</option>
-                        {% for id, name in brigades %}
-                            <option value="{{ id }}">{{ name }}</option>
+                        {% for b in brigades %}
+                            <option value="{{ b.0 }}">{{ b.1 }}</option>
                         {% endfor %}
                     </select>
 

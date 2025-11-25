@@ -221,7 +221,7 @@ def sections(request, site_id):
                        """)
         chiefs = cursor.fetchall()
 
-        cursor.execute("SELECT id, name FROM brigades ORDER BY name;")
+        cursor.execute("SELECT id, name FROM brigades WHERE status = 'Неактивна' ORDER BY name;")
         brigades = cursor.fetchall()
 
     return render(request, "sites/sections.html", {
@@ -240,7 +240,6 @@ def add_section(request, site_id):
         start_date = request.POST.get("start_date")
         end_date = request.POST.get("end_date") or None
         notes = request.POST.get("notes") or None
-
         if not (name and start_date):
             return HttpResponseBadRequest("Не всі обов’язкові поля заповнені!")
 
@@ -300,18 +299,23 @@ def edit_section(request, section_id):
     # --------------------------------------
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT e.id, e.last_name || ' ' || e.first_name AS full_name
-            FROM employees e
-            JOIN positions p ON e.position_id = p.id
-            WHERE e.category = 'Інженерно-технічний персонал'
-              AND LOWER(p.title) LIKE '%начальник дільниці%'
-            ORDER BY e.last_name, e.first_name;
-        """)
+                       SELECT e.id, e.last_name || ' ' || e.first_name AS full_name
+                       FROM employees e
+                                JOIN positions p ON e.position_id = p.id
+                       WHERE e.category = 'Інженерно-технічний персонал'
+                         AND LOWER(p.title) LIKE '%начальник дільниці%'
+                       ORDER BY e.last_name, e.first_name;
+                       """)
         chiefs = cursor.fetchall()
-
+        current_brigade_id = section["brigade_id"]
         cursor.execute("""
-            SELECT id, name FROM brigades ORDER BY name;
-        """)
+                       SELECT id, name
+                       FROM brigades
+                       WHERE status = 'Неактивна'
+                          OR id = %s
+                       ORDER BY name;
+                       """, [current_brigade_id])
+
         brigades = cursor.fetchall()
 
     return render(request, "sites/edit_section.html", {
