@@ -116,7 +116,7 @@ def change_role(request, user_id):
 
     return render(request, "accounts/change_role.html", {"user": user})
 
-FORBIDDEN_KEYWORDS = ["drop", "truncate", "alter", "delete", "update", "insert"]
+FORBIDDEN_KEYWORDS = ["drop", "truncate", "alter", "delete", "update", "insert", "create"]
 
 @require_role(["admin", "operator", "authorized"])
 def sql_console(request):

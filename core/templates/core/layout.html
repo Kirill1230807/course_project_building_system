@@ -58,15 +58,17 @@
                     {# employees #}
                     <li><a href="{% url 'equipment:index' %}">Техніка</a></li>
                     {# equipment #}
-                    <li><a href="{% url 'works:index' %}">Види робіт</a></li>
-                    {# works #}
-                    <li><a href="{% url 'materials:index' %}">Матеріали</a></li>
+                    {% if current_role in "admin operator" %}
+                        <li><a href="{% url 'works:index' %}">Види робіт</a></li>
+                        {# works #}
+                    {% endif %}
+                    <li><a href="{% url 'materials:index' %}">Матеріали та постачальники</a></li>
                     {# materials #}
                     <li><a href="{% url 'reports:reports_menu' %}">Звіти</a></li>
                     {# reports #}
 
                     {% if current_role in "admin operator" %}
-                        <li><a href="{% url 'deliveries:add_delivery' %}">Доставки</a></li>
+                        <li><a href="{% url 'deliveries:add_delivery' %}">Оформити доставку</a></li>
                         {# deliveries #}
                     {% endif %}
 
