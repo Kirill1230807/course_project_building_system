@@ -17,7 +17,6 @@ def reports_menu(request):
 
     return render(request, "reports/reports_menu.html", {"sites": sites})
 
-
 def report_site_schedule_and_estimate(request, site_id):
     data = ReportQueries.get_site_schedule_and_estimate(site_id)
     if not data:
@@ -40,7 +39,6 @@ def report_site_schedule_and_estimate(request, site_id):
         {"site": site_info, "data": data, "total_cost": total_cost, "cost_work": cost_work, "materials": materials,
          "materials_total": materials_total},
     )
-
 
 def report_brigades_by_work(request):
     works = []
@@ -117,7 +115,6 @@ def report_works_by_brigade(request):
         start_date = request.GET.get("start_date")
         end_date = request.GET.get("end_date")
 
-        # перевірка коректності дат
         if start_date and end_date and start_date > end_date:
             messages.warning(request, "Дата початку не може бути пізніше дати завершення.")
         else:
@@ -156,7 +153,6 @@ def delayed_works_view(request):
 def brigade_staff_for_site_view(request):
     site_id = request.GET.get("site_id")
 
-    # отримати всі об'єкти (для фільтра)
     with connection.cursor() as cursor:
         cursor.execute("SELECT id, name FROM construction_sites ORDER BY name;")
         sites = cursor.fetchall()
@@ -177,12 +173,10 @@ def engineers_view(request):
     management_id = request.GET.get("management_id")
     section_id = request.GET.get("section_id")
 
-    # Управління
     with connection.cursor() as cursor:
         cursor.execute("SELECT id, name FROM managements ORDER BY name;")
         managements = cursor.fetchall()
 
-    # Дільниці
     with connection.cursor() as cursor:
         cursor.execute("SELECT id, name FROM sections ORDER BY name;")
         sections = cursor.fetchall()

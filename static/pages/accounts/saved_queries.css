@@ -34,7 +34,7 @@ table th {
 }
 
 .view-btn {
-    background: #4a90e2;
+    background: #FF9800;
     border: none;
     padding: 8px 15px;
     color: white;
@@ -43,7 +43,7 @@ table th {
 }
 
 .view-btn:hover {
-    background: #3c7ac4;
+    background: #754900;
 }
 
 .empty {

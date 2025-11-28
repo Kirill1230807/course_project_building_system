@@ -15,5 +15,4 @@ urlpatterns = [
     path("brigade_staff/", views.brigade_staff_for_site_view, name="report_brigade_staff"),
     path("engineers/", views.engineers_view, name="report_engineers"),
 
-
 ]

@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from pyexpat.errors import messages
 from .db_queries import WorkTypeQueries
 from django.db import connection
+from django.contrib import messages
 
 def index(request):
     work_types = WorkTypeQueries.get_all()
@@ -19,6 +21,7 @@ def add(request):
             return HttpResponseBadRequest("Усі поля є обов'язковими!")
 
         WorkTypeQueries.add(name, unit_id, cost)
+        messages.success(request, "Вид робіт створено!")
         return redirect("works:index")
     return redirect("works:index")
 
@@ -27,7 +30,6 @@ def edit(request, work_type_id):
     if not work_type:
         return HttpResponseNotFound("Вид робіт не знайдено")
 
-    # Отримуємо список одиниць
     units = get_units()
 
     if request.method == "POST":
@@ -43,6 +45,7 @@ def edit(request, work_type_id):
             })
 
         WorkTypeQueries.update(work_type_id, name, unit, cost)
+        messages.success(request, "Інформацію про вид робіт оновлено!")
         return redirect("works:index")
 
     return render(request, "works/edit.html", {"work_type": work_type, "units": units})
@@ -50,6 +53,7 @@ def edit(request, work_type_id):
 def delete(request, work_type_id):
     """Видалення виду робіт"""
     WorkTypeQueries.delete(work_type_id)
+    messages.success(request, "Вид робіт видалено!")
     return redirect("works:index")
 
 def get_units():

@@ -1,67 +1,68 @@
 ﻿{% extends "core/layout.html" %}
 {% load static %}
 {% block title %}Редагування працівника{% endblock %}
-
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'pages/employees/edit_employee.css' %}">
+{% endblock %}
 {% block content %}
-<div class="edit-container">
-    <h1>Редагування працівника</h1>
+    <div class="edit-container">
+        <h1>Редагування працівника</h1>
 
-    <form class="edit-form" method="post" action="{% url 'employees:edit' employee.id %}">
-        {% csrf_token %}
+        <form class="edit-form" method="post" action="{% url 'employees:edit' employee.id %}">
+            {% csrf_token %}
 
-        <label>Ім’я:</label>
-        <input type="text" name="first_name" value="{{ employee.first_name }}" required>
+            <label>Ім’я:</label>
+            <input type="text" name="first_name" value="{{ employee.first_name }}" required>
 
-        <label>Прізвище:</label>
-        <input type="text" name="last_name" value="{{ employee.last_name }}" required>
+            <label>Прізвище:</label>
+            <input type="text" name="last_name" value="{{ employee.last_name }}" required>
 
-        <label>По-батькові:</label>
-        <input type="text" name="father_name" value="{{ employee.father_name }}">
+            <label>По-батькові:</label>
+            <input type="text" name="father_name" value="{{ employee.father_name }}">
 
-        <label>Дата народження:</label>
-        <input type="date" name="birthday" value="{{ employee.birthday|date:'Y-m-d' }}" required>
+            <label>Дата народження:</label>
+            <input type="date" name="birthday" value="{{ employee.birthday|date:'Y-m-d' }}" required>
 
-        <label>Дата прийняття на роботу:</label>
-        <input type="date" name="start_date" value="{{ employee.start_date|date:'Y-m-d' }}" required>
+            <label>Дата прийняття на роботу:</label>
+            <input type="date" name="start_date" value="{{ employee.start_date|date:'Y-m-d' }}" required>
 
-        <label>Дата звільнення:</label>
-        <input type="date" name="end_date" value="{{ employee.end_date|date:'Y-m-d' }}">
+            <label>Дата звільнення:</label>
+            <input type="date" name="end_date" value="{{ employee.end_date|date:'Y-m-d' }}">
 
-        <label>Категорія:</label>
-        <select id="categorySelect" name="category" required>
-            <option value="Робітники" {% if employee.category == "Робітники" %}selected{% endif %}>
-                Робітники
-            </option>
-            <option value="Інженерно-технічний персонал"
-                {% if employee.category == "Інженерно-технічний персонал" %}selected{% endif %}>
-                Інженерно-технічний персонал
-            </option>
-        </select>
-
-        <label>Посада:</label>
-        <select id="positionSelect" name="position_id" required>
-            {% for id, title, category in positions %}
-                <option value="{{ id }}"
-                        data-category="{{ category }}"
-                        {% if employee.position_id == id %}selected{% endif %}>
-                    {{ title }}
+            <label>Категорія:</label>
+            <select id="categorySelect" name="category" required>
+                <option value="Робітники" {% if employee.category == "Робітники" %}selected{% endif %}>
+                    Робітники
                 </option>
-            {% endfor %}
-        </select>
+                <option value="Інженерно-технічний персонал"
+                        {% if employee.category == "Інженерно-технічний персонал" %}selected{% endif %}>
+                    Інженерно-технічний персонал
+                </option>
+            </select>
 
-        <label>Зарплата:</label>
-        <input type="number" name="salary" step="0.01" value="{{ employee.salary }}" required>
+            <label>Посада:</label>
+            <select id="positionSelect" name="position_id" required>
+                {% for id, title, category in positions %}
+                    <option value="{{ id }}"
+                            data-category="{{ category }}"
+                            {% if employee.position_id == id %}selected{% endif %}>
+                        {{ title }}
+                    </option>
+                {% endfor %}
+            </select>
 
-        {% if error_msg %}
-        <p class="error-msg">{{ error_msg }}</p>
-        {% endif %}
+            <label>Зарплата:</label>
+            <input type="number" name="salary" step="0.01" value="{{ employee.salary }}" required>
 
-        <button type="submit" class="btn-save">Зберегти зміни</button>
-    </form>
+            {% if error_msg %}
+                <p class="error-msg">{{ error_msg }}</p>
+            {% endif %}
 
-    <a href="{% url 'employees:index' %}" class="btn-back">Повернутись</a>
-</div>
+            <button type="submit" class="btn-save">Зберегти зміни</button>
+        </form>
 
-<link rel="stylesheet" href="{% static 'employees/css/../../../static/pages/employees/edit_employee.css' %}">
-<script src="{% static 'employees/js/edit_employee.js' %}"></script>
+        <a href="{% url 'employees:index' %}" class="btn-back">Повернутись</a>
+    </div>
+
+    <script src="{% static 'employees/js/edit_employee.js' %}"></script>
 {% endblock %}

@@ -1,13 +1,14 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from pyexpat.errors import messages
 from .models import CustomUser, GuestRequest
 from accounts.decorator import require_role
 from accounts.db_queries import Queries
 import random
 from decimal import Decimal
 from datetime import date, datetime
+from django.contrib import messages
 
-# REGISTER
 def register_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -30,7 +31,6 @@ def login_guest(request):
 
     return redirect("home:home")
 
-# LOGIN
 def login_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -46,17 +46,15 @@ def login_view(request):
 
         request.session["user_id"] = user.id
         request.session["role"] = user.role
-
+        messages.success(request, "Вітаємо у системі!")
         return redirect("home:home")
 
     return render(request, "accounts/login.html")
 
-# LOGOUT
 def logout_view(request):
     request.session.flush()
     return redirect("accounts:login")
 
-# SEND ACCESS REQUEST (Guest)
 def send_access_request(request):
     user_id = request.session.get("user_id")
     if not user_id:
@@ -71,7 +69,6 @@ def send_access_request(request):
 
     return render(request, "accounts/send_request.html")
 
-# ADMIN PANEL
 def manage_requests(request):
     role = request.session.get("role")
 
@@ -254,6 +251,7 @@ def reset_password(request):
 
         request.session.flush()
 
+        messages.success(request, "Пароль оновлено!")
         return redirect("accounts:login")
 
     return render(request, "accounts/reset_password.html")

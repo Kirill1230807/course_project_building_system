@@ -4,7 +4,6 @@
     box-sizing: border-box;
 }
 
-
 html, body {
     height: 100%;
     width: 100%;
@@ -142,7 +141,6 @@ main .features p {
     border-bottom: none;
 }
 
-/* ========== Статус badges ========== */
 .badge {
     display: inline-block;
     padding: 5px 12px;
@@ -276,36 +274,6 @@ main .features p {
 
 .stat-card:hover {
     transform: translateY(-3px);
-}
-
-.stat-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-}
-
-.stat-icon.blue {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.stat-icon.orange {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
-}
-
-.stat-icon.green {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: white;
-}
-
-.stat-icon.purple {
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-    color: #764ba2;
 }
 
 .stat-content {

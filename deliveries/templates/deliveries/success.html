@@ -1,20 +1,22 @@
 ﻿{% extends "core/layout.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pages/deliveries/success.css' %}">
+{% endblock %}
+
 {% block content %}
-    <div class="container mt-5 text-center">
+<div class="success-page">
 
-        <div class="alert alert-success shadow-sm p-4" role="alert">
-            <h3 class="mb-3">Доставку успішно додано!</h3>
-            <p>Матеріали були внесені до системи, склад оновлено автоматично.</p>
-        </div>
-
-        <div class="mt-4">
-            <a href="{% url 'deliveries:add_delivery' %}" class="btn btn-primary me-2">
-                Додати ще доставку
-            </a>
-            <a href="{% url 'reports:reports_menu' %}" class="btn btn-outline-secondary">
-                Перейти до звітів
-            </a>
-        </div>
-
+    <div class="success-card">
+        <h2>Доставку успішно додано!</h2>
+        <p>Матеріали були внесені до системи, склад оновлено автоматично.</p>
     </div>
+
+    <div class="buttons">
+        <a href="{% url 'deliveries:add_delivery' %}" class="btn-main">Додати ще доставку</a>
+        <a href="{% url 'deliveries:deliveries_list' %}" class="btn-secondary">Перейти до історій доставок</a>
+    </div>
+
+</div>
 {% endblock %}

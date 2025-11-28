@@ -3,11 +3,11 @@ from django.shortcuts import render, redirect
 from reports.db_queries import ReportQueries
 from .db_queries import EquipmentQueries
 from django.db import connection
+from django.contrib import messages
 
 def index(request):
     equipment = EquipmentQueries.get_all()
     types = EquipmentQueries.get_types()
-    # список об’єктів для вибору
     with connection.cursor() as cursor:
         cursor.execute("SELECT id, name FROM construction_sites ORDER BY name;")
         sites = cursor.fetchall()
@@ -26,7 +26,6 @@ def add_equipment(request):
         assigned_site_id = request.POST.get("assigned_site_id") or None
         notes = request.POST.get("notes") or ""
 
-        # Додаємо техніку
         EquipmentQueries.add(name, type_id, status, assigned_site_id, notes)
 
         with connection.cursor() as c:
@@ -43,7 +42,7 @@ def add_equipment(request):
         EquipmentQueries.update_status_based_on_site()
 
         return redirect("equipment:index")
-
+    messages.success(request, "Техніку додано!")
     return redirect("equipment:index")
 
 def edit_equipment(request, equipment_id):
@@ -79,11 +78,9 @@ def edit_equipment(request, equipment_id):
 
         if site_changed:
 
-            # Якщо була прив’язана раніше закриваємо активний запис
             if old_site_id:
                 EquipmentQueries.close_active_history(equipment_id)
 
-            # Якщо тепер також прив’язана → створюємо новий запис історії
             if new_site_id not in ["", None]:
                 EquipmentQueries.add_history_entry(
                     equipment_id=equipment_id,
@@ -101,7 +98,7 @@ def edit_equipment(request, equipment_id):
         )
 
         EquipmentQueries.update_status_based_on_site()
-
+        messages.success(request, "Інформацію про техніку оновлено!")
         return redirect("equipment:index")
 
     return render(request, "equipment/edit.html", {
@@ -112,6 +109,7 @@ def edit_equipment(request, equipment_id):
 
 def delete_equipment(request, equipment_id):
     EquipmentQueries.delete(equipment_id)
+    messages.success(request, "Техніку видалено!")
     return redirect("equipment:index")
 
 def report_equipment_history(request):

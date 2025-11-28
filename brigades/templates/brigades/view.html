@@ -31,7 +31,6 @@
         <button id="openAddMember" class="btn-primary">Додати учасника</button>
     {% endif %}
     {% if current_role in "admin operator" %}
-        <!-- Модальне вікно -->
         <div id="memberModal" class="modal">
             <div class="modal-content">
                 <span class="close" id="closeMemberModal">&times;</span>
@@ -64,7 +63,7 @@
             <thead>
             <tr>
                 <th>№</th>
-                <th>Ім’я</th>
+                <th>Працівник</th>
                 <th>Категорія</th>
                 <th>Роль</th>
                 {% if current_role in "admin operator" %}

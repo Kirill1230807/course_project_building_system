@@ -3,8 +3,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.db import connection, IntegrityError
 from .db_queries import MaterialQueries, SupplierQueries, MaterialPlanQueries
-from sites.db_queries import SectionQueries
-
 
 def index(request):
     materials = MaterialQueries.get_all()
@@ -24,7 +22,6 @@ def index(request):
         "units": units
     })
 
-
 def add_material(request):
     if request.method == "POST":
         name = request.POST.get("name")
@@ -38,15 +35,15 @@ def add_material(request):
             return HttpResponseBadRequest("Не всі поля заповнені!")
 
         MaterialQueries.add(name, description, supplier_id, price, count, unit_id)
+        messages.success(request, "Матеріал створено!")
         return redirect("materials:index")
 
     return redirect("materials:index")
 
-
 def delete_material(request, material_id):
     MaterialQueries.delete(material_id)
+    messages.success(request, "Матеріал видалено!")
     return redirect("materials:index")
-
 
 def add_supplier(request):
     if request.method == "POST":
@@ -60,10 +57,10 @@ def add_supplier(request):
             return HttpResponseBadRequest("Назва постачальника є обов’язковою!")
 
         SupplierQueries.add(name, contact_name, phone, email, address)
+        messages.success(request, "Постачальника створено!")
         return redirect("materials:index")
 
     return redirect("materials:index")
-
 
 def edit_supplier(request, supplier_id):
     supplier = SupplierQueries.get_by_id(supplier_id)
@@ -84,10 +81,10 @@ def edit_supplier(request, supplier_id):
             })
 
         SupplierQueries.update(supplier_id, name, contact_name, phone, email, address)
+        messages.success(request, "Інформація про постачальника оновлена!")
         return redirect("materials:index")
 
     return render(request, "materials/edit_supplier.html", {"supplier": supplier})
-
 
 def edit_material(request, material_id):
     """Редагування матеріалу"""
@@ -118,6 +115,7 @@ def edit_material(request, material_id):
             })
 
         MaterialQueries.update(material_id, name, description, supplier_id, price, count, unit_id)
+        messages.success(request, "Інформація про матеріал оновлена!")
         return redirect("materials:index")
 
     return render(request, "materials/edit_material.html", {
@@ -126,11 +124,11 @@ def edit_material(request, material_id):
         "units": units
     })
 
-
 def delete_supplier(request, supplier_id):
     """Видалення постачальника з перевіркою зв'язків"""
     try:
         SupplierQueries.delete(supplier_id)
+        messages.success(request, "Постачальника видалено!")
         return redirect("materials:index")
     except IntegrityError:
         return render(request, "materials/error_supplier_delete.html", {
@@ -160,10 +158,8 @@ def add_material_plan(request, section_id):
             MaterialPlanQueries.save_plan(section_id, plan_data)
             messages.success(request, f"Кошторис для дільниці «{section_name}» збережено!")
 
-            # Отримуємо site_id для цієї дільниці
             site_id = MaterialPlanQueries.get_site_id_by_section(section_id)
 
-            # Повертаємо користувача до списку дільниць конкретного об’єкта
             return redirect("sites:sections", site_id=site_id)
 
     return render(request, "materials/add_material_plan.html", {

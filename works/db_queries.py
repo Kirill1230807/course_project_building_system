@@ -1,4 +1,5 @@
 ﻿from django.db import connection
+
 class WorkTypeQueries:
     """SQL-запити для таблиці work_types"""
 

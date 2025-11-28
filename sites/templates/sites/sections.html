@@ -90,10 +90,12 @@
                             <a href="{% url 'sites:delete_section' s.0 %}?site_id={{ site_id }}"
                                onclick="return confirm('Видалити дільницю?')"
                                class="action-delete">Видалити</a>
-                            <span>|</span>
                         {% endif %}
-                        <a href="{% url 'materials:add_material_plan' s.0 %}"
-                           class="action-link">Кількість матеріалів</a>
+                        {% if current_role == "admin operator" %}
+                            <span>|</span>
+                            <a href="{% url 'materials:add_material_plan' s.0 %}"
+                               class="action-link">Кількість матеріалів</a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

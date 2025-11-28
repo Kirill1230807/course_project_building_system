@@ -87,7 +87,6 @@ class MaterialQueries:
 class SupplierQueries:
     """Прямі SQL-запити для таблиці suppliers"""
 
-    # показ постачальників
     @staticmethod
     def get_all():
         with connection.cursor() as cursor:
@@ -104,7 +103,6 @@ class SupplierQueries:
                 } for r in rows
             ]
 
-    # додавання постачальника
     @staticmethod
     def add(name, contact_name, phone, email, address):
         with connection.cursor() as cursor:
@@ -187,10 +185,8 @@ class MaterialPlanQueries:
     def save_plan(section_id: int, plan_data: list[tuple[int, float]]):
         """Зберегти кошторис для дільниці"""
         with connection.cursor() as c:
-            # видаляємо старий план
             c.execute("DELETE FROM material_plan WHERE section_id = %s;", [section_id])
 
-            # додаємо нові значення
             for material_id, qty in plan_data:
                 c.execute("""
                           INSERT INTO material_plan (section_id, material_id, planned_qty)

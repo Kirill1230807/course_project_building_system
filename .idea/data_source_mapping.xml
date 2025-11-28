@@ -3,6 +3,9 @@
   <component name="DataSourcePerFileMappings">
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/e7f560bc-b902-45b1-b1f8-d08b227ed32c/console.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/e7f560bc-b902-45b1-b1f8-d08b227ed32c/console_1.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/e7f560bc-b902-45b1-b1f8-d08b227ed32c/console_10.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/e7f560bc-b902-45b1-b1f8-d08b227ed32c/console_11.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/e7f560bc-b902-45b1-b1f8-d08b227ed32c/console_12.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/e7f560bc-b902-45b1-b1f8-d08b227ed32c/console_2.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/e7f560bc-b902-45b1-b1f8-d08b227ed32c/console_3.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/e7f560bc-b902-45b1-b1f8-d08b227ed32c/console_4.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
@@ -10,7 +13,8 @@
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/e7f560bc-b902-45b1-b1f8-d08b227ed32c/console_6.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/e7f560bc-b902-45b1-b1f8-d08b227ed32c/console_7.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/e7f560bc-b902-45b1-b1f8-d08b227ed32c/console_8.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/e7f560bc-b902-45b1-b1f8-d08b227ed32c/console_9.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
+    <file url="file://$PROJECT_DIR$/backup.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
     <file url="file://$PROJECT_DIR$/schema.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
-    <file url="das://e7f560bc-b902-45b1-b1f8-d08b227ed32c/database/building_db/schema/public/table/employees.sql" value="e7f560bc-b902-45b1-b1f8-d08b227ed32c" />
   </component>
 </project>

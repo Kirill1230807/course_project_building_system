@@ -71,7 +71,6 @@
                 {% for mid, qty in filled_materials %}
                     <div class="material-row">
 
-                        <!-- Вибір матеріалу -->
                         <select name="material_id" required>
                             {% for m in materials %}
                                 <option value="{{ m.0 }}"
@@ -81,17 +80,14 @@
                             {% endfor %}
                         </select>
 
-                        <!-- Кількість -->
                         <input type="number" step="0.01" name="quantity"
                                placeholder="Кількість" value="{{ qty }}" required>
 
-                        <!-- Кнопка видалення -->
                         <button type="button" class="remove-row-btn"
                                 onclick="removeMaterialRow(this)">×
                         </button>
                     </div>
                 {% empty %}
-                    <!-- Якщо матеріалів немає, то відображається один порожній рядок -->
                     <div class="material-row">
                         <select name="material_id" required>
                             {% for m in materials %}
@@ -108,15 +104,9 @@
                     </div>
                 {% endfor %}
             </div>
-
-
             <button type="button" class="btn-secondary" onclick="addMaterialRow()">+ Додати ще матеріал</button>
-
             <button type="submit" class="btn-primary submit-btn">Зберегти доставку</button>
         </form>
-
     </div>
-
     <script src="{% static 'deliveries/js/add_delivery.js' %}"></script>
-
 {% endblock %}

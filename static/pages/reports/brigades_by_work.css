@@ -55,11 +55,6 @@
     outline: none;
 }
 
-.form-submit {
-    display: flex;
-    align-items: flex-end;
-}
-
 .filter-btn {
     padding: 11px 20px;
     background: #ff9800;

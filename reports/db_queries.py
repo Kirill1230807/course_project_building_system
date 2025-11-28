@@ -1,8 +1,6 @@
 ﻿from django.db import connection
 
-
 class ReportQueries:
-    # 1) Графік і кошторис на будівництво об’єкта
     @staticmethod
     def get_site_schedule_and_estimate(site_id: int):
         """Отримати графік і кошторис будівництва об’єкта."""
@@ -33,13 +31,8 @@ class ReportQueries:
             cols = [col[0] for col in cursor.description]
             return [dict(zip(cols, row)) for row in cursor.fetchall()]
 
-    # 2) Перелік бригад, що виконали певний вид робіт у період
     @staticmethod
     def get_brigades_by_work_and_period(work_id=None, start_date=None, end_date=None):
-        """
-        Повертає бригади, які виконували певний вид робіт у вибраний період.
-        Дані базуються на brigade_work_history.
-        """
 
         query = """
                 SELECT wt.name AS work_name, \
@@ -59,20 +52,25 @@ class ReportQueries:
 
         params = []
 
-        # Фільтр по виду робіт
         if work_id:
             query += " AND wt.id = %s"
             params.append(work_id)
 
-        # Дата: перетин діапазонів
         if start_date and end_date:
-            query += " AND h.start_date <= %s AND (h.end_date IS NULL OR h.end_date >= %s)"
+            query += """
+                AND h.start_date <= %s 
+                AND (h.end_date IS NULL OR h.end_date >= %s)
+            """
             params += [end_date, start_date]
         elif start_date:
-            query += " AND (h.end_date IS NULL OR h.end_date >= %s)"
+            query += """
+                AND (h.end_date IS NULL OR h.end_date >= %s)
+            """
             params.append(start_date)
         elif end_date:
-            query += " AND h.start_date <= %s"
+            query += """
+                AND h.start_date <= %s
+            """
             params.append(end_date)
 
         query += " ORDER BY h.start_date"
@@ -81,7 +79,6 @@ class ReportQueries:
             c.execute(query, params)
             return c.fetchall()
 
-    # 4) Перелік матеріалів із перевищенням кошторису
     @staticmethod
     def get_materials_overbudget(section_id: int = None):
         """Отримати матеріали, де факт > план."""
@@ -135,7 +132,6 @@ class ReportQueries:
             cursor.execute(query, [site_id])
             return cursor.fetchall()
 
-    # 3) Перелік будівельних керувань / ділянок і керівників
     @staticmethod
     def get_sites_sections_managers():
         """
@@ -158,7 +154,6 @@ class ReportQueries:
             cols = [col[0] for col in cursor.description]
             return [dict(zip(cols, row)) for row in cursor.fetchall()]
 
-    # 5) Перелік техніки, виділеної на об’єкт
     @staticmethod
     def get_equipment_history(site_id=None):
         query = """
@@ -187,7 +182,6 @@ class ReportQueries:
             cols = [col[0] for col in c.description]
             return [dict(zip(cols, row)) for row in c.fetchall()]
 
-    # 6) Види робіт, виконані бригадою у період
     @staticmethod
     def get_works_by_brigade_and_period(brigade_id=None, start_date=None, end_date=None):
         """
@@ -214,7 +208,6 @@ class ReportQueries:
             query += " AND b.id = %s"
             params.append(brigade_id)
 
-        # Фільтр по датах (перетин інтервалів)
         if start_date and end_date:
             query += " AND s.start_date <= %s AND (s.end_date IS NULL OR s.end_date >= %s)"
             params.extend([end_date, start_date])
@@ -231,7 +224,6 @@ class ReportQueries:
             c.execute(query, params)
             return c.fetchall()
 
-    # 8) Об’єкти, що зводяться управлінням / ділянкою + графіки
     @staticmethod
     def get_sites_by_management_or_section(management_id=None):
         """
@@ -264,7 +256,6 @@ class ReportQueries:
             c.execute(query, params)
             return c.fetchall()
 
-    # 7) Види робіт із перевищенням термінів виконання
     @staticmethod
     def get_delayed_works():
         query = """
@@ -336,18 +327,16 @@ class ReportQueries:
     @staticmethod
     def get_brigade_staff_for_site(site_id: int):
         query = """
-                SELECT cs.name                                                                  AS site_name, \
-                       b.id                                                                     AS brigade_id, \
-                       b.name                                                                   AS brigade_name, \
-
-                       e.id                                                                     AS employee_id, \
-                       e.last_name || ' ' || e.first_name || COALESCE(' ' || e.father_name, '') AS employee_full_name, \
-
-                       p.title                                                                  AS position_title, \
-                       bm.role                                                                  AS brigade_role, \
-                       bwh.start_date, \
-                       bwh.end_date
-
+                SELECT DISTINCT ON (b.id, e.id) cs.name                            AS site_name, \
+                                                b.id                               AS brigade_id, \
+                                                b.name                             AS brigade_name, \
+                                                e.id                               AS employee_id, \
+                                                e.last_name || ' ' || e.first_name || \
+                                                COALESCE(' ' || e.father_name, '') AS employee_full_name, \
+                                                p.title                            AS position_title, \
+                                                bm.role                            AS brigade_role, \
+                                                bwh.start_date, \
+                                                bwh.end_date
                 FROM construction_sites cs
                          JOIN sections s ON s.site_id = cs.id
                          JOIN section_works sw ON sw.section_id = s.id
@@ -356,16 +345,14 @@ class ReportQueries:
                          JOIN brigade_members bm ON bm.brigade_id = b.id
                          JOIN employees e ON e.id = bm.employee_id
                          LEFT JOIN positions p ON p.id = e.position_id
-
                 WHERE cs.id = %s
-                ORDER BY b.name, employee_full_name; \
+                ORDER BY b.id, e.id, bwh.start_date; \
                 """
         with connection.cursor() as cursor:
             cursor.execute(query, [site_id])
             cols = [col[0] for col in cursor.description]
             return [dict(zip(cols, row)) for row in cursor.fetchall()]
 
-    # 10) ІТП фахівці по ділянці / управлінню
     @staticmethod
     def get_engineers_by_management_or_section(management_id=None, section_id=None):
         """
@@ -403,63 +390,3 @@ class ReportQueries:
             cursor.execute(query, params)
             cols = [col[0] for col in cursor.description]
             return [dict(zip(cols, row)) for row in cursor.fetchall()]
-
-    # @staticmethod
-    # def get_full_work_report(report_id: int):
-    #     """Отримати повний звіт: загальні дані, матеріали, техніку."""
-    #     result = {}
-    #
-    #     # 1) Основна інформація про звіт
-    #     with connection.cursor() as cursor:
-    #         cursor.execute("""
-    #                        SELECT wr.id,
-    #                               wr.work_plan_id,
-    #                               wr.actual_start,
-    #                               wr.actual_end,
-    #                               wr.actual_quantity,
-    #                               wr.comment,
-    #                               wp.section_id,
-    #                               s.name  AS section_name,
-    #                               wt.name AS work_name
-    #                        FROM work_reports wr
-    #                                 JOIN work_plans wp ON wr.work_plan_id = wp.id
-    #                                 JOIN sections s ON wp.section_id = s.id
-    #                                 JOIN work_types wt ON wp.work_type_id = wt.id
-    #                        WHERE wr.id = %s;
-    #                        """, [report_id])
-    #
-    #         cols = [col[0] for col in cursor.description]
-    #         result["report"] = dict(zip(cols, cursor.fetchone()))
-    #
-    #     # 2) Матеріали
-    #     with connection.cursor() as cursor:
-    #         cursor.execute("""
-    #                        SELECT m.name                 AS material_name,
-    #                               wrm.quantity,
-    #                               m.price,
-    #                               wrm.quantity * m.price AS total_cost
-    #                        FROM work_report_materials wrm
-    #                                 JOIN materials m ON wrm.material_id = m.id
-    #                        WHERE wrm.report_id = %s
-    #                        ORDER BY material_name;
-    #                        """, [report_id])
-    #
-    #         cols = [col[0] for col in cursor.description]
-    #         result["materials"] = [dict(zip(cols, row)) for row in cursor.fetchall()]
-    #
-    #     # 3) Техніка
-    #     with connection.cursor() as cursor:
-    #         cursor.execute("""
-    #                        SELECT e.name AS equipment_name,
-    #                               e.type,
-    #                               wre.quantity
-    #                        FROM work_report_equipment wre
-    #                                 JOIN equipment e ON wre.equipment_id = e.id
-    #                        WHERE wre.report_id = %s
-    #                        ORDER BY equipment_name;
-    #                        """, [report_id])
-    #
-    #         cols = [col[0] for col in cursor.description]
-    #         result["equipment"] = [dict(zip(cols, row)) for row in cursor.fetchall()]
-    #
-    #     return result

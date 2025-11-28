@@ -1,5 +1,4 @@
-﻿/* ===== Заголовок сторінки ===== */
-.page-title {
+﻿.page-title {
     font-size: 32px;
     color: #ff9800;
     margin-bottom: 25px;
@@ -7,7 +6,6 @@
     text-align: center;
 }
 
-/* ===== Контейнер форми ===== */
 .form-card {
     background: #ffffff;
     padding: 30px;
@@ -17,7 +15,6 @@
     margin: 0 auto;
 }
 
-/* ===== Стиль форми ===== */
 .form-card form {
     display: flex;
     flex-direction: column;
@@ -45,21 +42,18 @@
     outline: none;
 }
 
-/* ===== Повідомлення про помилки ===== */
 .error-msg {
     color: #d32f2f;
     font-weight: 600;
     text-align: center;
 }
 
-/* ===== Кнопки ===== */
 .actions {
     display: flex;
     gap: 15px;
     margin-top: 10px;
 }
 
-/* Основна кнопка */
 .btn-save {
     background: #ff9800;
     color: white;
@@ -76,7 +70,6 @@
     background: #e68900;
 }
 
-/* Кнопка "Назад" */
 .btn-back {
     display: inline-block;
     padding: 12px 18px;
@@ -93,7 +86,6 @@
     color: #000;
 }
 
-/* ===== Адаптивність ===== */
 @media (max-width: 600px) {
     .form-card {
         padding: 20px;

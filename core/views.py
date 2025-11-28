@@ -4,17 +4,14 @@ from django.db import connection
 
 # Create your views here.
 def home(request):
-    # Підрахунок кількості об’єктів
     with connection.cursor() as cursor:
         cursor.execute("SELECT COUNT(*) FROM construction_sites;")
         total_sites = cursor.fetchone()[0]
 
-    # Підрахунок кількості працівників
     with connection.cursor() as cursor:
         cursor.execute("SELECT COUNT(*) FROM employees;")
         total_employees = cursor.fetchone()[0]
 
-    # Підрахунок кількості завершених об’єктів
     with connection.cursor() as cursor:
         cursor.execute(
             "SELECT COUNT(*) FROM construction_sites WHERE status IN ('Завершено', 'Завершено із запізненням');")

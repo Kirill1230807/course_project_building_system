@@ -18,7 +18,6 @@ class DeliveryQueries:
     def add_delivery_item(delivery_id, material_id, quantity):
         """Додати позицію до доставки, з перевіркою залишку і оновленням складу"""
         with connection.cursor() as cursor:
-            # Отримати поточну кількість і ціну матеріалу
             cursor.execute("""
                            SELECT count, price, supplier_id
                            FROM materials
@@ -31,17 +30,14 @@ class DeliveryQueries:
 
             stock, price, supplier_id = result
 
-            # Перевірити наявність
             if quantity > stock:
                 raise ValueError(f"Недостатньо матеріалу на складі. Максимум можна замовити {stock} одиниць.")
 
-            # Додати позицію доставки
             cursor.execute("""
                            INSERT INTO delivery_items (delivery_id, material_id, quantity, price_per_unit)
                            VALUES (%s, %s, %s, %s);
                            """, [delivery_id, material_id, quantity, price])
 
-            # Прив’язати постачальника (якщо ще не заповнений)
             cursor.execute("""
                            UPDATE deliveries
                            SET supplier_id = %s
@@ -49,13 +45,11 @@ class DeliveryQueries:
                              AND supplier_id IS NULL;
                            """, [supplier_id, delivery_id])
 
-            # Зменшити кількість на складі
             cursor.execute("""
                            UPDATE materials
                            SET count = count - %s
                            WHERE id = %s;
                            """, [quantity, material_id])
-            # Оновити фактичне використання матеріалів у material_usage
             cursor.execute("""
                            INSERT INTO material_usage (section_id, material_id, used_qty)
                            VALUES ((SELECT section_id FROM deliveries WHERE id = %s),
@@ -96,10 +90,27 @@ class DeliveryQueries:
         return sites, materials
 
     @staticmethod
+    def get_reference_data_history():
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT id, name FROM construction_sites WHERE status IN ('Планується', 'В процесі', 'Завершено', 'Завершено із запізненням') ORDER BY name;")
+            sites = cursor.fetchall()
+
+            cursor.execute("""
+                           SELECT id, name, count
+                           FROM materials
+                           ORDER BY name;
+                           """)
+            materials = cursor.fetchall()
+
+        return sites, materials
+
+    @staticmethod
     def get_sections_by_site(site_id):
         """Отримати дільниці конкретного об’єкта"""
         with connection.cursor() as cursor:
-            cursor.execute("SELECT id, name FROM sections WHERE site_id = %s AND end_date IS NULL ORDER BY name;", [site_id])
+            cursor.execute("SELECT id, name FROM sections WHERE site_id = %s AND end_date IS NULL ORDER BY name;",
+                           [site_id])
             return cursor.fetchall()
 
     @staticmethod

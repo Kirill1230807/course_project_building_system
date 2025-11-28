@@ -13,7 +13,6 @@
 
     <h1 class="page-title">Звіт: Перевищення матеріалів по кількості</h1>
 
-    <!-- Форма фільтрації -->
     <form method="post" class="filter-form">
         {% csrf_token %}
 
@@ -30,7 +29,6 @@
         <button type="submit" class="filter-btn">Показати</button>
     </form>
 
-    <!-- Таблиця -->
     {% if data %}
         <div class="table-wrapper">
             <table class="styled-table">

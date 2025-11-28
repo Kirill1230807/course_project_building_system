@@ -6,7 +6,6 @@ from django.db import connection
 def index(request):
     employees = EmployeeQueries.get_all()
 
-    # Отримуємо лише посади, які належать до категорії "Робітники"
     with connection.cursor() as cursor:
         cursor.execute("SELECT id, title, category FROM positions WHERE category = 'Робітники' ORDER BY title;")
         positions = cursor.fetchall()
@@ -29,12 +28,10 @@ def add_employee(request):
             "position_id": request.POST.get("position_id", "")
         }
 
-        # Отримуємо всі посади (лише робітники)
         with connection.cursor() as cursor:
             cursor.execute("SELECT id, title, category FROM positions WHERE category = 'Робітники' ORDER BY title;")
             positions = cursor.fetchall()
 
-        # Перевірка полів
         if not (form_data["first_name"] and form_data["last_name"] and form_data["salary"] and form_data["position_id"]):
             error_msg = "Не всі обов’язкові поля заповнені."
             employees = EmployeeQueries.get_all()
@@ -45,7 +42,6 @@ def add_employee(request):
                 "form_data": form_data
             })
 
-        # Фіксована категорія
         category = "Робітники"
 
         EmployeeQueries.add(
@@ -102,13 +98,11 @@ def edit_employee(request, employee_id):
         position_id = data.get("position_id")
         category = data.get("category")
 
-        # Отримуємо назву посади
         with connection.cursor() as cursor:
             cursor.execute("SELECT title FROM positions WHERE id = %s;", [position_id])
             result = cursor.fetchone()
             position_title = result[0] if result else ""
 
-        # Валідація категорії та посади
         if category == "Інженерно-технічний персонал" and position_title not in ["Головний інженер", "Начальник дільниці"]:
             error_msg = "Інженерно-технічний персонал може мати лише посади 'Головний інженер' або 'Начальник дільниці'."
         elif category == "Робітники" and position_title in ["Головний інженер", "Начальник дільниці"]:
@@ -137,7 +131,6 @@ def edit_employee(request, employee_id):
                 "error_msg": error_msg
             })
 
-        # Оновлюємо дані
         EmployeeQueries.update(
             employee_id,
             first_name,

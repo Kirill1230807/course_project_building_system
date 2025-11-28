@@ -45,6 +45,10 @@
     font-size: 15px;
 }
 
+.styled-table th {
+    text-align: left;
+}
+
 .styled-table tbody tr {
     transition: .2s;
 }

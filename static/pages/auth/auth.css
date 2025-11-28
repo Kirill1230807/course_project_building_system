@@ -1,4 +1,8 @@
 ﻿* {
+    box-sizing: border-box;
+}
+
+body {
     font-family: "Segoe UI", sans-serif;
 }
 
@@ -9,6 +13,9 @@
     border-radius: 10px;
     background: #ffffff;
     box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 .auth-container h1 {
@@ -59,6 +66,11 @@ textarea {
     text-align: center;
 }
 
+.other-links p {
+    margin: 6px 0;
+}
+
+
 .other-links a {
     text-decoration: none;
     color: #ffa200;
@@ -67,4 +79,54 @@ textarea {
 .other-links a:hover {
     text-decoration: underline;
     color: #805200;
+}
+
+.messages-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.alert {
+    padding: 14px 22px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    animation: fadeIn 0.4s ease;
+}
+
+.alert-success {
+    background-color: #4caf50;
+}
+
+.alert-error {
+    background-color: #f44336;
+}
+
+.alert-warning {
+    background-color: #ff9800;
+}
+
+.alert-info {
+    background-color: #2196f3;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-15px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.field {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.field label {
+    margin-bottom: 5px;
+    font-weight: bold;
 }

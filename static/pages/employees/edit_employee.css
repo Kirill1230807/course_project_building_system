@@ -22,7 +22,6 @@ h1 {
     color: #E67E22;
 }
 
-/* Форми */
 .edit-form label {
     display: block;
     font-weight: 600;
@@ -49,7 +48,6 @@ h1 {
     box-shadow: 0 0 5px rgba(230, 126, 34, 0.4);
 }
 
-/* Помилка */
 .error-msg {
     color: #E74C3C;
     font-weight: 600;
@@ -57,7 +55,6 @@ h1 {
     margin-top: 15px;
 }
 
-/* Кнопки */
 .btn-save {
     width: 100%;
     padding: 14px;
@@ -94,7 +91,6 @@ h1 {
     background-color: #cf6d1b;
 }
 
-/* Адаптивність */
 @media (max-width: 768px) {
     .edit-container {
         padding: 20px;

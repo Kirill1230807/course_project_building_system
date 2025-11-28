@@ -38,13 +38,11 @@ class Queries:
             with connection.cursor() as cursor:
                 cursor.execute(query)
 
-                # Якщо є результати (SELECT)
                 if cursor.description:
                     columns = [col[0] for col in cursor.description]
                     rows = cursor.fetchall()
                     return {"columns": columns, "rows": rows}
 
-                # Якщо це INSERT/UPDATE/DELETE
                 return {"message": "Запит виконано успішно."}
 
         except Exception as e:
