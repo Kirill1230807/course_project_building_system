@@ -2,8 +2,7 @@ from django.http import HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django.db import connection
 from .db_queries import BrigadeQueries
-from employees.db_queries import EmployeeQueries
-
+from django.contrib import messages
 
 def index(request):
     """Список бригад + модальне вікно для створення"""
@@ -38,15 +37,12 @@ def add_brigade(request):
         if not BrigadeQueries.get_available_workers_for_leader():
             return HttpResponseBadRequest("Оберіть бригадира!")
 
-        # Перевірка заповнення обов’язкових полів
         if not name or not leader_id:
             return HttpResponseBadRequest("Вкажіть назву бригади та бригадира!")
 
-        # Перевірка, чи працівник уже не є бригадиром або членом іншої бригади
         if not BrigadeQueries.is_employee_free(leader_id):
             return HttpResponseBadRequest("Цей працівник уже входить до іншої бригади!")
 
-        # Додаємо нову бригаду (статус за замовчуванням 'Неактивна')
         with connection.cursor() as cursor:
             cursor.execute("""
                 INSERT INTO brigades (name, leader_id, notes)
@@ -55,22 +51,22 @@ def add_brigade(request):
             """, [name, leader_id, notes])
             brigade_id = cursor.fetchone()[0]
 
-        # Автоматично додаємо бригадира у склад бригади
         with connection.cursor() as cursor:
             cursor.execute("""
                 INSERT INTO brigade_members (brigade_id, employee_id, role)
                 VALUES (%s, %s, %s);
             """, [brigade_id, leader_id, "Бригадир"])
 
+        messages.success(request, "Бригаду успішно створено!")
         return redirect("brigades:index")
 
-    # fallback, якщо GET-запит
+    messages.success(request, "Бригаду успішно створено!")
     return redirect("brigades:index")
 
 def edit_brigade(request, brigade_id):
     brigade = BrigadeQueries.get_by_id(brigade_id)
     if not brigade:
-        return render(request, "brigades/error.html", {"message": "Бригаду не знайдено."})
+        return messages.error(request, "Бригаду не знайдено!")
 
     if request.method == "POST":
         name = request.POST.get("name")
@@ -83,18 +79,19 @@ def edit_brigade(request, brigade_id):
             })
 
         BrigadeQueries.update(brigade_id, name, notes)
-        return redirect("brigades:index")  # після редагування — повертаємось до списку
+        messages.success(request, "Бригаду успішно оновлено!")
+        return redirect("brigades:index")
 
     return render(request, "brigades/edit.html", {"brigade": brigade})
 
 def delete_brigade(request, brigade_id):
     BrigadeQueries.delete(brigade_id)
+    messages.success(request, "Бригаду успішно видалено!")
     return redirect("brigades:index")
 
 def view_brigade(request, brigade_id):
     """Відображення детальної інформації про бригаду"""
     with connection.cursor() as cursor:
-        # Отримуємо інформацію про бригаду
         cursor.execute("""
             SELECT b.id, b.name, e.last_name || ' ' || e.first_name AS leader, b.status, b.notes
             FROM brigades b
@@ -106,7 +103,6 @@ def view_brigade(request, brigade_id):
         if not brigade:
             return HttpResponseNotFound("Бригаду не знайдено")
 
-        # Отримуємо учасників бригади
         cursor.execute("""
             SELECT e.id, e.last_name || ' ' || e.first_name AS full_name, e.category, mb.role
             FROM brigade_members mb
@@ -115,10 +111,6 @@ def view_brigade(request, brigade_id):
         """, [brigade_id])
         members = cursor.fetchall()
 
-        # Отримуємо працівників, які можна додати:
-        # - категорія "Робітники"
-        # - не мають end_date
-        # - не входять у поточну бригаду
         cursor.execute("""
             SELECT e.id,
                    e.last_name || ' ' || e.first_name ||
@@ -151,6 +143,7 @@ def add_member(request, brigade_id):
                 VALUES (%s, %s, %s)
                 ON CONFLICT DO NOTHING;
             """, [brigade_id, employee_id, role])
+    messages.success(request, "Працівника додано!")
     return redirect("brigades:view", brigade_id=brigade_id)
 
 def remove_member(request, brigade_id, employee_id):
@@ -159,6 +152,7 @@ def remove_member(request, brigade_id, employee_id):
             DELETE FROM brigade_members
             WHERE brigade_id = %s AND employee_id = %s;
         """, [brigade_id, employee_id])
+    messages.success(request, "Працівника видалено!")
     return redirect("brigades:view", brigade_id=brigade_id)
 
 def reassign_leader(request, brigade_id):
@@ -170,18 +164,15 @@ def reassign_leader(request, brigade_id):
             return HttpResponseBadRequest("Не вибрано нового бригадира")
 
         with connection.cursor() as cursor:
-            # Отримуємо поточного (старого) бригадира
             cursor.execute("SELECT leader_id FROM brigades WHERE id = %s;", [brigade_id])
             old_leader = cursor.fetchone()[0]
 
-            # Оновлюємо нового лідера в таблиці brigades
             cursor.execute("""
                 UPDATE brigades
                 SET leader_id = %s
                 WHERE id = %s;
             """, [new_leader_id, brigade_id])
 
-            # Додаємо або оновлюємо нового бригадира в brigade_members
             cursor.execute("""
                 SELECT COUNT(*) FROM brigade_members
                 WHERE brigade_id = %s AND employee_id = %s;
@@ -200,9 +191,7 @@ def reassign_leader(request, brigade_id):
                     WHERE brigade_id = %s AND employee_id = %s;
                 """, ["Бригадир", brigade_id, new_leader_id])
 
-            # Якщо старий бригадир існував — оновлюємо його роль
             if old_leader:
-                # Отримуємо його посаду (title)
                 cursor.execute("""
                     SELECT p.title
                     FROM employees e
@@ -216,13 +205,12 @@ def reassign_leader(request, brigade_id):
                 else:
                     new_role = "Робітник"
 
-                # Якщо старий бригадир є у складі, оновлюємо його роль
                 cursor.execute("""
                     UPDATE brigade_members
                     SET role = %s
                     WHERE brigade_id = %s AND employee_id = %s;
                 """, [new_role, brigade_id, old_leader])
-
+        messages.success(request, "Бригадира змінено!")
         return redirect("brigades:view", brigade_id=brigade_id)
 
     with connection.cursor() as cursor:

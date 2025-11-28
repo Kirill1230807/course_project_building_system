@@ -1,7 +1,12 @@
 ﻿{% load static %}
-
-<link rel="stylesheet" href="{% static 'pages/auth/auth.css' %}">
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'pages/auth/auth.css' %}">
+</head>
+<body>
 <div class="auth-container">
     <h1>Вхід</h1>
 
@@ -12,11 +17,16 @@
     <form method="post">
         {% csrf_token %}
 
-        <label>Логін:</label>
-        <input type="text" name="username">
+        <div class="field">
+            <label>Логін:</label>
+            <input type="text" name="username">
+        </div>
 
-        <label>Пароль:</label>
-        <input type="password" name="password">
+        <div class="field">
+            <label>Пароль:</label>
+            <input type="password" name="password">
+        </div>
+
 
         <button type="submit">Увійти</button>
     </form>
@@ -25,5 +35,28 @@
                 href="{% url 'accounts:register' %}">Зареєструватися</a></p>
         <p class="forgot-password"><a href="{% url 'accounts:forgot_password' %}">Забули пароль?</a></p>
         <p class="guest"><a href="{% url 'accounts:login_guest' %}" class="btn">Увійти як гість</a></p>
+        <p>Дані адміністратора: admin / admin123</p>
+        <p>Дані оператора: operator / operator123</p>
+        <p>Дані авторизованого користувача: user / user123</p>
     </div>
 </div>
+{% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+</body>
+<script>
+    setTimeout(() => {
+        document.querySelectorAll(".alert").forEach(el => {
+            el.style.transition = "0.5s";
+            el.style.opacity = "0";
+            setTimeout(() => el.remove(), 500);
+        });
+    }, 3000);
+</script>
+</html>

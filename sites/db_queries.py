@@ -1,8 +1,5 @@
 ﻿from django.db import connection
 
-from brigades.db_queries import BrigadeQueries
-
-
 class SiteQueries:
     """Робота з таблицею construction_sites"""
 
@@ -109,9 +106,8 @@ class SiteQueries:
             cursor.execute("DELETE FROM construction_sites WHERE id = %s;", [site_id])
 
 
-# ======================================================================
-# === 2. Робота з таблицею ДІЛЬНИЦЬ ====================================
-# ======================================================================
+
+# 2. Робота з таблицею ДІЛЬНИЦЬ
 
 class SectionQueries:
     @staticmethod
@@ -224,8 +220,6 @@ class SectionWorkQueries:
                            """, [section_id, work_type_id, volume])
 
             section_work_id = c.fetchone()[0]
-
-        # BrigadeQueries.register_brigade_history(section_work_id)
 
         return section_work_id
 

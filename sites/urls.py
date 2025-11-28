@@ -4,6 +4,7 @@ from . import views
 app_name = "sites"
 
 urlpatterns = [
+    # Об'єкти
     path("", views.index, name="index"),
     path("add/", views.add_site, name="add"),
     path("<int:site_id>/edit/", views.edit_site, name="edit"),
@@ -16,9 +17,10 @@ urlpatterns = [
     path("sections/<int:section_id>/edit/", views.edit_section, name="edit_section"),
     path("sections/<int:section_id>/delete/", views.delete_section, name="delete_section"),
 
+    # Роботи на дільницях
     path("sections/<int:section_id>/works/", views.section_works, name="section_works"),
     path("sections/<int:section_id>/works/<int:work_id>/delete/", views.delete_section_work,
          name="delete_section_work"),
-path("sections/<int:section_id>/works/", views.section_works, name="section_works"),
+    path("sections/<int:section_id>/works/", views.section_works, name="section_works"),
     path("sections/work/<int:work_id>/edit/", views.edit_section_work, name="edit_section_work")
 ]

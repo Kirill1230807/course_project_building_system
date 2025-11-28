@@ -92,4 +92,22 @@
     </main>
 </div>
 </body>
+{% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+<script>
+    setTimeout(() => {
+        document.querySelectorAll(".alert").forEach(el => {
+            el.style.transition = "0.5s";
+            el.style.opacity = "0";
+            setTimeout(() => el.remove(), 500);
+        });
+    }, 3000);
+</script>
 </html>

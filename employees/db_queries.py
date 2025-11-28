@@ -3,7 +3,6 @@
 
 class EmployeeQueries:
 
-    # Отримати всіх працівників
     @staticmethod
     def get_all():
         with connection.cursor() as cursor:
@@ -23,7 +22,6 @@ class EmployeeQueries:
             columns = [col[0] for col in cursor.description]
             return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
-    # Додати працівника
     @staticmethod
     def add(first_name, last_name, father_name, birthday, start_date, salary, position_id, category):
         with connection.cursor() as cursor:
@@ -34,7 +32,6 @@ class EmployeeQueries:
                            """,
                            [first_name, last_name, father_name, birthday, start_date, salary, position_id, category])
 
-    # Видалити працівника
     @staticmethod
     def delete(employee_id):
         with connection.cursor() as cursor:

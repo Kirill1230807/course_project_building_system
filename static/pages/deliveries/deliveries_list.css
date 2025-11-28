@@ -1,5 +1,4 @@
-﻿/* ======= Базові стилі ======= */
-main {
+﻿main {
     background-color: #FFFFFF;
     color: #2C3E50;
     font-family: 'Segoe UI', sans-serif;
@@ -14,7 +13,6 @@ h2 {
     margin-bottom: 25px;
 }
 
-/* ======= Форма фільтрів ======= */
 form {
     background-color: #FFFFFF;
     padding: 20px;
@@ -46,7 +44,6 @@ form input[type="text"] {
     box-sizing: border-box;
 }
 
-/* Кнопка фільтру */
 form button {
     background-color: #E67E22;
     color: white;
@@ -101,7 +98,6 @@ form button:hover {
     background-color: #D35400;
 }
 
-/* ======= Таблиця ======= */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -125,17 +121,14 @@ table th {
     font-weight: 700;
 }
 
-/* Чередування */
 table tr:nth-child(even) {
     background-color: #FAFAFA;
 }
 
-/* Ховер */
 table tr:hover {
     background-color: #FFF3E0;
 }
 
-/* Ссилка "Деталі доставки" */
 table a {
     color: #E67E22 !important;
     font-weight: 600;
@@ -146,7 +139,6 @@ table a:hover {
     color: #D35400 !important;
 }
 
-/* Немає записів */
 .table tbody .text-muted,
 td[colspan] {
     text-align: center;
@@ -154,7 +146,6 @@ td[colspan] {
     font-style: italic;
 }
 
-/* ======= Адаптив ======= */
 @media (max-width: 768px) {
     form {
         padding: 15px;

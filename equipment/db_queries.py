@@ -71,14 +71,12 @@ class EquipmentQueries:
     def update_status_based_on_site():
         """Приводимо статуси до базових, але НЕ чіпаємо 'В ремонті'."""
         with connection.cursor() as c:
-            # Без об'єкта → 'Вільна' (але не чіпаємо, якщо 'В ремонті')
             c.execute("""
                       UPDATE equipment
                       SET status = 'Вільна'
                       WHERE assigned_site_id IS NULL
                         AND status <> 'В ремонті';
                       """)
-            # Прив'язана до об'єкта → 'В роботі' (але не чіпаємо, якщо 'В ремонті')
             c.execute("""
                       UPDATE equipment
                       SET status = 'В роботі'
@@ -147,7 +145,6 @@ class EquipmentQueries:
         та записуємо один запис в історію із датами об'єкта.
         """
 
-        # 1. Отримуємо початок і кінець об'єкта
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT start_date, end_date
@@ -162,10 +159,8 @@ class EquipmentQueries:
         site_start, site_end = row
 
         if not site_end:
-            # якщо об’єкт ще не завершено — нічого не робимо
             return
 
-        # 2. Отримуємо техніку, що була прив'язана
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT id, notes
@@ -174,7 +169,6 @@ class EquipmentQueries:
             """, [site_id])
             equipment_list = cursor.fetchall()
 
-        # 3. Додаємо історію
         with connection.cursor() as cursor:
             for eq_id, notes in equipment_list:
                 cursor.execute("""
@@ -188,7 +182,6 @@ class EquipmentQueries:
         Закриває або створює записи історії техніки при завершенні об'єкта.
         """
 
-        # 1. Беремо дату завершення об'єкта
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT start_date, end_date
@@ -202,9 +195,8 @@ class EquipmentQueries:
 
         site_start, site_end = row
         if not site_end:
-            return  # об’єкт ще не завершений
+            return
 
-        # 2. Отримуємо всю техніку, яка була закріплена
         with connection.cursor() as cursor:
             cursor.execute("""
                 SELECT id, notes
@@ -213,11 +205,9 @@ class EquipmentQueries:
             """, [site_id])
             equipment_list = cursor.fetchall()
 
-        # 3. Для кожної техніки коректно створюємо/закриваємо історію
         with connection.cursor() as cursor:
             for eq_id, notes in equipment_list:
 
-                # 3.1 шукаємо активну історію
                 cursor.execute("""
                     SELECT id
                     FROM equipment_work_history
@@ -228,7 +218,6 @@ class EquipmentQueries:
                 active = cursor.fetchone()
 
                 if active:
-                    # 3.2 Закриваємо активну
                     cursor.execute("""
                         UPDATE equipment_work_history
                         SET end_date = %s
@@ -236,7 +225,6 @@ class EquipmentQueries:
                     """, [site_end, active[0]])
 
                 else:
-                    # 3.3 Створюємо нову історію та одразу закриваємо
                     cursor.execute("""
                         INSERT INTO equipment_work_history (equipment_id, site_id, start_date, end_date, notes)
                         VALUES (%s, %s, %s, %s, %s);

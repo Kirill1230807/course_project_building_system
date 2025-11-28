@@ -10,85 +10,87 @@
 
     <div class="page-container">
 
-    <h2>Графік і кошторис будівництва об’єкта: {{ site.name }}</h2>
+        <h2>Графік і кошторис будівництва об’єкта: {{ site.name }}</h2>
 
-    <p><strong>Адреса:</strong> {{ site.address }}</p>
-    <p><strong>Період:</strong> {{ site.start_date|date:"Y-m-d" }} — {{ site.end_date|date:"Y-m-d"|default:"Не встановлено" }}</p>
-    <p><strong>Статус:</strong> {{ site.status }}</p>
+        <p><strong>Адреса:</strong> {{ site.address }}</p>
+        <p><strong>Період:</strong> {{ site.start_date|date:"Y-m-d" }}
+            - {{ site.end_date|date:"Y-m-d"|default:"Не встановлено" }}</p>
+        <p><strong>Статус:</strong> {{ site.status }}</p>
+        <a class="btn-back" href="{% url 'sites:index' %}">До списку об'єктів</a>
+        <a class="btn-back" href="{% url 'reports:reports_menu' %}">До списку звітів</a>
+        <hr>
 
-    <hr>
+        <h3>Роботи, проведені на об'єкті</h3>
 
-    <h3>Роботи, проведені на об'єкті</h3>
-
-    <table>
-        <thead>
-        <tr>
-            <th>Дільниця</th>
-            <th>Початок</th>
-            <th>Завершення</th>
-            <th>Робота</th>
-            <th>Ціна за одиницю</th>
-            <th>Обсяг</th>
-            <th>Вартість</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for row in data %}
+        <table>
+            <thead>
             <tr>
-                <td>{{ row.section_name }}</td>
-                <td>{{ row.section_start|date:"Y-m-d" }}</td>
-                <td>{{ row.section_end|date:"Y-m-d" }}</td>
-                <td>{{ row.work_name }}</td>
-                <td>{{ row.cost_per_unit }}</td>
-                <td>{{ row.volume }}</td>
-                <td>{{ row.work_cost }}</td>
+                <th>Дільниця</th>
+                <th>Початок</th>
+                <th>Завершення</th>
+                <th>Робота</th>
+                <th>Ціна за одиницю роботи</th>
+                <th>Обсяг</th>
+                <th>Вартість</th>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <h4 class="summary">Сума вартості робіт: {{ cost_work }}</h4>
-
-    <hr>
-
-    <h3>Матеріали, доставлені на об’єкт</h3>
-
-    <table>
-        <thead>
-        <tr>
-            <th>Матеріал</th>
-            <th>Одиниця</th>
-            <th>Кількість</th>
-            <th>Ціна за одиницю</th>
-            <th>Вартість</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        {% if materials %}
-            {% for m in materials %}
+            </thead>
+            <tbody>
+            {% for row in data %}
                 <tr>
-                    <td>{{ m.0 }}</td>
-                    <td>{{ m.1 }}</td>
-                    <td>{{ m.2 }}</td>
-                    <td>{{ m.3 }}</td>
-                    <td>{{ m.4 }}</td>
+                    <td>{{ row.section_name }}</td>
+                    <td>{{ row.section_start|date:"Y-m-d" }}</td>
+                    <td>{{ row.section_end|date:"Y-m-d" }}</td>
+                    <td>{{ row.work_name|default:"Не додано" }}</td>
+                    <td>{{ row.cost_per_unit|default:"Не додана" }}</td>
+                    <td>{{ row.volume|default:"Не доданий" }}</td>
+                    <td>{{ row.work_cost|default:"Не підраховано" }}</td>
                 </tr>
             {% endfor %}
-        {% else %}
+            </tbody>
+        </table>
+
+        <h4 class="summary">Сума вартості робіт: {{ cost_work }}</h4>
+
+        <hr>
+
+        <h3>Матеріали, доставлені на об’єкт</h3>
+
+        <table>
+            <thead>
             <tr>
-                <td colspan="5">Матеріали не знайдено</td>
+                <th>Матеріал</th>
+                <th>Одиниця</th>
+                <th>Кількість</th>
+                <th>Ціна за одиницю</th>
+                <th>Вартість</th>
             </tr>
-        {% endif %}
-        </tbody>
-    </table>
+            </thead>
 
-    <h4 class="summary">Сума витрат на матеріали: {{ materials_total }}</h4>
+            <tbody>
+            {% if materials %}
+                {% for m in materials %}
+                    <tr>
+                        <td>{{ m.0 }}</td>
+                        <td>{{ m.1 }}</td>
+                        <td>{{ m.2 }}</td>
+                        <td>{{ m.3 }}</td>
+                        <td>{{ m.4 }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="5">Матеріали не знайдено</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
 
-    <hr>
+        <h4 class="summary">Сума витрат на матеріали: {{ materials_total }}</h4>
 
-    <h3 class="summary">Загальна сума кошторису (роботи + матеріали): {{ total_cost }}</h3>
+        <hr>
 
-</div>
+        <h3 class="summary">Загальна сума кошторису (роботи + матеріали): {{ total_cost }}</h3>
+
+    </div>
 
 {% endblock %}

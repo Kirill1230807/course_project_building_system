@@ -62,6 +62,20 @@ hr {
     border-top: 2px solid #eeeeee;
 }
 
+.btn-back {
+    display: block;
+    text-align: center;
+    margin: 25px auto 0;
+    padding: 12px 20px;
+    background-color: #FF9800;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    width: 60%;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
 @media (max-width: 768px) {
     .page-container {
         margin: 10px;

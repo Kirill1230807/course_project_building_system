@@ -1,9 +1,7 @@
 ﻿from django.db import connection
 
-
 class BrigadeQueries:
     """Запити до таблиці бригад"""
-
     @staticmethod
     def get_all():
         with connection.cursor() as cursor:
@@ -199,8 +197,6 @@ class BrigadeQueries:
         """
 
         with connection.cursor() as c:
-
-            # 1. Отримуємо бригаду, яка працювала на дільниці
             c.execute("""
                       SELECT brigade_id
                       FROM sections
@@ -209,12 +205,9 @@ class BrigadeQueries:
             row = c.fetchone()
 
             if not row or not row[0]:
-                # Немає бригади – записувати нічого
                 return
 
             brigade_id = row[0]
-
-            # 2. Отримуємо всі види робіт на дільниці
             c.execute("""
                       SELECT id,
                              COALESCE(actual_start, planned_start),
@@ -224,8 +217,6 @@ class BrigadeQueries:
                       """, [section_id])
 
             works = c.fetchall()
-
-            # 3. Записуємо історію
             for work in works:
                 section_work_id = work[0]
                 start_date = work[1]

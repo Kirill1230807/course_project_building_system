@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseNotFound
 from .db_queries import ManagementQueries, EngineerQueries
 from django.db import connection
-
+from django.contrib import messages
 
 def index(request):
     managements = ManagementQueries.get_all()
@@ -20,11 +20,13 @@ def add_management(request):
         notes = request.POST.get("notes") or ""
         ManagementQueries.add(name, head_employee_id, notes)
         return redirect("management:index")
+    messages.success(request, "Будівельне керування створено!")
     return redirect("management:index")
 
 
 def delete_management(request, management_id):
     ManagementQueries.delete(management_id)
+    messages.success(request, "Будівельне керування видалено!")
     return redirect("management:index")
 
 
@@ -34,7 +36,6 @@ def edit_management(request, management_id):
     if not management:
         return HttpResponseNotFound("Управління не знайдено")
 
-    # Отримуємо список інженерів для вибору керівника
     with connection.cursor() as cursor:
         cursor.execute("""
                        SELECT id, last_name || ' ' || first_name
@@ -56,6 +57,7 @@ def edit_management(request, management_id):
             })
 
         ManagementQueries.update(management_id, name, head_employee_id, notes)
+        messages.success(request, "Інформацію про керування оновлено!")
         return redirect("management:index")
 
     return render(request, "management/edit_management.html", {
@@ -65,13 +67,10 @@ def edit_management(request, management_id):
 
 
 def engineers(request):
-    # Отримуємо всіх інженерів
     all_engineers = EngineerQueries.get_all()
 
-    # Якщо поле end_date порожнє - інженер, який працює
     active_engineers = [e for e in all_engineers if e["end_date"] is None]
 
-    # Якщо поле end_date заповнене - інженер звільнений
     fired_engineers = [e for e in all_engineers if e["end_date"] is not None]
 
     with connection.cursor() as cursor:
@@ -89,7 +88,6 @@ def engineers(request):
         "positions": positions
     })
 
-
 def add_engineer(request):
     """Додавання нового інженера"""
     if request.method == "POST":
@@ -101,7 +99,6 @@ def add_engineer(request):
         salary = request.POST.get("salary")
         position_id = request.POST.get("position_id")
 
-        # Перевірка обов’язкових полів
         if not (first_name and last_name and salary and position_id):
             error_msg = "Не всі поля заповнені!"
             engineers = EngineerQueries.get_all()
@@ -118,8 +115,8 @@ def add_engineer(request):
                 "error_msg": error_msg
             })
 
-        # Додавання інженера
         EngineerQueries.add(first_name, last_name, father_name, birthday, start_date, salary, position_id)
+        messages.success(request, "Інженера додано!")
         return redirect("management:engineers")
 
     return redirect("management:engineers")
@@ -128,6 +125,7 @@ def add_engineer(request):
 def delete_engineer(request, engineer_id):
     """Видалення інженера"""
     EngineerQueries.delete(engineer_id)
+    messages.success(request, "Інженера видалено!")
     return redirect("management:engineers")
 
 
@@ -137,7 +135,6 @@ def edit_engineer(request, engineer_id):
     if not engineer:
         return HttpResponseNotFound("Інженера не знайдено")
 
-    # Отримуємо посади, які належать до ІТП
     with connection.cursor() as cursor:
         cursor.execute("""
                        SELECT id, title
@@ -166,13 +163,13 @@ def edit_engineer(request, engineer_id):
 
         EngineerQueries.update(engineer_id, first_name, last_name, father_name, birthday, start_date, end_date, salary,
                                position_id)
+        messages.success(request, "Інформацію про інженера оновлено!")
         return redirect("management:engineers")
 
     return render(request, "management/edit_engineer.html", {
         "engineer": engineer,
         "positions": positions
     })
-
 
 def engineer_detail(request, engineer_id):
     engineer = EngineerQueries.get_by_id(engineer_id)

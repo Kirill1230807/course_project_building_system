@@ -100,11 +100,11 @@
                         <td>{{ s.1 }}</td>
                         <td>{{ s.2 }}</td>
                         <td>{{ s.3|date:"Y-m-d" }}</td>
-                        <td>{{ s.4|default:"--"|date:"Y-m-d" }}</td>
+                        <td>{{ s.4|date:"Y-m-d"|default:"--" }}</td>
                         <td>{{ s.5|date:"Y-m-d" }}</td>
                         <td>{{ s.6 }}</td>
                         <td>{{ s.9 }}</td>
-                        <td>{{ s.8 }}</td>
+                        <td>{{ s.8|default:"--" }}</td>
                         <td>{{ s.7|default:"--" }}</td>
 
                         <td class="actions-col">
@@ -165,7 +165,7 @@
                         <td>{{ s.5|date:"Y-m-d" }}</td>
                         <td>{{ s.6 }}</td>
                         <td>{{ s.9 }}</td>
-                        <td>{{ s.8 }}</td>
+                        <td>{{ s.8|default:"--" }}</td>
                         <td>{{ s.7|default:"--" }}</td>
 
                         <td class="actions-col">

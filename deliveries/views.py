@@ -5,7 +5,6 @@ from django.contrib import messages
 from .db_queries import DeliveryQueries
 from django.db import connection
 
-
 def add_delivery(request):
     sites, materials = DeliveryQueries.get_reference_data()
 
@@ -19,21 +18,17 @@ def add_delivery(request):
         quantities = request.POST.getlist("quantity")
 
         try:
-            # створюємо накладну
             delivery_id = DeliveryQueries.add_delivery(section_id, delivery_date, notes)
 
-            # додаємо позиції з перевіркою залишків
             for m_id, qty in zip(material_ids, quantities):
                 if m_id and qty:
                     DeliveryQueries.add_delivery_item(delivery_id, int(m_id), float(qty))
 
-            # оновлюємо суму
             DeliveryQueries.update_total(delivery_id)
             messages.success(request, "Доставку успішно створено!")
             return redirect("deliveries:add_delivery_success")
 
         except ValueError as e:
-            # помилка (наприклад, забагато матеріалу)
             messages.error(request, str(e))
             return render(request, "deliveries/add_delivery.html", {
                 "sites": sites,
@@ -62,7 +57,7 @@ def add_delivery_success(request):
 
 def deliveries_list(request):
     """Відображення всіх доставок із фільтрами"""
-    sites, _ = DeliveryQueries.get_reference_data()
+    sites, _ = DeliveryQueries.get_reference_data_history()
 
     site_id = request.GET.get("site_id")
     section_id = request.GET.get("section_id")

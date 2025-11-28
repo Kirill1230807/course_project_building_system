@@ -25,7 +25,7 @@
                     <span class="close" id="closeMaterialModal">&times;</span>
                     <h2 class="modal-title">Новий матеріал</h2>
 
-                    <form method="post" action="{% url 'materials:add' %}" class="styled-form">
+                    <form method="post" action="{% url 'materials:add' %}">
                         {% csrf_token %}
 
                         <label>Назва:</label>
@@ -121,7 +121,7 @@
                 <span class="close" id="closeSupplierModal">&times;</span>
                 <h2 class="modal-title">Новий постачальник</h2>
 
-                <form method="post" action="{% url 'materials:add_supplier' %}" class="styled-form">
+                <form method="post" action="{% url 'materials:add_supplier' %}">
                     {% csrf_token %}
 
                     <label>Назва компанії:</label>

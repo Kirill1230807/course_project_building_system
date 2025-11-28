@@ -19,7 +19,7 @@
                 <span id="closeModalBtn" class="close">&times;</span>
                 <h2 class="modal-title">Додати нову техніку</h2>
 
-                <form method="post" action="{% url 'equipment:add' %}" class="styled-form">
+                <form method="post" action="{% url 'equipment:add' %}">
                     {% csrf_token %}
 
                     <label>Назва:</label>
